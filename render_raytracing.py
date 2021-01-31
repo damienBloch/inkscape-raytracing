@@ -158,7 +158,7 @@ class Tracer(inkex.EffectExtension):
         for obj in group:
             self.process_object(obj)
         # TODO : broadcast the information in the group description to all
-        #  children, it is discarded for now
+        #  children. It is discarded for now.
 
     def _document_as_border(self):
         """
