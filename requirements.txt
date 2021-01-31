@@ -11,7 +11,6 @@ lxml==4.6.2
 MarkupSafe==1.1.1
 numpy==1.19.5
 packaging==20.8
-pkg-resources==0.0.0
 Pygments==2.7.4
 pyparsing==2.4.7
 pytz==2020.5

@@ -1,5 +1,6 @@
 from .beamdump import *
 
-class BeamSeed(OpticMaterial):
+
+class BeamSeed(object):
     def __init__(self):
         pass

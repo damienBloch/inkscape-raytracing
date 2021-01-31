@@ -16,7 +16,7 @@ def englobing_aabbox(aabboxes):
                      np.max(aabboxes[:, 1, :], axis=0)])
 
 
-def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> Any:
+def cubic_real_roots(a0: float, a1: float, a2: float, a3: float):
     """
     Returns the real roots X of a cubic polynomial defined as
 

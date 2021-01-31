@@ -2,44 +2,44 @@
 Extension for rendering beams in 2D optics with Inkscape
 """
 
-import re
 import itertools
+import re
+from typing import TypeVar, Iterator, Tuple, List, Union
+
 import inkex
 import numpy as np
-import raytracing.material as mat
+
 import raytracing.geometry as geom
+import raytracing.material as mat
 from raytracing import World, OpticalObject, Ray
 
 
-def pairwise(iterable):
+T = TypeVar('T')
+
+
+def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
     """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
     a, b = itertools.tee(iterable)
     next(b, None)
     return zip(a, b)
 
 
-def get_material(obj):
-    """Extracts the optical material of an object from its description
-
-    :type obj: inkex.ShapeElement
-    :rtype: list of OpticMaterial
-    """
+def get_material(obj: inkex.ShapeElement) -> List[Union[mat.OpticMaterial,
+                                                        mat.BeamSeed]]:
+    """Extracts the optical material of an object from its description"""
 
     desc = get_description(obj)
     return materials_from_description(desc)
 
 
-def get_geometry(obj):
+def get_geometry(obj: inkex.ShapeElement) -> geom.GeometricObject:
     """
     Converts the geometry of inkscape elements to a form suitable for the
     ray tracing module
-
-    :type obj: inkex.ShapeElement
-    :rtype: GeometricObject
     """
 
     # Treats all objects as cubic Bezier curves. This treatment is exact
-    # for all primitives except circles and ellipses that are only
+    # for most primitives except circles and ellipses that are only
     # approximated by Bezier curves.
     # TODO: implement exact representation for ellipses
     superpath = inkex.CubicSuperPath(obj.path.to_absolute())
@@ -47,37 +47,26 @@ def get_geometry(obj):
     return composite_bezier
 
 
-def get_description(element):
-    """
-    :type element: inkex.BaseElement
-    :rtype: str
-    """
-
+def get_description(element: inkex.BaseElement) -> str:
     for child in element.getchildren():
         if child.tag == inkex.addNS('desc', 'svg'):
             return child.text
     return ''
 
 
-def get_beam(element):
-    """
-    :type element: inkex.PathElement
-    :rtype: Ray
-    """
-
-    # TODO: find a better way to extract beam characteristics
+def get_beam(element: inkex.PathElement) -> Ray:
+    # TODO: Find a better way to extract beam characteristics.
+    #  The current approach will give weird results for paths that are not
+    #  lines.
     end_points = np.array([x for x in element.path.to_absolute().end_points])
     origin = end_points[0]
     direction = end_points[1]-end_points[0]
     return Ray(origin, direction)
 
 
-def materials_from_description(desc):
-    """Parses the description to extract the material properties
-
-    :type desc: str
-    :rtype: list of OpticalMaterial
-    """
+def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
+                                                        mat.BeamSeed]]:
+    """Parses the description to extract the material properties"""
 
     pattern = "optics *: *([a-z,_]*)(?::([0-9]+(?:.[0-9])?))?"
     fields = re.findall(pattern, desc.lower())
@@ -92,15 +81,14 @@ def materials_from_description(desc):
     return materials
 
 
-def superpath_to_bezier_segments(superpath):
+def superpath_to_bezier_segments(superpath: inkex.CubicSuperPath) -> \
+        geom.CompositeCubicBezier:
     """
     Converts a superpath with a representation
     [Subpath0[handle0_0, point0, handle0_1], ...], ...]
     to a representation of consecutive bezier segments of the form
     CompositeCubicBezier([CubicBezierPath[CubicBezier[point0, handle0_1,
     handle1_0, point1], ...], ...]).
-
-    :rtype: CompositeCubicBezier
     """
 
     composite_bezier = geom.CompositeCubicBezier()
@@ -137,12 +125,15 @@ class Tracer(inkex.EffectExtension):
         filter_ = self._filter_primitives + (inkex.Group,)
         for obj in self.svg.selection.filter(filter_).values():
             self.process_object(obj)
+
         self._document_as_border()
+
         for beam in self._beam_seeds:
             self._world.propagate_beam(beam["source"])
 
-    def process_object(self, obj):
-        """Add the object to the ray tracing data structure"""
+    def process_object(self, obj: inkex.BaseElement):
+        """Adds the object to the ray tracing data structure"""
+
         if isinstance(obj, inkex.Group):
             self.process_group(obj)
         elif isinstance(obj, self._filter_primitives):
@@ -161,7 +152,7 @@ class Tracer(inkex.EffectExtension):
                     opt_obj = OpticalObject(geometry, materials[0])
                     self._world.add_object(opt_obj)
 
-    def process_group(self, group):
+    def process_group(self, group: inkex.Group):
         """Splits the objects inside a group and treats them individually"""
 
         for obj in group:

@@ -1,5 +1,11 @@
+from typing import NamedTuple
+
 from .world import *
 from .ray import *
-from collections import namedtuple
+from .geometry import GeometricObject
+from .material import OpticMaterial
 
-OpticalObject = namedtuple("OpticalObject", ["geometry", "material"])
+
+class OpticalObject(NamedTuple):
+    geometry: GeometricObject
+    material: OpticMaterial
