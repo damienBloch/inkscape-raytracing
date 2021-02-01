@@ -18,8 +18,14 @@ class Ray(object):
     """
 
     def __init__(self, origin, direction):
-        self.origin = np.array(origin)
-        self.direction = np.array(direction)/np.linalg.norm(direction)
+        self.origin: np.ndarray = np.array(origin)
+        self.direction: np.ndarray = \
+            np.array(direction)/np.linalg.norm(direction)
 
     def __repr__(self):
         return f"Ray({self.origin}, {self.direction})"
+
+    # If a beam hits an object before having traveled a minimum distance
+    # from its origin, the collision is ignored. This prevents infinite
+    # collision in case the origin of a beam is on the surface of an object
+    min_travel: float = 1e-8

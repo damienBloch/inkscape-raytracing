@@ -47,3 +47,4 @@ class World(object):
 
         for object_ in self:
             inkex.utils.debug(object_.geometry.hit(beam_seed))
+            inkex.utils.debug("\n==================\n")

@@ -81,8 +81,8 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
     return materials
 
 
-def superpath_to_bezier_segments(superpath: inkex.CubicSuperPath) -> \
-        geom.CompositeCubicBezier:
+def superpath_to_bezier_segments(superpath: inkex.CubicSuperPath) \
+                                                 -> geom.CompositeCubicBezier:
     """
     Converts a superpath with a representation
     [Subpath0[handle0_0, point0, handle0_1], ...], ...]
@@ -95,7 +95,7 @@ def superpath_to_bezier_segments(superpath: inkex.CubicSuperPath) -> \
     for subpath in superpath:
         bezier_path = geom.CubicBezierPath()
         for (__, p0, p1), (p2, p3, __) in pairwise(subpath):
-            bezier = geom.CubicBezier([p0, p1, p2, p3])
+            bezier = geom.CubicBezier(np.array([p0, p1, p2, p3]))
             bezier_path.add_bezier(bezier)
         composite_bezier.add_subpath(bezier_path)
     return composite_bezier
@@ -170,10 +170,10 @@ class Tracer(inkex.EffectExtension):
         w = self.svg.unittouu(svg.get('width'))
         h = self.svg.unittouu(svg.get('height'))
         contour_geometry = geom.CompositeCubicBezier([geom.CubicBezierPath([
-            geom.CubicBezier([[0, 0], [0, 0], [w, 0], [w, 0]]),
-            geom.CubicBezier([[w, 0], [w, 0], [w, h], [w, h]]),
-            geom.CubicBezier([[w, h], [w, h], [0, h], [0, h]]),
-            geom.CubicBezier([[0, h], [0, h], [0, 0], [0, 0]])])])
+            geom.CubicBezier(np.array([[0, 0], [0, 0], [w, 0], [w, 0]])),
+            geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
+            geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
+            geom.CubicBezier(np.array([[0, h], [0, h], [0, 0], [0, 0]]))])])
         self._document_border = OpticalObject(contour_geometry, mat.BeamDump())
         self._world.add_object(self._document_border)
 
