@@ -1,3 +1,8 @@
+from typing import List
+
+from raytracing.ray import Ray
+from raytracing.shade import ShadeRec
+
 from .optic_material import OpticMaterial
 
 
@@ -9,3 +14,6 @@ class BeamDump(OpticMaterial):
 
     def __repr__(self):
         return "BeamDump()"
+
+    def generated_beams(self, ray: Ray, shade: ShadeRec) -> List[Ray]:
+        return list()

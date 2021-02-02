@@ -7,6 +7,7 @@ import re
 from typing import TypeVar, Iterator, Tuple, List, Union
 
 import inkex
+from lxml import etree
 import numpy as np
 
 import raytracing.geometry as geom
@@ -15,6 +16,21 @@ from raytracing import World, OpticalObject, Ray
 
 
 T = TypeVar('T')
+
+
+def plot_beam(beam: List[Tuple[Ray, float]], node: inkex.BaseElement):
+    string = ""
+    for ray in beam:
+        p = ray[0].origin
+        string += f"{p[0]},{p[1]} "
+    p = beam[-1][0].origin + beam[-1][1] * beam[-1][0].direction
+    string += f"{p[0]},{p[1]} "
+
+    parent = node.getparent()
+    line_attribs = {'style': node.get("style"),
+                    inkex.addNS('label', 'inkscape'): "test",
+                    'd': 'M ' + string}
+    etree.SubElement(parent, inkex.addNS('path', 'svg'), line_attribs)
 
 
 def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
@@ -101,6 +117,12 @@ def superpath_to_bezier_segments(superpath: inkex.CubicSuperPath) \
     return composite_bezier
 
 
+def raise_err_num_materials(obj):
+    message = f"The element {obj.get_id()} has more than one optical " \
+              f"material and will be ignored:\n{get_description(obj)}\n"
+    inkex.utils.errormsg(message)
+
+
 class Tracer(inkex.EffectExtension):
     """Renders the beams present in the document"""
 
@@ -115,7 +137,7 @@ class Tracer(inkex.EffectExtension):
                                    inkex.Rectangle, inkex.Ellipse,
                                    inkex.Circle)
 
-    def effect(self):
+    def effect(self) -> None:
         """
         Loads the objects and outputs a svg with the beams after propagation
         """
@@ -128,31 +150,38 @@ class Tracer(inkex.EffectExtension):
 
         self._document_as_border()
 
-        for beam in self._beam_seeds:
-            self._world.propagate_beam(beam["source"])
+        for seed in self._beam_seeds:
+            generated = self._world.propagate_beams([[(seed["source"], -1)]])
+            for beam in generated:
+                plot_beam(beam, seed["node"])
 
-    def process_object(self, obj: inkex.BaseElement):
-        """Adds the object to the ray tracing data structure"""
+    def process_object(self, obj: inkex.BaseElement) -> None:
 
         if isinstance(obj, inkex.Group):
             self.process_group(obj)
         elif isinstance(obj, self._filter_primitives):
-            materials = get_material(obj)
-            if len(materials) > 1:
-                message = f"The element \"{obj.get_id()}\" has more than  " \
-                          f"one optical material and will be ignored:\n" \
-                          f"{get_description(obj)}\n"
-                inkex.utils.errormsg(message)
-            elif len(materials) == 1:
-                geometry = get_geometry(obj)
-                if isinstance(materials[0], mat.BeamSeed):
-                    ray = get_beam(obj)
-                    self._beam_seeds.append({"source": ray, "node": obj})
-                else:
-                    opt_obj = OpticalObject(geometry, materials[0])
-                    self._world.add_object(opt_obj)
+            self.process_optical_object(obj)
 
-    def process_group(self, group: inkex.Group):
+    def process_optical_object(self, obj: inkex.ShapeElement) -> None:
+        """
+        Extracts properties and adds the object to the ray tracing data
+        structure
+        """
+
+        materials = get_material(obj)
+        if len(materials) > 1:
+            raise_err_num_materials(obj)
+        elif len(materials) == 1:
+            material = materials[0]
+            geometry = get_geometry(obj)
+            if isinstance(material, mat.BeamSeed):
+                ray = get_beam(obj.to_path_element())
+                self._beam_seeds.append({"source": ray, "node": obj})
+            else:
+                opt_obj = OpticalObject(geometry, material)
+                self._world.add_object(opt_obj)
+
+    def process_group(self, group: inkex.Group) -> None:
         """Splits the objects inside a group and treats them individually"""
 
         for obj in group:
@@ -160,7 +189,7 @@ class Tracer(inkex.EffectExtension):
         # TODO : broadcast the information in the group description to all
         #  children. It is discarded for now.
 
-    def _document_as_border(self):
+    def _document_as_border(self) -> None:
         """
         Adds a beam blocking contour on the borders of the document to
         prevent the beams from going to infinity

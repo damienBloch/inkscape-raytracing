@@ -5,7 +5,6 @@ Module for handling objects composed of cubic bezier curves
 
 import numpy as np
 from typing import List, Tuple, Optional, Iterator
-import inkex
 
 from raytracing.ray import orthogonal, Ray
 from raytracing.shade import ShadeRec
@@ -29,8 +28,8 @@ def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
     """
 
     # TODO: replace numeric root finding algorithm by analytic case disjunction
-    complex_roots = np.roots([a0, a1, a2, a3])
-    is_real = np.abs(np.imag(complex_roots)) < 1e-8
+    complex_roots = np.roots([a3, a2, a1, a0])
+    is_real = np.abs(np.imag(complex_roots)) < 1e-6
     return list(np.real(complex_roots[is_real]))
 
 
@@ -56,8 +55,11 @@ class CubicBezier(object):
 
     @property
     def aabbox(self) -> np.ndarray:
-        return np.array([np.min(self._p, axis=0),
-                         np.max(self._p, axis=0)])
+        # The box is slightly larger than the minimal box.
+        # It prevents the box to have a zero dimension if the object is a line
+        # aligned with vertical or horizontal.
+        return np.array([np.min(self._p, axis=0)-1e-6,
+                         np.max(self._p, axis=0)+1e-6])
 
     def tangent(self, s: float) -> np.ndarray:
         """Returns the tangent at the curve at curvilinear coordinate s"""
@@ -202,9 +204,6 @@ class CompositeCubicBezier(GeometricObject):
         """
 
         result = ShadeRec()
-        inkex.utils.debug(self)
-        inkex.utils.debug(self.aabbox)
-        inkex.utils.debug(hit_aabbox(ray, self.aabbox))
         if hit_aabbox(ray, self.aabbox):
             for path in self._subpath_list:
                 shade = path.hit(ray)
@@ -212,5 +211,5 @@ class CompositeCubicBezier(GeometricObject):
                     result = shade
         return result
 
-    def is_inside(self, point):
-        pass
+    def is_inside(self, point: np.ndarray) -> bool:
+        return True

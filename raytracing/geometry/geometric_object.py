@@ -3,7 +3,6 @@ import numpy as np
 
 from raytracing.ray import Ray
 from raytracing.shade import ShadeRec
-import inkex
 
 
 class GeometryError(RuntimeError):
@@ -26,12 +25,12 @@ def hit_aabbox(ray: Ray, aabbox: np.ndarray) -> bool:
     # ignored for this step
     with np.errstate(divide='ignore'):
         a = 1/ray.direction
-    inkex.utils.debug("////")
-    inkex.utils.debug(ray.direction)
     t_min = (np.where(a >= 0, p0, p1) - ray.origin) * a
     t_max = (np.where(a >= 0, p1, p0) - ray.origin) * a
     t0 = np.max(t_min)
     t1 = np.min(t_max)
+    # t0 = t_min[0] if t_min[0] > t_min[1] else t_min[1]
+    # t1 = t_max[0] if t_max[0] < t_max[1] else t_max[1]
     return (t0 < t1) and (t1 > Ray.min_travel)
 
 
