@@ -4,7 +4,9 @@ Module for handling objects composed of cubic bezier curves
 
 
 import numpy as np
-from typing import Any, List, Tuple, Optional, Iterator, Iterable
+from typing import Any, List, Tuple, Optional,  Iterable
+
+import inkex
 
 from raytracing.ray import orthogonal, Ray
 from raytracing.shade import ShadeRec
@@ -27,10 +29,47 @@ def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
         a_0 + a_1 X + a_2 X^2 + a_3 X^3 = 0
     """
 
-    # TODO: replace numeric root finding algorithm by analytic case disjunction
-    complex_roots = np.roots([a3, a2, a1, a0])
-    is_real = np.abs(np.imag(complex_roots)) < 1e-6
-    return list(np.real(complex_roots[is_real]))
+    # For more info see wikipedia: cubic equation
+    if a3 != 0:
+        a, b, c, d = a3, a2, a1, a0
+        p = (3*a*c-b**2)/3/a**2
+        q = (2*b**3-9*a*b*c+27*a**2*d)/27/a**3
+        if p == 0:
+            t = [np.cbrt(-q)]
+        else:
+            discr = -(4*p**3+27*q**2)
+            if discr == 0:
+                if q == 0:
+                    t = [0]
+                else:
+                    t = [3*q/p, -3*q/2/p]
+            elif discr < 0:
+                t = [
+                    np.cbrt(-q/2+np.sqrt(-discr/108)) +
+                    np.cbrt(-q/2-np.sqrt(-discr/108))
+                ]
+            else:
+                t = [2*np.sqrt(-p/3)*np.cos(1/3*np.arccos(3*q/2/p*np.sqrt(
+                    -3/p))-2*np.pi*k/3) for k in range(3)]
+        roots = [x-b/3/a for x in t]
+    elif a2 != 0:
+        a, b, c = a2, a1, a0
+        discr = b**2 - 4 * a * c
+        if discr > 0:
+            roots = [
+                (-b + np.sqrt(discr))/2/a,
+                (-b - np.sqrt(discr))/2/a,
+            ]
+        elif discr == 0:
+            roots = [-b/2/a]
+        else:
+            roots = []
+    elif a1 != 0:
+        a, b = a1, a0
+        roots = [-b/a]
+    else:
+        roots = []  # Ignore infinite solutions for 0*x = 0
+    return roots
 
 
 def find_first_hit(ray: Ray, objects: Iterable[Any]) -> ShadeRec:
@@ -89,8 +128,7 @@ class CubicBezier(object):
 
         return orthogonal(self.tangent(s))
 
-    def intersection_beam(self, ray: Ray) -> Iterator[Tuple[float,
-                                                            float]]:
+    def intersection_beam(self, ray: Ray) -> List[Tuple[float, float]]:
         """
         Returns all couples :math:`(s, t)` such that there exist
         :math:`\\vec{X}` satisfying
@@ -101,7 +139,7 @@ class CubicBezier(object):
         and
         .. math::
             \\vec{X} = \\vec{o} + t \\vec{d}
-        with :math:`0 \\lq s \\lq 1` and :math:`t > 0`
+        with :math:`0 \\lq s \\lq 1` and :math:`t >= 0`
         """
 
         p0, p1, p2, p3 = self._p
@@ -119,7 +157,7 @@ class CubicBezier(object):
         def valid_domain(s, t):
             return 0 <= s <= 1 and t > Ray.min_travel
 
-        return ((s, t) for (s, t) in zip(roots, travel) if valid_domain(s, t))
+        return [(s, t) for (s, t) in zip(roots, travel) if valid_domain(s, t)]
 
     def hit(self, ray: Ray) -> ShadeRec:
         """
@@ -130,18 +168,16 @@ class CubicBezier(object):
         shade = ShadeRec()  # default no hit
         if hit_aabbox(ray, self.aabbox):
             intersect_params = self.intersection_beam(ray)
-            for (s, t) in intersect_params:
-                if t < shade.travel_dist:
-                    shade.travel_dist = t
-                    shade.hit_an_object = True
-                    shade.local_hit_point = ray.origin + t*ray.direction
-                    shade.normal = self.normal(s)
-
-        # Always keeps the normal on the same side of the surface than the
-        # incoming ray.
-        if np.dot(shade.normal, shade.local_hit_point - ray.origin) > 0:
-            shade.normal = -shade.normal
-
+            travel_dist = [t for (__, t) in intersect_params]
+            inkex.utils.debug(travel_dist)
+            if len(travel_dist) > 0:  # otherwise error with np.argmin
+                shade.normal = True
+                first_hit = np.argmin(travel_dist)
+                shade.travel_dist = travel_dist[first_hit]
+                shade.local_hit_point = ray.origin + shade.travel_dist * \
+                                        ray.direction
+                shade.normal = self.normal(intersect_params[first_hit][0])
+                shade.set_normal_same_side(ray.origin)
         return shade
 
 
