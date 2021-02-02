@@ -4,7 +4,7 @@ Module for handling objects composed of cubic bezier curves
 
 
 import numpy as np
-from typing import List, Tuple, Optional, Iterator
+from typing import Any, List, Tuple, Optional, Iterator, Iterable
 
 from raytracing.ray import orthogonal, Ray
 from raytracing.shade import ShadeRec
@@ -31,6 +31,15 @@ def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
     complex_roots = np.roots([a3, a2, a1, a0])
     is_real = np.abs(np.imag(complex_roots)) < 1e-6
     return list(np.real(complex_roots[is_real]))
+
+
+def find_first_hit(ray: Ray, objects: Iterable[Any]) -> ShadeRec:
+    result = ShadeRec()
+    for obj in objects:
+        shade = obj.hit(ray)
+        if Ray.min_travel < shade.travel_dist < result.travel_dist:
+            result = shade
+    return result
 
 
 class CubicBezier(object):
@@ -132,6 +141,7 @@ class CubicBezier(object):
         # incoming ray.
         if np.dot(shade.normal, shade.local_hit_point - ray.origin) > 0:
             shade.normal = -shade.normal
+
         return shade
 
 
@@ -169,10 +179,7 @@ class CubicBezierPath(object):
 
         result = ShadeRec()
         if hit_aabbox(ray, self.aabbox):
-            for bezier in self._bezier_list:
-                shade = bezier.hit(ray)
-                if Ray.min_travel < shade.travel_dist < result.travel_dist:
-                    result = shade
+            result = find_first_hit(ray, self._bezier_list)
         return result
 
 
@@ -215,10 +222,7 @@ class CompositeCubicBezier(GeometricObject):
 
         result = ShadeRec()
         if hit_aabbox(ray, self.aabbox):
-            for path in self._subpath_list:
-                shade = path.hit(ray)
-                if Ray.min_travel < shade.travel_dist < result.travel_dist:
-                    result = shade
+            result = find_first_hit(ray, self._subpath_list)
         return result
 
     def is_inside(self, point: np.ndarray) -> bool:
