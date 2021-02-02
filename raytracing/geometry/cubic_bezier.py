@@ -126,6 +126,12 @@ class CubicBezier(object):
                     shade.travel_dist = t
                     shade.hit_an_object = True
                     shade.local_hit_point = ray.origin + t*ray.direction
+                    shade.normal = self.normal(s)
+
+        # Always keeps the normal on the same side of the surface than the
+        # incoming ray.
+        if np.dot(shade.normal, shade.local_hit_point - ray.origin) > 0:
+            shade.normal = -shade.normal
         return shade
 
 
