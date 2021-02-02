@@ -6,8 +6,6 @@ Module for handling objects composed of cubic bezier curves
 import numpy as np
 from typing import Any, List, Tuple, Optional,  Iterable
 
-import inkex
-
 from raytracing.ray import orthogonal, Ray
 from raytracing.shade import ShadeRec
 from .geometric_object import GeometricObject, hit_aabbox
@@ -169,7 +167,6 @@ class CubicBezier(object):
         if hit_aabbox(ray, self.aabbox):
             intersect_params = self.intersection_beam(ray)
             travel_dist = [t for (__, t) in intersect_params]
-            inkex.utils.debug(travel_dist)
             if len(travel_dist) > 0:  # otherwise error with np.argmin
                 shade.normal = True
                 first_hit = np.argmin(travel_dist)

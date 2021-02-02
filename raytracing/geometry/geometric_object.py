@@ -14,23 +14,21 @@ def hit_aabbox(ray: Ray, aabbox: np.ndarray) -> bool:
     """Tests if a beam intersects the bounding box of the object"""
 
     # This algorithm uses the properties of IEEE floating-point
-    # arithmetic to correctly handle cases where the ray travels exactly
-    # in a negative coordinate-axis direction.
+    # arithmetic to correctly handle cases where the ray travels
+    # parallel to a coordinate axis.
     # See Williams et al. "An efficient and robust ray-box intersection
     # algorithm" for more details.
 
     p0, p1 = aabbox
     # The implementation safely handles the case where an element
-    # of ray.direction is zero so the warning for zero division can be
+    # of ray.direction is zero so the warning for floating point error can be
     # ignored for this step
-    with np.errstate(divide='ignore'):
+    with np.errstate(invalid='ignore'):
         a = 1/ray.direction
-    t_min = (np.where(a >= 0, p0, p1) - ray.origin) * a
-    t_max = (np.where(a >= 0, p1, p0) - ray.origin) * a
+        t_min = (np.where(a >= 0, p0, p1) - ray.origin) * a
+        t_max = (np.where(a >= 0, p1, p0) - ray.origin) * a
     t0 = np.max(t_min)
     t1 = np.min(t_max)
-    # t0 = t_min[0] if t_min[0] > t_min[1] else t_min[1]
-    # t1 = t_max[0] if t_max[0] < t_max[1] else t_max[1]
     return (t0 < t1) and (t1 > Ray.min_travel)
 
 
