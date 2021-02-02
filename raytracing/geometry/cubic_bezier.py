@@ -76,7 +76,7 @@ class CubicBezier(object):
             return diff_2/np.linalg.norm(diff_2)
 
     def normal(self, s: float) -> np.ndarray:
-        """Returns the normal at the curve at curvilinear coordinate s"""
+        """Returns a vector normal at the curve at curvilinear coordinate s"""
 
         return orthogonal(self.tangent(s))
 
@@ -92,6 +92,7 @@ class CubicBezier(object):
         and
         .. math::
             \\vec{X} = \\vec{o} + t \\vec{d}
+        with :math:`0 \\lq s \\lq 1` and :math:`t > 0`
         """
 
         p0, p1, p2, p3 = self._p
@@ -101,11 +102,15 @@ class CubicBezier(object):
         a2 = 3 * np.dot(a, p0 - 2 * p1 + p2)
         a3 = np.dot(a, -p0 + 3 * p1 - 3 * p2 + p3)
         roots = cubic_real_roots(a0, a1, a2, a3)
-        intersection_points = [(1-s)**3*p0 + 3*(1-s)**2*s*p1
-                               + 3*(1-s)*s**2*p2 + s**3*p3 for s in roots]
+        intersection_points = [(1-s)**3*p0 + 3*s*(1-s)**2*p1
+                               + 3*s**2*(1-s)*p2 + s**3*p3 for s in roots]
         travel = [np.dot(X-ray.origin, ray.direction) for X in
                   intersection_points]
-        return zip(roots, travel)
+
+        def valid_domain(s, t):
+            return 0 <= s <= 1 and t > Ray.min_travel
+
+        return ((s, t) for (s, t) in zip(roots, travel) if valid_domain(s, t))
 
     def hit(self, ray: Ray) -> ShadeRec:
         """
@@ -117,8 +122,7 @@ class CubicBezier(object):
         if hit_aabbox(ray, self.aabbox):
             intersect_params = self.intersection_beam(ray)
             for (s, t) in intersect_params:
-                # only keep forward beam and finite bezier segment
-                if Ray.min_travel < t < shade.travel_dist and 0 <= s <= 1:
+                if t < shade.travel_dist:
                     shade.travel_dist = t
                     shade.hit_an_object = True
                     shade.local_hit_point = ray.origin + t*ray.direction
