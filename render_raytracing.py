@@ -7,7 +7,7 @@ import re
 from typing import TypeVar, Iterator, Tuple, List, Union
 
 import inkex
-from lxml import etree
+from inkex.paths import Line, Move
 import numpy as np
 
 import raytracing.geometry as geom
@@ -18,19 +18,16 @@ from raytracing import World, OpticalObject, Ray
 T = TypeVar('T')
 
 
-def plot_beam(beam: List[Tuple[Ray, float]], node: inkex.BaseElement):
-    string = ""
+def plot_beam(beam: List[Tuple[Ray, float]], node: inkex.BaseElement) -> None:
+    path = inkex.Path()
     for ray in beam:
-        p = ray[0].origin
-        string += f"{p[0]},{p[1]} "
-    p = beam[-1][0].origin + beam[-1][1] * beam[-1][0].direction
-    string += f"{p[0]},{p[1]} "
+        p0 = ray[0].origin
+        p1 = beam[-1][0].origin + beam[-1][1] * beam[-1][0].direction
+        path += [Move(p0[0], p0[1]), Line(p1[0], p1[1])]
 
-    parent = node.getparent()
-    line_attribs = {'style': node.get("style"),
-                    inkex.addNS('label', 'inkscape'): "test",
-                    'd': 'M ' + string}
-    etree.SubElement(parent, inkex.addNS('path', 'svg'), line_attribs)
+    element = node.getparent().add(inkex.PathElement())
+    element.style = node.get("style")
+    element.path = path
 
 
 def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
@@ -187,7 +184,7 @@ class Tracer(inkex.EffectExtension):
         for obj in group:
             self.process_object(obj)
         # TODO : broadcast the information in the group description to all
-        #  children. It is discarded for now.
+        #  children. At this point it is discarded.
 
     def _document_as_border(self) -> None:
         """
