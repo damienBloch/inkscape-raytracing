@@ -110,15 +110,14 @@ class CubicBezier(object):
     def tangent(self, s: float) -> np.ndarray:
         """Returns the tangent at the curve at curvilinear coordinate s"""
 
-        diff_1 = - 3*(1-s)**2*self._p[0] + 3*(s-1)*(3*s-1)*self._p[1] \
-                 - 3*s*(1-s)*self._p[2] + 3*s**2*self._p[3]
+        p0, p1, p2, p3 = self._p
+        diff_1 = -3*(p0-3*p1+3*p2-p3)*s**2 + 6*(p0-2*p1+p2)*s-3*(p0-p1)
         # If the first derivative is not zero, it is parallel to the tangent
         if np.linalg.norm(diff_1) > 1e-6:
             return diff_1/np.linalg.norm(diff_1)
         # but is the first derivative is zero, we need to get the second order
         else:
-            diff_2 = -6*(s-1)*self._p[0] + 6*(3*s-2)*self._p[1] \
-                     + 6*(1-3*s)*self._p[2] + 6*s*self._p[3]
+            diff_2 = 6*(p0-2*p1+p2) - 6*(p0-3*p1+3*p2-p3)*s
             return diff_2/np.linalg.norm(diff_2)
 
     def normal(self, s: float) -> np.ndarray:
