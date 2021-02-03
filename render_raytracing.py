@@ -152,12 +152,12 @@ class Tracer(inkex.EffectExtension):
         self._document_as_border()
 
         for seed in self._beam_seeds:
-            generated = self._world.propagate_beams([[(seed["source"], 0)]])
-            for beam in generated:
-                plot_beam(beam, seed["node"])
+            if self.is_inside_document(seed["source"].origin):
+                generated = self._world.propagate_beams([[(seed["source"], 0)]])
+                for beam in generated:
+                    plot_beam(beam, seed["node"])
 
     def process_object(self, obj: inkex.BaseElement) -> None:
-
         if isinstance(obj, inkex.Group):
             self.process_group(obj)
         elif isinstance(obj, self._filter_primitives):
@@ -206,6 +206,9 @@ class Tracer(inkex.EffectExtension):
             geom.CubicBezier(np.array([[0, h], [0, h], [0, 0], [0, 0]]))])])
         self._document_border = OpticalObject(contour_geometry, mat.BeamDump())
         self._world.add_object(self._document_border)
+
+    def is_inside_document(self, point: np.ndarray) -> bool:
+        return self._document_border.geometry.is_inside(point)
 
 
 if __name__ == '__main__':
