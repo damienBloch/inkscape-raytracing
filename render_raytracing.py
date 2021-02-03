@@ -88,6 +88,8 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
     for material_type, prop in fields:
         if material_type == "beam_dump":
             materials.append(mat.BeamDump())
+        elif material_type == "mirror":
+            materials.append(mat.Mirror())
         elif material_type == "beam":
             materials.append(mat.BeamSeed())
         # TODO: add all other types of materials
