@@ -89,7 +89,8 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
     mat_name = {"beam_dump": mat.BeamDump, "mirror": mat.Mirror,
                 "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed}
     for material_type, prop in fields:
-        materials.append(mat_name[material_type]())
+        if material_type in mat_name:
+            materials.append(mat_name[material_type]())
     return materials
 
 
@@ -146,6 +147,7 @@ class Tracer(inkex.EffectExtension):
 
         self._document_as_border()
 
+        inkex.utils.debug(self._world.num_objects)
         for seed in self._beam_seeds:
             generated = self._world.propagate_beams([[(seed["source"], 0)]])
             for beam in generated:
