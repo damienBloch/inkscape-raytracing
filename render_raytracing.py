@@ -85,14 +85,11 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
     fields = re.findall(pattern, desc.lower())
 
     materials = list()
+    # TODO: add glass
+    mat_name = {"beam_dump": mat.BeamDump, "mirror": mat.Mirror,
+                "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed}
     for material_type, prop in fields:
-        if material_type == "beam_dump":
-            materials.append(mat.BeamDump())
-        elif material_type == "mirror":
-            materials.append(mat.Mirror())
-        elif material_type == "beam":
-            materials.append(mat.BeamSeed())
-        # TODO: add all other types of materials
+        materials.append(mat_name[material_type]())
     return materials
 
 
