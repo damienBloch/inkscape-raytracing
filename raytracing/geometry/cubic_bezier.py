@@ -3,6 +3,7 @@ Module for handling objects composed of cubic bezier curves
 """
 
 
+from functools import lru_cache
 import numpy as np
 from typing import Any, List, Tuple, Optional,  Iterable
 
@@ -118,6 +119,10 @@ class CubicBezier(object):
 
     @property
     def aabbox(self) -> np.ndarray:
+        return self._aabbox()
+
+    @lru_cache(maxsize=1)
+    def _aabbox(self) -> np.ndarray:
         # The box is slightly larger than the minimal box.
         # It prevents the box to have a zero dimension if the object is a line
         # aligned with vertical or horizontal.
@@ -130,7 +135,7 @@ class CubicBezier(object):
         p0, p1, p2, p3 = self._p
         diff_1 = -3*(p0-3*p1+3*p2-p3)*s**2 + 6*(p0-2*p1+p2)*s-3*(p0-p1)
         # If the first derivative is not zero, it is parallel to the tangent
-        if np.linalg.norm(diff_1) > 1e-6:
+        if np.linalg.norm(diff_1) > 1e-8:
             return diff_1/np.linalg.norm(diff_1)
         # but is the first derivative is zero, we need to get the second order
         else:
@@ -214,9 +219,14 @@ class CubicBezierPath(object):
 
     def add_bezier(self, bezier: CubicBezier):
         self._bezier_list.append(bezier)
+        self._aabbox.cache_clear()
 
     @property
-    def aabbox(self) -> np.ndarray:
+    def aabbox(self):
+        return self._aabbox()
+
+    @lru_cache(maxsize=1)
+    def _aabbox(self) -> np.ndarray:
         """Computes an axis aligned bounding box for the object
 
         :return: [[x_min, y_min], [x_max, y_max]], an array containing
@@ -263,10 +273,14 @@ class CompositeCubicBezier(GeometricObject):
 
     def add_subpath(self, subpath: CubicBezierPath):
         self._subpath_list.append(subpath)
+        self._aabbox.cache_clear()
 
-    # TODO: Replace property aabbox by cached_property
     @property
     def aabbox(self) -> np.ndarray:
+        return self._aabbox()
+
+    @lru_cache(maxsize=1)
+    def _aabbox(self) -> np.ndarray:
         """Computes an axis aligned bounding box for the object
 
         :return: [[x_min, y_min], [x_max, y_max]], an array containing
