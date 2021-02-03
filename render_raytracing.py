@@ -109,14 +109,14 @@ def superpath_to_bezier_segments(superpath: inkex.CubicSuperPath) \
     handle1_0, point1], ...], ...]).
     """
 
-    composite_bezier = geom.CompositeCubicBezier()
+    composite_bezier = list()
     for subpath in superpath:
-        bezier_path = geom.CubicBezierPath()
+        bezier_path = list()
         for (__, p0, p1), (p2, p3, __) in pairwise(subpath):
             bezier = geom.CubicBezier(np.array([p0, p1, p2, p3]))
-            bezier_path.add_bezier(bezier)
-        composite_bezier.add_subpath(bezier_path)
-    return composite_bezier
+            bezier_path.append(bezier)
+        composite_bezier.append(geom.CubicBezierPath(bezier_path))
+    return geom.CompositeCubicBezier(composite_bezier)
 
 
 def raise_err_num_materials(obj):

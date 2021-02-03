@@ -61,7 +61,7 @@ class GeometricObject(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def is_inside(self, point: np.ndarray) -> bool:
+    def is_inside(self, ray: Ray) -> bool:
         """Indicates is a point is inside or outside of the object
 
         :params point:  The point to be checked, array [x, y] of size 2
