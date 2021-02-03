@@ -4,12 +4,11 @@ Module for handling objects composed of cubic bezier curves
 
 
 import numpy as np
-import scipy.integrate as integrate
 from typing import Any, List, Tuple, Optional,  Iterable
 
 from raytracing.ray import orthogonal, Ray
 from raytracing.shade import ShadeRec
-from .geometric_object import GeometricObject, hit_aabbox, GeometryError
+from .geometric_object import GeometricObject, hit_aabbox
 
 
 def englobing_aabbox(aabboxes: List[np.ndarray]) -> np.ndarray:
@@ -80,7 +79,7 @@ def find_first_hit(ray: Ray, objects: Iterable[Any]) -> ShadeRec:
     return result
 
 
-def kernel_index(t: float, p: np.ndarray, z0: float) -> float:
+def kernel_index(t: float, p: np.ndarray((4,), complex), z0: complex) -> float:
     """
     This function is a low level call for computing the index of a bezier
     curve around a point.
@@ -91,7 +90,7 @@ def kernel_index(t: float, p: np.ndarray, z0: float) -> float:
             + 3 * (p0 - 2 * p1 + p2) * t ** 2 \
             - 3 * (p0 - p1) * t \
             + p0
-    diff_1 = - 3 * (p0 - 3 * p1 + 3 * p2 - p3) * t ** 2 \
+    diff_1 = + 3 * (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 2 \
              + 6 * (p0 - 2 * p1 + p2) * t \
              - 3 * (p0 - p1)
     return np.real(diff_1 / (eval_ - z0) / (2j * np.pi))
@@ -174,6 +173,12 @@ class CubicBezier(object):
 
         return [(s, t) for (s, t) in zip(roots, travel) if valid_domain(s, t)]
 
+    def num_hits(self, ray: Ray) -> int:
+        if hit_aabbox(ray, self.aabbox):
+            return len(self.intersection_beam(ray))
+        else:
+            return 0
+
     def hit(self, ray: Ray) -> ShadeRec:
         """
         Returns a shade with the information for the first intersection
@@ -193,12 +198,6 @@ class CubicBezier(object):
                 shade.normal = self.normal(intersect_params[first_hit][0])
                 shade.set_normal_same_side(ray.origin)
         return shade
-
-    def index(self, point: np.ndarray) -> float:
-        complex_handles = self._p[:, 0] + 1j * self._p[:, 1]
-        complex_point = point[0] + 1j * point[1]
-        return integrate.quad(kernel_index, 0, 1,
-                              args=(complex_handles, complex_point))[0]
 
 
 class CubicBezierPath(object):
@@ -227,14 +226,6 @@ class CubicBezierPath(object):
         bezier_aabboxes = [bez.aabbox for bez in self._bezier_list]
         return englobing_aabbox(bezier_aabboxes)
 
-    def index(self, point: np.ndarray) -> float:
-        """
-        Returns the index of the composite path around a point. The index is
-        the number of turn the path does around the point.
-        """
-
-        return sum([segment.index(point) for segment in self._bezier_list])
-
     def hit(self, ray: Ray) -> ShadeRec:
         """
         Returns a shade with the information for the first intersection
@@ -245,6 +236,13 @@ class CubicBezierPath(object):
         if hit_aabbox(ray, self.aabbox):
             result = find_first_hit(ray, self._bezier_list)
         return result
+
+    def num_hits(self, ray: Ray) -> int:
+        if hit_aabbox(ray, self.aabbox):
+            return sum([segment.num_hits(ray) for segment in
+                        self._bezier_list])
+        else:
+            return 0
 
 
 class CompositeCubicBezier(GeometricObject):
@@ -290,23 +288,14 @@ class CompositeCubicBezier(GeometricObject):
             result.hit_geometry = self
         return result
 
-    def index(self, point: np.ndarray) -> float:
-        """
-        Returns the index of the composite path around a point. The index is
-        the number of turn the path does around the point.
-        """
-        return sum([subpath.index(point) for subpath in self._subpath_list])
+    def is_inside(self, ray: Ray) -> bool:
+        # A ray is inside an object if it intersect its boundary an odd
+        # number of times
+        return (self.num_hits(ray) % 2) == 1
 
-    def is_inside(self, point: np.ndarray) -> bool:
-        """
-        Counts the number of times the path loops around the point. If it's
-        odd, the point is inside, if it's even, the point is outside.
-        """
-
-        index = self.index(point)
-        int_index = round(index)
-        dec_index = index - int_index
-        if abs(dec_index) < 1e-4:
-            return (int_index % 2) == 1
+    def num_hits(self, ray: Ray) -> int:
+        if hit_aabbox(ray, self.aabbox):
+            return sum([path.num_hits(ray) for path in
+                        self._subpath_list])
         else:
-            raise GeometryError("Object is not closed")
+            return 0
