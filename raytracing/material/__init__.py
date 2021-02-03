@@ -1,6 +1,7 @@
 from .beamdump import *
 from .mirror import *
 from .beamsplitter import *
+from .glass import *
 
 
 class BeamSeed(object):
