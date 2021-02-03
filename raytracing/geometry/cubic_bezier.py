@@ -4,11 +4,12 @@ Module for handling objects composed of cubic bezier curves
 
 
 import numpy as np
+import scipy.integrate as integrate
 from typing import Any, List, Tuple, Optional,  Iterable
 
 from raytracing.ray import orthogonal, Ray
 from raytracing.shade import ShadeRec
-from .geometric_object import GeometricObject, hit_aabbox
+from .geometric_object import GeometricObject, hit_aabbox, GeometryError
 
 
 def englobing_aabbox(aabboxes: List[np.ndarray]) -> np.ndarray:
@@ -77,6 +78,23 @@ def find_first_hit(ray: Ray, objects: Iterable[Any]) -> ShadeRec:
         if Ray.min_travel < shade.travel_dist < result.travel_dist:
             result = shade
     return result
+
+
+def kernel_index(t: float, p: np.ndarray, z0: float) -> float:
+    """
+    This function is a low level call for computing the index of a bezier
+    curve around a point.
+    """
+
+    p0, p1, p2, p3 = p
+    eval_ = + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3 \
+            + 3 * (p0 - 2 * p1 + p2) * t ** 2 \
+            - 3 * (p0 - p1) * t \
+            + p0
+    diff_1 = - 3 * (p0 - 3 * p1 + 3 * p2 - p3) * t ** 2 \
+             + 6 * (p0 - 2 * p1 + p2) * t \
+             - 3 * (p0 - p1)
+    return np.real(diff_1 / (eval_ - z0) / (2j * np.pi))
 
 
 class CubicBezier(object):
@@ -176,6 +194,12 @@ class CubicBezier(object):
                 shade.set_normal_same_side(ray.origin)
         return shade
 
+    def index(self, point: np.ndarray) -> float:
+        complex_handles = self._p[:, 0] + 1j * self._p[:, 1]
+        complex_point = point[0] + 1j * point[1]
+        return integrate.quad(kernel_index, 0, 1,
+                              args=(complex_handles, complex_point))[0]
+
 
 class CubicBezierPath(object):
     """Single path composed of a succession of CubicBezier segments"""
@@ -202,6 +226,14 @@ class CubicBezierPath(object):
 
         bezier_aabboxes = [bez.aabbox for bez in self._bezier_list]
         return englobing_aabbox(bezier_aabboxes)
+
+    def index(self, point: np.ndarray) -> float:
+        """
+        Returns the index of the composite path around a point. The index is
+        the number of turn the path does around the point.
+        """
+
+        return sum([segment.index(point) for segment in self._bezier_list])
 
     def hit(self, ray: Ray) -> ShadeRec:
         """
@@ -258,5 +290,23 @@ class CompositeCubicBezier(GeometricObject):
             result.hit_geometry = self
         return result
 
+    def index(self, point: np.ndarray) -> float:
+        """
+        Returns the index of the composite path around a point. The index is
+        the number of turn the path does around the point.
+        """
+        return sum([subpath.index(point) for subpath in self._subpath_list])
+
     def is_inside(self, point: np.ndarray) -> bool:
-        return True
+        """
+        Counts the number of times the path loops around the point. If it's
+        odd, the point is inside, if it's even, the point is outside.
+        """
+
+        index = self.index(point)
+        int_index = round(index)
+        dec_index = index - int_index
+        if abs(dec_index) < 1e-4:
+            return (int_index % 2) == 1
+        else:
+            raise GeometryError("Object is not closed")

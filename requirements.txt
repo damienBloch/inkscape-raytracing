@@ -1,4 +1,4 @@
 inkex==1.0.1
 numpy==1.19.5
 
-lxml~=4.6.2
+scipy~=1.6.0
