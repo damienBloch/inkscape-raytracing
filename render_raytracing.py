@@ -20,10 +20,11 @@ T = TypeVar('T')
 
 def plot_beam(beam: List[Tuple[Ray, float]], node: inkex.BaseElement) -> None:
     path = inkex.Path()
-    for ray, t in beam:
-        p0 = ray.origin
-        p1 = ray.origin + t * ray.direction
-        path += [Move(p0[0], p0[1]), Line(p1[0], p1[1])]
+    if len(beam) > 0:
+        path += [Move(beam[0][0].origin[0], beam[0][0].origin[1])]
+        for ray, t in beam:
+            p1 = ray.origin + t * ray.direction
+            path += [Line(p1[0], p1[1])]
 
     element = node.getparent().add(inkex.PathElement())
     element.style = node.get("style")
@@ -147,7 +148,6 @@ class Tracer(inkex.EffectExtension):
 
         self._document_as_border()
 
-        inkex.utils.debug(self._world.num_objects)
         for seed in self._beam_seeds:
             generated = self._world.propagate_beams([[(seed["source"], 0)]])
             for beam in generated:
