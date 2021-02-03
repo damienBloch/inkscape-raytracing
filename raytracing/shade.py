@@ -14,6 +14,9 @@ class ShadeRec(object):
         self.normal: Optional[np.ndarray] = None
         self.travel_dist: float = np.inf
 
+        from .geometry import GeometricObject
+        self.hit_geometry: Optional[GeometricObject] = None
+
     def __repr__(self):
         return f"ShadeRec({self.hit_an_object}, {self.local_hit_point}, " \
                f"{self.normal}, {self.travel_dist})"

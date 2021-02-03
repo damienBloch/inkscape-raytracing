@@ -255,6 +255,7 @@ class CompositeCubicBezier(GeometricObject):
         result = ShadeRec()
         if hit_aabbox(ray, self.aabbox):
             result = find_first_hit(ray, self._subpath_list)
+            result.hit_geometry = self
         return result
 
     def is_inside(self, point: np.ndarray) -> bool:

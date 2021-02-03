@@ -91,7 +91,10 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
                 "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed}
     for material_type, prop in fields:
         if material_type in mat_name:
-            materials.append(mat_name[material_type]())
+            if material_type == "glass":
+                materials.append(mat_name[material_type](prop))
+            else:
+                materials.append(mat_name[material_type]())
     return materials
 
 
