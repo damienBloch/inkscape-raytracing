@@ -26,16 +26,16 @@ class Glass(OpticMaterial):
         o, d = shade.local_hit_point, ray.direction
         n = shade.normal
         if shade.hit_geometry.is_inside(ray):
-            n_in, n_out = 1, self._optical_index
+            n_1, n_2 = self._optical_index, 1
         else:
-            n_out, n_in = 1, self._optical_index
-        r_n = n_in/n_out
-        ci = +np.dot(d, n)
-        u = 1-(1-ci**2)/r_n**2
+            n_1, n_2 = 1, self._optical_index
+        r = n_1/n_2
+        c1 = -np.dot(d, n)
+        u = 1 - r**2*(1-c1**2)
         if u < 0:  # total internal reflection
             reflected_ray = Ray(o, d - 2 * np.dot(d, n) * n)
             return [reflected_ray]
         else:  # refraction
-            ct = np.sqrt(u)
-            transmitted_ray = Ray(o, -d/r_n-(ct-ci/r_n)*n)
+            c2 = np.sqrt(u)
+            transmitted_ray = Ray(o, r*d+(r*c1-c2)*n)
             return [transmitted_ray]
