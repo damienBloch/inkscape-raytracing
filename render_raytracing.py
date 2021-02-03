@@ -88,11 +88,12 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
     materials = list()
     # TODO: add glass
     mat_name = {"beam_dump": mat.BeamDump, "mirror": mat.Mirror,
-                "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed}
+                "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed,
+                "glass": mat.Glass}
     for material_type, prop in fields:
         if material_type in mat_name:
             if material_type == "glass":
-                materials.append(mat_name[material_type](prop))
+                materials.append(mat_name[material_type](float(prop)))
             else:
                 materials.append(mat_name[material_type]())
     return materials
@@ -152,7 +153,7 @@ class Tracer(inkex.EffectExtension):
         self._document_as_border()
 
         for seed in self._beam_seeds:
-            if self.is_inside_document(seed["source"].origin):
+            if self.is_inside_document(seed["source"]):
                 generated = self._world.propagate_beams([[(seed["source"], 0)]])
                 for beam in generated:
                     plot_beam(beam, seed["node"])
@@ -207,8 +208,8 @@ class Tracer(inkex.EffectExtension):
         self._document_border = OpticalObject(contour_geometry, mat.BeamDump())
         self._world.add_object(self._document_border)
 
-    def is_inside_document(self, point: np.ndarray) -> bool:
-        return self._document_border.geometry.is_inside(point)
+    def is_inside_document(self, ray: Ray) -> bool:
+        return self._document_border.geometry.is_inside(ray)
 
 
 if __name__ == '__main__':
