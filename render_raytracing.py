@@ -150,7 +150,7 @@ class Tracer(inkex.EffectExtension):
         self._document_as_border()
 
         for seed in self._beam_seeds:
-            generated = self._world.propagate_beams([[(seed["source"], -1)]])
+            generated = self._world.propagate_beams([[(seed["source"], 0)]])
             for beam in generated:
                 plot_beam(beam, seed["node"])
 
