@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<inkscape-extension>
+  <_name>Ray tracing</_name>
+  <id>damienbloch.effect.optics.ray_tracing</id>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <dependency type="executable" location="extensions">simpletransform.py</dependency>
+  <dependency type="executable" location="extensions">simplestyle.py</dependency>
+  <dependency type="executable" location="extensions">simplepath.py</dependency>
+  <dependency type="executable" location="extensions">ray_tracing.py</dependency>
+
+  <effect>
+    <object-type>all</object-type>
+    <effects-menu>
+      <submenu _name="Optics"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">ray_tracing.py</command>
+  </script>
+</inkscape-extension>
