@@ -139,7 +139,7 @@ class CubicBezier(object):
             return diff_1/np.linalg.norm(diff_1)
         # but is the first derivative is zero, we need to get the second order
         else:
-            diff_2 = 6*(p0-2*p1+p2) - 6*(p0-3*p1+3*p2-p3)*s
+            diff_2 = -6*(p0-3*p1+3*p2-p3)*s + 6*(p0-2*p1+p2)*s
             return diff_2/np.linalg.norm(diff_2)
 
     def normal(self, s: float) -> np.ndarray:
