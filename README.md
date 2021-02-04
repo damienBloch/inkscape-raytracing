@@ -2,7 +2,7 @@
 
 ## How to install 
 
-Clone the ray tracing directory in inkscape user extensions directy. 
+Clone the ray tracing directory in inkscape user extensions directory. 
 
   ```shell
   cd ~/.config/inkscape/extensions
