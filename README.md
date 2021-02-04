@@ -13,11 +13,11 @@ Requires python3.6 or above and numpy.
 
 ## How to use
 
-1. For each optical element, write its optical property in the element description:
+### 1. For each optical element, write its optical property in the element description:
 
   ![plot](./pictures/ray_tracing_1.png)
 
-The property that needs to be written in the element description can be any of the following:
+  The property that needs to be written in the element description can be any of the following:
   * `optics:beam`: source of the ray. Need at least one element with this property to see an effect. Typically the element should be a straight line.
   * `optics:mirror`: reflects an incoming beam. Element can be a closed or open shape.
   * `optics:beam_dump`: absorbs all incoming beams. Element can be a closed or open shape.
@@ -27,12 +27,12 @@ The property that needs to be written in the element description can be any of t
 An element can have at most one optical property and will be ignored if it has two or more.
 
 
-2. Select the elements to render and run the extension:
+### 2. Select the elements to render and run the extension:
 
 ![plot](./pictures/ray_tracing_2.png)
 
 
-3. This will trace all the beams originated from an `optics:beam` element:
+### 3. This will trace all the beams originated from an `optics:beam` element:
 
 ![plot](./pictures/ray_tracing_3.png)
 
