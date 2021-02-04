@@ -47,4 +47,4 @@ Note that the borders of the document blocks the beams and all objects outside t
 
 * Avoid overlapping or touching elements. It won't cause Inkscape to crash, but might give unexpected results.
 * The same goes for self-intersecting paths.
-* Because of a potential issue with Inkscape python extensions, transformations like rotations or reflections are not always correctly applied to groups of elements, rectangles and ellipses. This might cause the ray tracing to output blatantly wrong results or to seemingly ignore some objects. A possible workaround is to ungroup all objects and convert them to path before applying a rotation or reflection. WIP.     
+* Because of a potential issue with Inkscape python extensions, transformations like rotations or reflections are not always correctly applied to groups of elements, rectangles and ellipses. This might cause the ray tracing to output blatantly wrong results or to seemingly ignore some objects. A possible workaround is to ungroup all objects and convert them to path before applying any rotation or reflection. WIP.     
