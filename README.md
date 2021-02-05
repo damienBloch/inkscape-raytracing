@@ -33,6 +33,8 @@ Requires python3.6 or above with numpy and Inkscape1.0 or above.
   
 An element can have at most one optical property and will be ignored if it has two or more.
 
+It is possible to add complementary text in the description. If it doesn't have the syntax `optics:<something>`, the extra text will simply be ignored.
+
 
 
 ### 2. Select the elements to render and run the extension:
