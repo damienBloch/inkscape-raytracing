@@ -9,7 +9,7 @@ Clone the ray tracing directory in inkscape user extensions directory.
   git clone https://github.com/damienBloch/inkscape-raytracing
   ```
   
-Requires python3.6 or above and numpy. 
+Requires python3.6 or above with numpy and Inkscape1.0 or above. 
 
 
 ## How to use
