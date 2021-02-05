@@ -1,9 +1,15 @@
-# inkscape-raytracing
+# Inkscape-raytracing
+
+An extension for Inkscape that makes it easier to draw optical diagrams. Allows to annotate Inkscape primitives with optical properties and draws beam paths by taking into account reflection and refraction. 
+
+## Example
+
+<img src="./pictures/sphere.svg"  width="500">
 
 ## How to install 
+Copy the extension directory in inkscape user extensions directory. 
 
-Clone the ray tracing directory in inkscape user extensions directory. 
-
+Typically for Linux users:
   ```shell
   cd ~/.config/inkscape/extensions
   git clone https://github.com/damienBloch/inkscape-raytracing
@@ -43,7 +49,7 @@ Note that the borders of the document blocks the beams and all objects outside t
 
 
 
-## Current limitations
+## Known limitations
 
 * Avoid overlapping or touching elements. It won't cause Inkscape to crash, but might give unexpected results.
 * The same goes for self-intersecting paths.
