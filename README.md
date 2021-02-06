@@ -1,6 +1,10 @@
-# Inkscape-raytracing
+<img align="left" src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="150">
+
+# Inkscape-raytracing 
 
 An extension for Inkscape that makes it easier to draw optical diagrams. Allows to annotate Inkscape primitives with optical properties and draws beam paths by taking into account reflection and refraction. 
+
+---
 
 ## Example
 
