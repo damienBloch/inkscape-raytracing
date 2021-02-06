@@ -53,7 +53,7 @@ Note that the borders of the document blocks the beams and all objects outside t
 
 ## Known limitations
 
-* Cannot write the properties in a group description. They must be written in the primitives descrition. 
+* Cannot write the properties in a group description. They must be written in the primitives description. 
 * Avoid overlapping or touching elements. It won't cause Inkscape to crash, but might give unexpected results.
 * The same goes for self-intersecting paths.
 * Because of a potential [issue](https://gitlab.com/inkscape/extensions/-/issues/335) with Inkscape python extensions, transformations like rotations or reflections are not always correctly applied to groups of elements, rectangles and ellipses. This might cause the ray tracing to output blatantly wrong results or to seemingly ignore some objects. A possible workaround is to ungroup all objects and convert them to path before applying any rotation or reflection. WIP.     
