@@ -1,4 +1,4 @@
-<img align="left" src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="150">
+<img align="left" src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="120">
 
 # Inkscape-raytracing 
 
