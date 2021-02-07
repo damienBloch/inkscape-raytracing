@@ -5,7 +5,7 @@ Module for handling objects composed of cubic bezier curves
 
 from functools import lru_cache
 import numpy as np
-from typing import Any, List, Tuple, Optional,  Iterable
+from typing import Any, List, Tuple, Optional,  Iterable, Iterator
 
 from raytracing.ray import orthogonal, Ray
 from raytracing.shade import ShadeRec
@@ -117,6 +117,10 @@ class CubicBezier(object):
         return f"CubicBezier([{self._p[0]}, {self._p[1]}, {self._p[2]}, " \
                f"{self._p[3]}])"
 
+    def eval(self, s):
+        p0, p1, p2, p3 = self._p
+        return (1-s)**3*p0+3*s*(1-s)**2*p1+3*s**2*(1-s)*p2+s**3*p3
+
     @property
     def aabbox(self) -> np.ndarray:
         return self._aabbox()
@@ -139,8 +143,8 @@ class CubicBezier(object):
             return diff_1/np.linalg.norm(diff_1)
         # but is the first derivative is zero, we need to get the second order
         else:
-            diff_2 = -6*(p0-3*p1+3*p2-p3)*s + 6*(p0-2*p1+p2)*s
-            return diff_2/np.linalg.norm(diff_2)
+            diff_2 = -6*(p0-3*p1+3*p2-p3)*s + 6*(p0-2*p1+p2)
+            return diff_2 / np.linalg.norm(diff_2)
 
     def normal(self, s: float) -> np.ndarray:
         """Returns a vector normal at the curve at curvilinear coordinate s"""
@@ -208,9 +212,9 @@ class CubicBezier(object):
 class CubicBezierPath(object):
     """Single path composed of a succession of CubicBezier segments"""
 
-    def __init__(self, list_: Optional[List[CubicBezier]] = None):
-        if list_ is None:
-            list_ = []
+    def __init__(self, list_: List[CubicBezier]):
+        if len(list_) == 0:
+            raise RuntimeError("Can't initialise cubic path from empty list")
         self._bezier_list: List[CubicBezier] = list(list_)
 
     def __repr__(self) -> str:
@@ -220,6 +224,11 @@ class CubicBezierPath(object):
     def add_bezier(self, bezier: CubicBezier):
         self._bezier_list.append(bezier)
         self._aabbox.cache_clear()
+
+    def start_point_info(self) -> Tuple[np.ndarray, np.ndarray]:
+        """Returns the location of the end point of the path and its tangent"""
+        last_segment = self._bezier_list[0]  # always at least one element
+        return last_segment.eval(0), last_segment.tangent(0)
 
     @property
     def aabbox(self):
@@ -270,6 +279,9 @@ class CompositeCubicBezier(GeometricObject):
     def __repr__(self) -> str:
         concat_paths = ", ".join(seg.__repr__() for seg in self._subpath_list)
         return f"CompositeCubicBezier([{concat_paths}])"
+
+    def __iter__(self) -> Iterator[CubicBezierPath]:
+        return iter(self._subpath_list)
 
     def add_subpath(self, subpath: CubicBezierPath):
         self._subpath_list.append(subpath)

@@ -18,19 +18,6 @@ from raytracing import World, OpticalObject, Ray
 T = TypeVar('T')
 
 
-def plot_beam(beam: List[Tuple[Ray, float]], node: inkex.BaseElement) -> None:
-    path = inkex.Path()
-    if len(beam) > 0:
-        path += [Move(beam[0][0].origin[0], beam[0][0].origin[1])]
-        for ray, t in beam:
-            p1 = ray.origin + t * ray.direction
-            path += [Line(p1[0], p1[1])]
-
-    element = node.getparent().add(inkex.PathElement())
-    element.style = node.get("style")
-    element.path = path
-
-
 def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
     """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
     a, b = itertools.tee(iterable)
@@ -46,6 +33,12 @@ def get_material(obj: inkex.ShapeElement) -> List[Union[mat.OpticMaterial,
     return materials_from_description(desc)
 
 
+def get_absolute_path(obj: inkex.PathElement) -> inkex.CubicSuperPath:
+    path = obj.to_path_element().path.to_absolute()
+    transformed_path = path.transform(obj.composed_transform())
+    return transformed_path.to_superpath()
+
+
 def get_geometry(obj: inkex.ShapeElement) -> geom.GeometricObject:
     """
     Converts the geometry of inkscape elements to a form suitable for the
@@ -56,10 +49,8 @@ def get_geometry(obj: inkex.ShapeElement) -> geom.GeometricObject:
     # for most primitives except circles and ellipses that are only
     # approximated by Bezier curves.
     # TODO: implement exact representation for ellipses
-    superpath = inkex.CubicSuperPath(obj.path.to_absolute())
-    # Need to apply the transformation of all parents
-    transformed = superpath.transform(obj.composed_transform())
-    composite_bezier = superpath_to_bezier_segments(transformed)
+    path = get_absolute_path(obj)
+    composite_bezier = superpath_to_bezier_segments(path)
     return composite_bezier
 
 
@@ -72,12 +63,11 @@ def get_description(element: inkex.BaseElement) -> str:
 
 def get_beam(element: inkex.PathElement) -> Ray:
     # TODO: Find a better way to extract beam characteristics.
-    #  The current approach will give weird results for paths that are not
-    #  lines.
-    end_points = np.array([x for x in element.path.to_absolute().end_points])
-    origin = end_points[0]
-    direction = end_points[1]-end_points[0]
-    return Ray(origin, direction)
+    #  The current approach will only return the first beam if composite path
+    bezier_path = superpath_to_bezier_segments(get_absolute_path(element))
+    a = next(bezier_path.__iter__())
+    start_point, tangent = a.start_point_info()
+    return Ray(start_point, tangent)
 
 
 def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
@@ -88,7 +78,6 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
     fields = re.findall(pattern, desc.lower())
 
     materials = list()
-    # TODO: add glass
     mat_name = {"beam_dump": mat.BeamDump, "mirror": mat.Mirror,
                 "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed,
                 "glass": mat.Glass}
@@ -158,7 +147,7 @@ class Tracer(inkex.EffectExtension):
             if self.is_inside_document(seed["source"]):
                 generated = self._world.propagate_beams([[(seed["source"], 0)]])
                 for beam in generated:
-                    plot_beam(beam, seed["node"])
+                    self.plot_beam(beam, seed["node"])
 
     def process_object(self, obj: inkex.BaseElement) -> None:
         if isinstance(obj, inkex.Group):
@@ -177,11 +166,11 @@ class Tracer(inkex.EffectExtension):
             raise_err_num_materials(obj)
         elif len(materials) == 1:
             material = materials[0]
-            geometry = get_geometry(obj)
             if isinstance(material, mat.BeamSeed):
-                ray = get_beam(obj.to_path_element())
+                ray = get_beam(obj)
                 self._beam_seeds.append({"source": ray, "node": obj})
             else:
+                geometry = get_geometry(obj)
                 opt_obj = OpticalObject(geometry, material)
                 self._world.add_object(opt_obj)
 
@@ -212,6 +201,18 @@ class Tracer(inkex.EffectExtension):
 
     def is_inside_document(self, ray: Ray) -> bool:
         return self._document_border.geometry.is_inside(ray)
+
+    def plot_beam(self, beam: List[Tuple[Ray, float]], node: inkex.ShapeElement) -> None:
+        path = inkex.Path()
+        if len(beam) > 0:
+            path += [Move(beam[0][0].origin[0], beam[0][0].origin[1])]
+            for ray, t in beam:
+                p1 = ray.origin + t * ray.direction
+                path += [Line(p1[0], p1[1])]
+        svg = self.document.getroot()
+        element = svg.add(inkex.PathElement())
+        element.style = node.get("style")
+        element.path = path
 
 
 if __name__ == '__main__':
