@@ -57,7 +57,9 @@ def get_geometry(obj: inkex.ShapeElement) -> geom.GeometricObject:
     # approximated by Bezier curves.
     # TODO: implement exact representation for ellipses
     superpath = inkex.CubicSuperPath(obj.path.to_absolute())
-    composite_bezier = superpath_to_bezier_segments(superpath)
+    # Need to apply the transformation of all parents
+    transformed = superpath.transform(obj.composed_transform())
+    composite_bezier = superpath_to_bezier_segments(transformed)
     return composite_bezier
 
 
