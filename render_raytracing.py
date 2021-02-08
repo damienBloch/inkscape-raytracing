@@ -32,7 +32,15 @@ def get_material(obj: inkex.ShapeElement) -> List[Union[mat.OpticMaterial,
     return materials_from_description(desc)
 
 
-def get_absolute_path(obj: inkex.PathElement) -> inkex.CubicSuperPath:
+def handle_arc(obj: inkex.ShapeElement):
+    if obj.get('sodipodi:type') == 'arc':
+        inkex.utils.errormsg(
+            f"Can't extract path info for element {obj.get_id()}.\n"
+            f"Please convert element to path.\n")
+
+
+def get_absolute_path(obj: inkex.ShapeElement) -> inkex.CubicSuperPath:
+    # handle_arc(obj)  # BUG: can't extract from arcs with this method
     path = obj.to_path_element().path.to_absolute()
     transformed_path = path.transform(obj.composed_transform())
     return transformed_path.to_superpath()
@@ -60,7 +68,7 @@ def get_description(element: inkex.BaseElement) -> str:
     return ''
 
 
-def get_beam(element: inkex.PathElement) -> Ray:
+def get_beam(element: inkex.ShapeElement) -> Ray:
     # TODO: Find a better way to extract beam characteristics.
     #  The current approach will only return the first beam if composite path
     bezier_path = superpath_to_bezier_segments(get_absolute_path(element))
@@ -198,7 +206,7 @@ class Tracer(inkex.EffectExtension):
                 geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
                 geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
                 geom.CubicBezier(
-                    np.array([[0, h], [0, h], [0, 0], [0, 0]]))])])
+                        np.array([[0, h], [0, h], [0, 0], [0, 0]]))])])
         self._document_border = OpticalObject(contour_geometry, mat.BeamDump())
         self._world.add_object(self._document_border)
 
