@@ -25,16 +25,10 @@ def get_description(element: inkex.BaseElement) -> str:
     return ''
 
 
-def set_description(element: inkex.BaseElement, text: str) -> str:
+def set_description(element: inkex.BaseElement, text: str) -> None:
     for child in element.getchildren():
         if child.tag == inkex.addNS('desc', 'svg'):
-            return child.text = text
-
-def get_description(element: inkex.BaseElement) -> str:
-    for child in element.getchildren():
-        if child.tag == inkex.addNS('desc', 'svg'):
-            return child.text
-    return ''
+            child.text = text
 
 
 def get_optics_fields(string_: str):
