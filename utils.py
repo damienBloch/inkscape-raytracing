@@ -4,6 +4,10 @@ from typing import TypeVar, Iterator, Tuple
 
 import inkex
 
+rgx_float = "[0-9]+(?:.[0-9])?"
+rgx_name = "[a-z,_]*"
+optics_pattern = f"optics *: *(?P<material>{rgx_name})(?:: *(?P<num>{rgx_float}))?"
+
 T = TypeVar('T')
 
 
@@ -21,12 +25,20 @@ def get_description(element: inkex.BaseElement) -> str:
     return ''
 
 
+def set_description(element: inkex.BaseElement, text: str) -> str:
+    for child in element.getchildren():
+        if child.tag == inkex.addNS('desc', 'svg'):
+            return child.text = text
+
+def get_description(element: inkex.BaseElement) -> str:
+    for child in element.getchildren():
+        if child.tag == inkex.addNS('desc', 'svg'):
+            return child.text
+    return ''
+
+
 def get_optics_fields(string_: str):
-    rgx_float = "[0-9]+(?:.[0-9])?"
-    rgx_name = "[a-z,_]*"
-    pattern = f"optics *: *(?P<material>{rgx_name})(?:: *(?P<num>" \
-              f"{rgx_float}))?"
-    fields = re.finditer(pattern, string_.lower())
+    fields = re.finditer(optics_pattern, string_.lower())
     return fields
 
 
@@ -36,6 +48,5 @@ def clear_description(desc: str) -> str:
     # This will return the string converted to lower case and should be
     # changed to keep the case untouched
     new_desc = desc.lower()
-    for match in get_optics_fields(desc.lower()):
-        new_desc = re.sub(match, '', new_desc)
+    new_desc = re.sub(optics_pattern, '', new_desc)
     return new_desc
