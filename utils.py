@@ -4,7 +4,7 @@ from typing import TypeVar, Iterator, Tuple
 
 import inkex
 
-rgx_float = "[0-9]+(?:.[0-9])?"
+rgx_float = "[0-9]+(?:.[0-9])*"
 rgx_name = "[a-z,_]*"
 optics_pattern = f"optics *: *(?P<material>{rgx_name})(?:: *(?P<num>{rgx_float}))?"
 
@@ -21,7 +21,10 @@ def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
 def get_description(element: inkex.BaseElement) -> str:
     for child in element.getchildren():
         if child.tag == inkex.addNS('desc', 'svg'):
-            return child.text
+            if child.text is None:
+                return ''
+            else:
+                return str(child.text)
     return ''
 
 
