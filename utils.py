@@ -22,8 +22,8 @@ def get_description(element: inkex.BaseElement) -> str:
 
 
 def get_optics_fields(string_: str):
-    pattern = "optics *: *([a-z,_]*)(?:: *([0-9]+(?:.[0-9])?))?"
-    fields = re.findall(pattern, string_.lower())
+    pattern = "optics *: *(?P<material>[a-z,_]*)(?:: *(?P<num>[0-9]+(?:.[0-9])?))?"
+    fields = re.finditer(pattern, string_.lower())
     return fields
 
 

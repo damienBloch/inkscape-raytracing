@@ -64,14 +64,16 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
                                                         mat.BeamSeed]]:
     """Run through the description to extract the material properties"""
 
-    fields = get_optics_fields(desc.lower())
     materials = list()
     mat_name = {
             "beam_dump": mat.BeamDump, "mirror": mat.Mirror,
             "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed,
             "glass": mat.Glass
     }
-    for material_type, prop in fields:
+    for match in get_optics_fields(desc.lower()):
+        inkex.utils.debug(match)
+        material_type = match.group('material')
+        prop = match.group('num')
         if material_type in mat_name:
             if material_type == "glass":  # only material with parameter
                 materials.append(mat_name[material_type](float(prop)))
