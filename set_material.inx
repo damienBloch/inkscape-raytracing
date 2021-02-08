@@ -11,4 +11,12 @@
     <script>
         <command location="inx" interpreter="python">set_material.py</command>
     </script>
+
+    <param name="optical_material" type="optiongroup" gui-text="Select material:">
+        <option name="none">None</option>
+        <option name="beam">Beam</option>
+        <option name="mirror">Mirror</option>
+        <option name="beam_dump">Beam dump</option>
+        <option name="beam_splitter">Beam splitter</option>
+        <option name="glass">Glass</option></param><param name="optical_index" type="float" min="1." max="3." precision="4" gui-text="Optical index:" indent="2">1.5168</param>
 </inkscape-extension>
