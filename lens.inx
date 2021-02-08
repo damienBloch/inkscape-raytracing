@@ -2,13 +2,15 @@
 <inkscape-extension>
     <_name>Lens</_name>
     <id>damienbloch.effect.optics.lens</id>
-    <param name="focal_length" type="float" gui-text="Focal length:" min="-10000." max="10000." precision="3">100</param>
+
+    <param name="focal_length" type="float" gui-text="Focal length:" min="-10000." max="10000." precision="3">100.</param>
     <param name="focal_length_unit" type="enum" gui-text="">
-        <item value="1">mm</item>
-        <item value="2">cm</item>
-        <item value="3">m</item>
-        <item value="4">in</item>
+        <item value="mm">mm</item>
+        <item value="cm">cm</item>
+        <item value="m">m</item>
+        <item value="in">in</item>
     </param>
+
     <param name="diameter" type="float" gui-text="Diameter:" min="0" max="10000" precision="3">1</param>
     <param name="diameter_unit" type="enum" gui-text="">
         <item value="in">in</item>
@@ -16,19 +18,24 @@
         <item value="cm">cm</item>
         <item value="m">m</item>
     </param>
-    <param name="optical_index" type="float" min="0." max="3." precision="4" gui-text="Optical index:">1.5168</param>
+
+    <param name="optical_index" type="float" min="1." max="3." precision="4" gui-text="Optical index:">1.5168</param>
+
     <param name="lens_type" type="optiongroup"
 	    gui-text="Lens type:">
    		<option value="plano_con">Plano-concave/convex</option>
    		<option value="bi_con">Bi-concave/convex</option>
 	</param>
+
     <effect>
         <object-type>all</object-type>
         <effects-menu>
             <submenu _name="Optics"/>
         </effects-menu>
     </effect>
+
     <script>
         <command reldir="inx" interpreter="python">lens.py</command>
     </script>
+
 </inkscape-extension>
