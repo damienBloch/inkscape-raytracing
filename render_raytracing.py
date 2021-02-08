@@ -71,7 +71,6 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
             "glass": mat.Glass
     }
     for match in get_optics_fields(desc.lower()):
-        inkex.utils.debug(match)
         material_type = match.group('material')
         prop = match.group('num')
         if material_type in mat_name:
