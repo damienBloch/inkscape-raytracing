@@ -22,7 +22,10 @@ def get_description(element: inkex.BaseElement) -> str:
 
 
 def get_optics_fields(string_: str):
-    pattern = "optics *: *(?P<material>[a-z,_]*)(?:: *(?P<num>[0-9]+(?:.[0-9])?))?"
+    rgx_float = "[0-9]+(?:.[0-9])?"
+    rgx_name = "[a-z,_]*"
+    pattern = f"optics *: *(?P<material>{rgx_name})(?:: *(?P<num>" \
+              f"{rgx_float}))?"
     fields = re.finditer(pattern, string_.lower())
     return fields
 
@@ -30,7 +33,9 @@ def get_optics_fields(string_: str):
 def clear_description(desc: str) -> str:
     """Removes text corresponding to an optical property"""
 
-    new_desc = desc
-    for rgx_match in get_optics_fields(desc):
-        new_desc = re.sub(rgx_match, '', new_desc)
+    # This will return the string converted to lower case and should be
+    # changed to keep the case untouched
+    new_desc = desc.lower()
+    for match in get_optics_fields(desc.lower()):
+        new_desc = re.sub(match, '', new_desc)
     return new_desc
