@@ -26,6 +26,10 @@ def get_description(element: inkex.BaseElement) -> str:
 
 
 def set_description(element: inkex.BaseElement, text: str) -> None:
+    has_desc = any((child.tag == inkex.addNS('desc', 'svg')
+                    for child in element.getchildren()))
+    if not has_desc:
+        element.add(inkex.Desc())
     for child in element.getchildren():
         if child.tag == inkex.addNS('desc', 'svg'):
             child.text = text

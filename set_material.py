@@ -40,7 +40,12 @@ class SetMaterial(inkex.Effect):
 
     def process_shape(self, obj: inkex.ShapeElement):
         desc = get_description(obj)
-        set_description(obj, clear_description(desc))
+        new_desc = clear_description(desc)
+        material_name = self.options.optical_material
+        if material_name is not 'none':
+            new_desc += f'optics:{material_name}'
+        inkex.utils.debug(new_desc)
+        set_description(obj, new_desc)
 
 
 if __name__ == '__main__':
