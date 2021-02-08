@@ -7,13 +7,12 @@ import re
 from typing import TypeVar, Iterator, Tuple, List, Union
 
 import inkex
-from inkex.paths import Line, Move
 import numpy as np
+from inkex.paths import Line, Move
 
 import raytracing.geometry as geom
 import raytracing.material as mat
 from raytracing import World, OpticalObject, Ray
-
 
 T = TypeVar('T')
 
@@ -78,9 +77,11 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
     fields = re.findall(pattern, desc.lower())
 
     materials = list()
-    mat_name = {"beam_dump": mat.BeamDump, "mirror": mat.Mirror,
-                "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed,
-                "glass": mat.Glass}
+    mat_name = {
+            "beam_dump": mat.BeamDump, "mirror": mat.Mirror,
+            "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed,
+            "glass": mat.Glass
+    }
     for material_type, prop in fields:
         if material_type in mat_name:
             if material_type == "glass":
@@ -91,7 +92,7 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
 
 
 def superpath_to_bezier_segments(superpath: inkex.CubicSuperPath) \
-                                                 -> geom.CompositeCubicBezier:
+        -> geom.CompositeCubicBezier:
     """
     Converts a superpath with a representation
     [Subpath0[handle0_0, point0, handle0_1], ...], ...]
@@ -145,7 +146,8 @@ class Tracer(inkex.EffectExtension):
 
         for seed in self._beam_seeds:
             if self.is_inside_document(seed["source"]):
-                generated = self._world.propagate_beams([[(seed["source"], 0)]])
+                generated = self._world.propagate_beams(
+                        [[(seed["source"], 0)]])
                 for beam in generated:
                     self.plot_beam(beam, seed["node"])
 
@@ -192,17 +194,19 @@ class Tracer(inkex.EffectExtension):
         w = self.svg.unittouu(svg.get('width'))
         h = self.svg.unittouu(svg.get('height'))
         contour_geometry = geom.CompositeCubicBezier([geom.CubicBezierPath([
-            geom.CubicBezier(np.array([[0, 0], [0, 0], [w, 0], [w, 0]])),
-            geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
-            geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
-            geom.CubicBezier(np.array([[0, h], [0, h], [0, 0], [0, 0]]))])])
+                geom.CubicBezier(np.array([[0, 0], [0, 0], [w, 0], [w, 0]])),
+                geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
+                geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
+                geom.CubicBezier(
+                    np.array([[0, h], [0, h], [0, 0], [0, 0]]))])])
         self._document_border = OpticalObject(contour_geometry, mat.BeamDump())
         self._world.add_object(self._document_border)
 
     def is_inside_document(self, ray: Ray) -> bool:
         return self._document_border.geometry.is_inside(ray)
 
-    def plot_beam(self, beam: List[Tuple[Ray, float]], node: inkex.ShapeElement) -> None:
+    def plot_beam(self, beam: List[Tuple[Ray, float]],
+                  node: inkex.ShapeElement) -> None:
         path = inkex.Path()
         if len(beam) > 0:
             path += [Move(beam[0][0].origin[0], beam[0][0].origin[1])]
