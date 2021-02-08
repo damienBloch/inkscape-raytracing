@@ -2,9 +2,7 @@
 Extension for rendering beams in 2D optics with Inkscape
 """
 
-import itertools
-import re
-from typing import TypeVar, Iterator, Tuple, List, Union
+from typing import Tuple, List, Union
 
 import inkex
 import numpy as np
@@ -13,15 +11,7 @@ from inkex.paths import Line, Move
 import raytracing.geometry as geom
 import raytracing.material as mat
 from raytracing import World, OpticalObject, Ray
-
-T = TypeVar('T')
-
-
-def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
-    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
-    a, b = itertools.tee(iterable)
-    next(b, None)
-    return zip(a, b)
+from utils import get_description, pairwise, get_optics_fields
 
 
 def get_material(obj: inkex.ShapeElement) -> List[Union[mat.OpticMaterial,
@@ -35,8 +25,8 @@ def get_material(obj: inkex.ShapeElement) -> List[Union[mat.OpticMaterial,
 def handle_arc(obj: inkex.ShapeElement):
     if obj.get('sodipodi:type') == 'arc':
         inkex.utils.errormsg(
-            f"Can't extract path info for element {obj.get_id()}.\n"
-            f"Please convert element to path.\n")
+                f"Can't extract path info for element {obj.get_id()}.\n"
+                f"Please convert element to path.\n")
 
 
 def get_absolute_path(obj: inkex.ShapeElement) -> inkex.CubicSuperPath:
@@ -61,13 +51,6 @@ def get_geometry(obj: inkex.ShapeElement) -> geom.GeometricObject:
     return composite_bezier
 
 
-def get_description(element: inkex.BaseElement) -> str:
-    for child in element.getchildren():
-        if child.tag == inkex.addNS('desc', 'svg'):
-            return child.text
-    return ''
-
-
 def get_beam(element: inkex.ShapeElement) -> Ray:
     # TODO: Find a better way to extract beam characteristics.
     #  The current approach will only return the first beam if composite path
@@ -79,11 +62,9 @@ def get_beam(element: inkex.ShapeElement) -> Ray:
 
 def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
                                                         mat.BeamSeed]]:
-    """Parses the description to extract the material properties"""
+    """Run through the description to extract the material properties"""
 
-    pattern = "optics *: *([a-z,_]*)(?::([0-9]+(?:.[0-9])?))?"
-    fields = re.findall(pattern, desc.lower())
-
+    fields = get_optics_fields(desc.lower())
     materials = list()
     mat_name = {
             "beam_dump": mat.BeamDump, "mirror": mat.Mirror,
@@ -92,7 +73,7 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
     }
     for material_type, prop in fields:
         if material_type in mat_name:
-            if material_type == "glass":
+            if material_type == "glass":  # only material with parameter
                 materials.append(mat_name[material_type](float(prop)))
             else:
                 materials.append(mat_name[material_type]())
