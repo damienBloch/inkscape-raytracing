@@ -2,6 +2,7 @@
 Module for handling objects composed of cubic bezier curves
 """
 
+import inkex
 
 from functools import lru_cache
 import numpy as np
@@ -144,7 +145,11 @@ class CubicBezier(object):
         # but is the first derivative is zero, we need to get the second order
         else:
             diff_2 = -6*(p0-3*p1+3*p2-p3)*s + 6*(p0-2*p1+p2)
-            return diff_2 / np.linalg.norm(diff_2)
+            if np.linalg.norm(diff_2) > 1e-8:
+                return diff_2 / np.linalg.norm(diff_2)
+            else:
+                diff_3 = -6*(p0-3*p1+3*p2-p3)
+                return diff_3 / np.linalg.norm(diff_3)
 
     def normal(self, s: float) -> np.ndarray:
         """Returns a vector normal at the curve at curvilinear coordinate s"""
