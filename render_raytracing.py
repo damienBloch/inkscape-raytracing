@@ -2,27 +2,16 @@
 Extension for rendering beams in 2D optics with Inkscape
 """
 
-import itertools
-import re
-from typing import TypeVar, Iterator, Tuple, List, Union
+from typing import Tuple, List, Union
 
 import inkex
-from inkex.paths import Line, Move
 import numpy as np
+from inkex.paths import Line, Move
 
 import raytracing.geometry as geom
 import raytracing.material as mat
 from raytracing import World, OpticalObject, Ray
-
-
-T = TypeVar('T')
-
-
-def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
-    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
-    a, b = itertools.tee(iterable)
-    next(b, None)
-    return zip(a, b)
+from utils import get_description, pairwise, get_optics_fields
 
 
 def get_material(obj: inkex.ShapeElement) -> List[Union[mat.OpticMaterial,
@@ -33,7 +22,15 @@ def get_material(obj: inkex.ShapeElement) -> List[Union[mat.OpticMaterial,
     return materials_from_description(desc)
 
 
-def get_absolute_path(obj: inkex.PathElement) -> inkex.CubicSuperPath:
+def handle_arc(obj: inkex.ShapeElement):
+    if obj.get('sodipodi:type') == 'arc':
+        inkex.utils.errormsg(
+                f"Can't extract path info for element {obj.get_id()}.\n"
+                f"Please convert element to path.\n")
+
+
+def get_absolute_path(obj: inkex.ShapeElement) -> inkex.CubicSuperPath:
+    # handle_arc(obj)  # BUG: can't extract from arcs with this method
     path = obj.to_path_element().path.to_absolute()
     transformed_path = path.transform(obj.composed_transform())
     return transformed_path.to_superpath()
@@ -54,14 +51,7 @@ def get_geometry(obj: inkex.ShapeElement) -> geom.GeometricObject:
     return composite_bezier
 
 
-def get_description(element: inkex.BaseElement) -> str:
-    for child in element.getchildren():
-        if child.tag == inkex.addNS('desc', 'svg'):
-            return child.text
-    return ''
-
-
-def get_beam(element: inkex.PathElement) -> Ray:
+def get_beam(element: inkex.ShapeElement) -> Ray:
     # TODO: Find a better way to extract beam characteristics.
     #  The current approach will only return the first beam if composite path
     bezier_path = superpath_to_bezier_segments(get_absolute_path(element))
@@ -72,18 +62,19 @@ def get_beam(element: inkex.PathElement) -> Ray:
 
 def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
                                                         mat.BeamSeed]]:
-    """Parses the description to extract the material properties"""
-
-    pattern = "optics *: *([a-z,_]*)(?::([0-9]+(?:.[0-9])?))?"
-    fields = re.findall(pattern, desc.lower())
+    """Run through the description to extract the material properties"""
 
     materials = list()
-    mat_name = {"beam_dump": mat.BeamDump, "mirror": mat.Mirror,
-                "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed,
-                "glass": mat.Glass}
-    for material_type, prop in fields:
+    mat_name = {
+            "beam_dump": mat.BeamDump, "mirror": mat.Mirror,
+            "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed,
+            "glass": mat.Glass
+    }
+    for match in get_optics_fields(desc.lower()):
+        material_type = match.group('material')
+        prop = match.group('num')
         if material_type in mat_name:
-            if material_type == "glass":
+            if material_type == "glass":  # only material with parameter
                 materials.append(mat_name[material_type](float(prop)))
             else:
                 materials.append(mat_name[material_type]())
@@ -91,7 +82,7 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
 
 
 def superpath_to_bezier_segments(superpath: inkex.CubicSuperPath) \
-                                                 -> geom.CompositeCubicBezier:
+        -> geom.CompositeCubicBezier:
     """
     Converts a superpath with a representation
     [Subpath0[handle0_0, point0, handle0_1], ...], ...]
@@ -145,7 +136,8 @@ class Tracer(inkex.EffectExtension):
 
         for seed in self._beam_seeds:
             if self.is_inside_document(seed["source"]):
-                generated = self._world.propagate_beams([[(seed["source"], 0)]])
+                generated = self._world.propagate_beams(
+                        [[(seed["source"], 0)]])
                 for beam in generated:
                     self.plot_beam(beam, seed["node"])
 
@@ -192,17 +184,19 @@ class Tracer(inkex.EffectExtension):
         w = self.svg.unittouu(svg.get('width'))
         h = self.svg.unittouu(svg.get('height'))
         contour_geometry = geom.CompositeCubicBezier([geom.CubicBezierPath([
-            geom.CubicBezier(np.array([[0, 0], [0, 0], [w, 0], [w, 0]])),
-            geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
-            geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
-            geom.CubicBezier(np.array([[0, h], [0, h], [0, 0], [0, 0]]))])])
+                geom.CubicBezier(np.array([[0, 0], [0, 0], [w, 0], [w, 0]])),
+                geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
+                geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
+                geom.CubicBezier(
+                        np.array([[0, h], [0, h], [0, 0], [0, 0]]))])])
         self._document_border = OpticalObject(contour_geometry, mat.BeamDump())
         self._world.add_object(self._document_border)
 
     def is_inside_document(self, ray: Ray) -> bool:
         return self._document_border.geometry.is_inside(ray)
 
-    def plot_beam(self, beam: List[Tuple[Ray, float]], node: inkex.ShapeElement) -> None:
+    def plot_beam(self, beam: List[Tuple[Ray, float]],
+                  node: inkex.ShapeElement) -> None:
         path = inkex.Path()
         if len(beam) > 0:
             path += [Move(beam[0][0].origin[0], beam[0][0].origin[1])]
