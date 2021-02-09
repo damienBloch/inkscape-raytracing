@@ -31,16 +31,19 @@ Requires python3.6 or above with numpy and Inkscape1.0 or above.
 
 # How to use
 
-## 1. For each optical element, write its optical property in the element description:
+## 1. For each optical element or group of elements, select it and choose its material with Extenstions/Optics/Set material as:
 
-  <img src="./pictures/ray_tracing_1.png"  width="1000">
+The material can be one of the following:
 
-  The property that needs to be written in the element description can be any of the following:
-  * `optics:beam`: source of the ray. Need at least one element with this property to see an effect. Typically the element should be a straight line.
-  * `optics:mirror`: reflects an incoming beam. Element can be a closed or open shape.
-  * `optics:beam_dump`: absorbs all incoming beams. Element can be a closed or open shape.
-  * `optics:beam_splitter`: for each incoming beam, produces one transmitted beam and one reflected beam. Element can be a closed or open shape, but closed shape will cause the number of beams to increase exponentially.
-  * `optics:glass:<optical_index>`: transmits and bends a beam depending on its optical index. Element must be a closed shape.  
+  * `Beam`: source of the ray. Need at least one element with this property to see an effect. Typically the element should be a straight line.
+  * `Mirror`: reflects an incoming beam. Element can be a closed or open shape.
+  * `Beam dump`: absorbs all incoming beams. Element can be a closed or open shape.
+  * `Beam splitter`: for each incoming beam, produces one transmitted beam and one reflected beam. Element can be a closed or open shape, but closed shape will cause the number of beams to increase exponentially.
+  * `Glass`: with optical index. Transmits and bends a beam depending on its optical index. **Element must be a closed shape**.
+
+This will automatically write some text in the element description. This text is used to reccord the properties of the elements. It is also possible to directly write the text in the description.
+
+![](./pictures/ray_tracing_1.png)
   
 An element can have at most one optical property and will be ignored if it has two or more.
 
