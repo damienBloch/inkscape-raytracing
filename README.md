@@ -1,4 +1,4 @@
-Inkscape-raytracing
+Inkscape Ray Optics
 ===================
 
 <img  src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="120">
