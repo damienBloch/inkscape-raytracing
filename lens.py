@@ -3,9 +3,10 @@ Module to add a lens object in the document
 """
 
 import inkex
-import numpy as np
+from inkex.paths import arc_to_path
 
 inkex.Transform()
+
 
 def get_absolute_path(obj: inkex.PathElement) -> inkex.CubicSuperPath:
     path = obj.to_path_element().path.to_absolute()
@@ -33,7 +34,7 @@ class Lens(inkex.GenerateExtension):
         pars.add_argument("--lens_type", type=str, default="plano_con")
 
     def to_document_units(self, value: float, unit: str) -> float:
-        return self.svg.unittouu(str(value) + unit )
+        return self.svg.unittouu(str(value) + unit)
 
     def get_diameter(self) -> float:
         diameter_value = self.options.diameter
@@ -44,35 +45,26 @@ class Lens(inkex.GenerateExtension):
     def generate(self):
         opts = self.options
 
-        diameter = self.to_document_units(opts.diameter, opts.diameter_unit)
-        focal_length = self.to_document_units(opts.focal_length, opts.focal_length_unit)
-        edge_spacing = self.to_document_units(2, "mm")
+        d = self.to_document_units(opts.diameter, opts.diameter_unit)
+        focal_length = self.to_document_units(opts.focal_length,
+                                              opts.focal_length_unit)
+        e = self.to_document_units(2, "mm")
         optical_index = opts.optical_index
 
         R1 = (optical_index - 1) * focal_length
-        theta = np.arcsin(diameter / 2 / R1)
-        circle = self.draw_ellipse((R1, R1), (0, -R1), (-theta+np.pi/2, +theta+np.pi/2))
-        circle.transform = inkex.Transform(scale=(1, -1))
-        inkex.utils.debug(get_absolute_path(circle))
-        yield circle
-
-    def draw_ellipse(self, r_xy, c_xy, start_end=(0, np.pi/2)):
-        """Creates an ellipse with all the required sodipodi attributes"""
-        path = inkex.PathElement()
-        path.update(**{
-                'style': self.style,
-                'sodipodi:cx': str(c_xy[0]),
-                'sodipodi:cy': str(c_xy[1]),
-                'sodipodi:rx': str(r_xy[0]),
-                'sodipodi:ry': str(r_xy[1]),
-                'sodipodi:start': str(start_end[0]),
-                'sodipodi:end': str(start_end[1]),
-                'sodipodi:open': 'true',
-                # all ellipse sectors we will draw are open
-                'sodipodi:type': 'arc',
-                'sodipodi:arc-type': 'arc',
-        })
-        return path
+        circle = arc_to_path([-d / 2, 0],
+                             [R1, R1, 0., 0, 0, +d / 2, 0])
+        circle += [
+                [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
+                [[+d / 2, -e], [+d / 2, -e], [-d / 2, -e]],
+                [[+d / 2, -e], [-d / 2, -e], [-d / 2, +e]],
+        ]
+        lens = inkex.PathElement()
+        lens.style = self.style
+        path = inkex.Path(inkex.CubicSuperPath([circle]))
+        path.close()
+        lens.path = path
+        yield lens
 
 
 if __name__ == '__main__':
