@@ -33,6 +33,8 @@ Requires python3.6 or above with numpy and Inkscape1.0 or above.
 
 ## 1. For each optical element, write its optical property in the element description:
 
+(Alternatively, just select the elements and use Extensions/Optics/Set element as. This will automatically write the right text in the description.)
+
   <img src="./pictures/ray_tracing_1.png"  width="1000">
 
   The property that needs to be written in the element description can be any of the following:
