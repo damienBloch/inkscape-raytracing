@@ -4,6 +4,7 @@ Module to add a lens object in the document
 
 import inkex
 from inkex.paths import arc_to_path
+
 from utils import set_description
 
 
@@ -48,25 +49,44 @@ class Lens(inkex.GenerateExtension):
             if focal_length >= 0:
                 RoC = (optical_index - 1) * focal_length
                 if 2 * RoC < d:
-                    inkex.utils.debug("Focal power is too strong.")
+                    inkex.utils.errormsg("Focal power is too strong.")
                     return
                 else:
                     lens_path = arc_to_path([-d / 2, 0],
-                                             [RoC, RoC, 0., 0, 0, +d / 2, 0])
+                                            [RoC, RoC, 0., 0, 0, +d / 2, 0])
             else:
                 RoC = - (optical_index - 1) * focal_length
-                if 2 * RoC < d or (RoC **2 -(d/2)**2)**.5 -RoC < -e:
-                    inkex.utils.debug("Focal power is too strong.")
+                if 2 * RoC < d or (RoC ** 2 - (d / 2) ** 2) ** .5 - RoC < -e:
+                    inkex.utils.errormsg("Focal power is too strong.")
                     return
                 lens_path = arc_to_path([-d / 2, 0],
-                                         [RoC, RoC, 0., 0, 1, +d / 2, 0])
+                                        [RoC, RoC, 0., 0, 1, +d / 2, 0])
             lens_path += [
                     [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
                     [[+d / 2, -e], [+d / 2, -e], [-d / 2, -e]],
                     [[+d / 2, -e], [-d / 2, -e], [-d / 2, +e]],
             ]
         elif opts.lens_type == 'bi_con':
-            return
+            if focal_length >= 0:
+                RoC = (optical_index - 1) * focal_length * (
+                        1 + (1 - e / focal_length / optical_index) ** .5)
+                if 2 * RoC < d:
+                    inkex.utils.errormsg("Focal power is too strong.")
+                    return
+                lens_path = arc_to_path([-d / 2, 0],
+                                        [RoC, RoC, 0., 0, 0, +d / 2, 0])
+                lens_path += [
+                        [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
+                        [[+d / 2, -e], [+d / 2, -e], [+d / 2, -e]],
+                ]
+                lens_path += arc_to_path([+d / 2, -e],
+                                         [RoC, RoC, 0., 0, 0, -d / 2, -e])
+                lens_path += [
+                        [[-d / 2, -e], [-d / 2, -e], [-d / 2, 0]],
+                        [[-d / 2, -e], [-d / 2, 0], [-d / 2, 0]],
+                ]
+            else:
+                return
 
         lens = inkex.PathElement()
         lens.style = self.style
