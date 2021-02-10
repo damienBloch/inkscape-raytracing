@@ -10,7 +10,8 @@ class Lens(inkex.GenerateExtension):
     @property
     def style(self):
         return {
-                'stroke': '#000000', 'fill': 'none',
+                'stroke': '#000000', 'fill': '#b7c2dd',
+                'stroke-linejoin': 'round',
                 'stroke-width': str(self.svg.unittouu('1px'))
         }
 
@@ -33,31 +34,46 @@ class Lens(inkex.GenerateExtension):
 
     def generate(self):
         opts = self.options
-
-        d = self.to_document_units(opts.diameter, opts.diameter_unit)
+        d = self.to_document_units(opts.diameter,
+                                   opts.diameter_unit)
         focal_length = self.to_document_units(opts.focal_length,
                                               opts.focal_length_unit)
-        e = self.to_document_units(opts.edge_thickness, opts.edge_thickness_unit)
+        e = self.to_document_units(opts.edge_thickness,
+                                   opts.edge_thickness_unit)
         optical_index = opts.optical_index
 
-        R1 = (optical_index - 1) * focal_length
-        if 2 * R1 < d:
-            inkex.utils.debug("Focal power is too strong.")
-            yield None
-        else:
-            circle = arc_to_path([-d / 2, 0],
-                                 [R1, R1, 0., 0, 0, +d / 2, 0])
-            circle += [
+        lens_path = []
+        if opts.lens_type == 'plano_con':
+            if focal_length >= 0:
+                RoC = (optical_index - 1) * focal_length
+                if 2 * RoC < d:
+                    inkex.utils.debug("Focal power is too strong.")
+                    return
+                else:
+                    lens_path = arc_to_path([-d / 2, 0],
+                                             [RoC, RoC, 0., 0, 0, +d / 2, 0])
+
+            else:
+                RoC = - (optical_index - 1) * focal_length
+                if 2 * RoC < d or (RoC **2 -(d/2)**2)**.5 -RoC < -e:
+                    inkex.utils.debug("Focal power is too strong.")
+                    return
+                lens_path = arc_to_path([-d / 2, 0],
+                                         [RoC, RoC, 0., 0, 1, +d / 2, 0])
+            lens_path += [
                     [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
                     [[+d / 2, -e], [+d / 2, -e], [-d / 2, -e]],
                     [[+d / 2, -e], [-d / 2, -e], [-d / 2, +e]],
             ]
-            lens = inkex.PathElement()
-            lens.style = self.style
-            path = inkex.Path(inkex.CubicSuperPath([circle]))
-            path.close()
-            lens.path = path
-            yield lens
+        elif opts.lens_type == 'bi_con':
+            return
+
+        lens = inkex.PathElement()
+        lens.style = self.style
+        closed_path = inkex.Path(inkex.CubicSuperPath([lens_path]))
+        closed_path.close()
+        lens.path = closed_path
+        yield lens
 
 
 if __name__ == '__main__':
