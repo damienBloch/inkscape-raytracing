@@ -4,6 +4,7 @@ Module to add a lens object in the document
 
 import inkex
 from inkex.paths import arc_to_path
+from utils import set_description
 
 
 class Lens(inkex.GenerateExtension):
@@ -52,7 +53,6 @@ class Lens(inkex.GenerateExtension):
                 else:
                     lens_path = arc_to_path([-d / 2, 0],
                                              [RoC, RoC, 0., 0, 0, +d / 2, 0])
-
             else:
                 RoC = - (optical_index - 1) * focal_length
                 if 2 * RoC < d or (RoC **2 -(d/2)**2)**.5 -RoC < -e:
@@ -73,6 +73,7 @@ class Lens(inkex.GenerateExtension):
         closed_path = inkex.Path(inkex.CubicSuperPath([lens_path]))
         closed_path.close()
         lens.path = closed_path
+        set_description(lens, f"optics:glass:{optical_index}")
         yield lens
 
 
