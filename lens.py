@@ -3,6 +3,7 @@ Module to add a lens object in the document
 """
 
 import inkex
+from inkex import Transform
 from inkex.paths import arc_to_path
 
 from utils import set_description
@@ -99,7 +100,7 @@ class Lens(inkex.GenerateExtension):
         lens.style = self.style
         closed_path = inkex.Path(inkex.CubicSuperPath([lens_path]))
         closed_path.close()
-        lens.path = closed_path
+        lens.path = closed_path.transform(Transform('rotate(90)'))
         set_description(lens, f"optics:glass:{optical_index}")
         yield lens
 
