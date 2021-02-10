@@ -55,6 +55,8 @@ class Lens(inkex.GenerateExtension):
                 return None
             else:
                 sweep = 1 if f < 0 else 0
+                # see arc_to_path in inkex/paths.py for description of
+                # parameters
                 lens_path = arc_to_path([-d / 2, 0],
                                         [RoC, RoC, 0., 0, sweep, +d / 2, 0])
                 lens_path += [
