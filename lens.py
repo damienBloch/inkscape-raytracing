@@ -21,6 +21,9 @@ class Lens(inkex.GenerateExtension):
         pars.add_argument("--diameter", type=float, default=1.)
         pars.add_argument("--diameter_unit", type=str, default="in")
 
+        pars.add_argument("--edge_thickness", type=float, default=2.)
+        pars.add_argument("--edge_thickness_unit", type=str, default="mm")
+
         pars.add_argument("--optical_index", type=float, default=1.5168)
 
         pars.add_argument("--lens_type", type=str, default="plano_con")
@@ -28,19 +31,13 @@ class Lens(inkex.GenerateExtension):
     def to_document_units(self, value: float, unit: str) -> float:
         return self.svg.unittouu(str(value) + unit)
 
-    def get_diameter(self) -> float:
-        diameter_value = self.options.diameter
-        diameter_unit = self.options.diameter_unit
-        diameter = self.svg.unittouu(str(diameter_value) + diameter_unit)
-        return diameter
-
     def generate(self):
         opts = self.options
 
         d = self.to_document_units(opts.diameter, opts.diameter_unit)
         focal_length = self.to_document_units(opts.focal_length,
                                               opts.focal_length_unit)
-        e = self.to_document_units(2, "mm")
+        e = self.to_document_units(opts.edge_thickness, opts.edge_thickness_unit)
         optical_index = opts.optical_index
 
         R1 = (optical_index - 1) * focal_length
