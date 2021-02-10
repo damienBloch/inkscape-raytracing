@@ -57,7 +57,7 @@ class Lens(inkex.GenerateExtension):
             else:
                 RoC = - (optical_index - 1) * focal_length
                 if 2 * RoC < d or (RoC ** 2 - (d / 2) ** 2) ** .5 - RoC < -e:
-                    inkex.utils.errormsg("Focal power is too strong.")
+                    inkex.utils.errormsg("Focal power is too strong or eged thicness is too small.")
                     return
                 lens_path = arc_to_path([-d / 2, 0],
                                         [RoC, RoC, 0., 0, 1, +d / 2, 0])
@@ -86,7 +86,24 @@ class Lens(inkex.GenerateExtension):
                         [[-d / 2, -e], [-d / 2, 0], [-d / 2, 0]],
                 ]
             else:
-                return
+
+                RoC = - (optical_index - 1) * focal_length * (
+                        1 + (1 - e / focal_length / optical_index) ** .5)
+                if 2 * RoC < d or (RoC ** 2 - (d / 2) ** 2) ** .5 - RoC < -e/2:
+                    inkex.utils.errormsg("Focal power is too strong or edge thickness is too small.")
+                    return
+                lens_path = arc_to_path([-d / 2, 0],
+                                        [RoC, RoC, 0., 0, 1, +d / 2, 0])
+                lens_path += [
+                        [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
+                        [[+d / 2, -e], [+d / 2, -e], [+d / 2, -e]],
+                ]
+                lens_path += arc_to_path([+d / 2, -e],
+                                         [RoC, RoC, 0., 0, 1, -d / 2, -e])
+                lens_path += [
+                        [[-d / 2, -e], [-d / 2, -e], [-d / 2, 0]],
+                        [[-d / 2, -e], [-d / 2, 0], [-d / 2, 0]],
+                ]
 
         lens = inkex.PathElement()
         lens.style = self.style
