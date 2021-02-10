@@ -5,14 +5,6 @@ Module to add a lens object in the document
 import inkex
 from inkex.paths import arc_to_path
 
-inkex.Transform()
-
-
-def get_absolute_path(obj: inkex.PathElement) -> inkex.CubicSuperPath:
-    path = obj.to_path_element().path.to_absolute()
-    transformed_path = path.transform(obj.composed_transform())
-    return transformed_path.to_superpath()
-
 
 class Lens(inkex.GenerateExtension):
     @property
@@ -52,19 +44,23 @@ class Lens(inkex.GenerateExtension):
         optical_index = opts.optical_index
 
         R1 = (optical_index - 1) * focal_length
-        circle = arc_to_path([-d / 2, 0],
-                             [R1, R1, 0., 0, 0, +d / 2, 0])
-        circle += [
-                [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
-                [[+d / 2, -e], [+d / 2, -e], [-d / 2, -e]],
-                [[+d / 2, -e], [-d / 2, -e], [-d / 2, +e]],
-        ]
-        lens = inkex.PathElement()
-        lens.style = self.style
-        path = inkex.Path(inkex.CubicSuperPath([circle]))
-        path.close()
-        lens.path = path
-        yield lens
+        if 2 * R1 < d:
+            inkex.utils.debug("Focal power is too strong.")
+            yield None
+        else:
+            circle = arc_to_path([-d / 2, 0],
+                                 [R1, R1, 0., 0, 0, +d / 2, 0])
+            circle += [
+                    [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
+                    [[+d / 2, -e], [+d / 2, -e], [-d / 2, -e]],
+                    [[+d / 2, -e], [-d / 2, -e], [-d / 2, +e]],
+            ]
+            lens = inkex.PathElement()
+            lens.style = self.style
+            path = inkex.Path(inkex.CubicSuperPath([circle]))
+            path.close()
+            lens.path = path
+            yield lens
 
 
 if __name__ == '__main__':
