@@ -55,7 +55,8 @@ class Lens(inkex.GenerateExtension):
             # Radius of curvature from Lensmaker's equation
             roc = (optical_index - 1) * abs(f)
             if 2 * roc < d:
-                inkex.utils.errormsg("Focal power is too strong.")
+                inkex.utils.errormsg(
+                    "Focal length is too short or diameter is too small.")
                 return None
             elif (roc ** 2 - (d / 2) ** 2) ** .5 - roc < -e and f < 0:
                 inkex.utils.errormsg("Edge thickness is too small.")
@@ -76,7 +77,8 @@ class Lens(inkex.GenerateExtension):
             roc = (optical_index - 1) * abs(f) \
                   * (1 + (1 - e / f / optical_index) ** .5)
             if 2 * roc < d:
-                inkex.utils.errormsg("Focal power is too strong.")
+                inkex.utils.errormsg(
+                        "Focal length is too short or diameter is too small.")
                 return None
             elif (roc ** 2 - (d / 2) ** 2) ** .5 - roc < -e / 2 and f < 0:
                 inkex.utils.errormsg("Edge thickness is too small.")
