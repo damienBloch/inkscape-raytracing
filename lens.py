@@ -9,6 +9,11 @@ from utils import set_description
 
 
 class Lens(inkex.GenerateExtension):
+    """
+    Produces a PathElement corresponding to the shape of the lens calculated
+    from user parameters.
+    """
+
     @property
     def style(self):
         return {
@@ -46,11 +51,12 @@ class Lens(inkex.GenerateExtension):
 
         lens_path = []
         if opts.lens_type == 'plano_con':
-            RoC = (optical_index - 1) * abs(f)
-            if 2 * RoC < d:
+            # Radius of curvature from Lensmaker's equation
+            roc = (optical_index - 1) * abs(f)
+            if 2 * roc < d:
                 inkex.utils.errormsg("Focal power is too strong.")
                 return None
-            elif (RoC ** 2 - (d / 2) ** 2) ** .5 - RoC < -e and f < 0:
+            elif (roc ** 2 - (d / 2) ** 2) ** .5 - roc < -e and f < 0:
                 inkex.utils.errormsg("Edge thickness is too small.")
                 return None
             else:
@@ -58,31 +64,32 @@ class Lens(inkex.GenerateExtension):
                 # see arc_to_path in inkex/paths.py for description of
                 # parameters
                 lens_path = arc_to_path([-d / 2, 0],
-                                        [RoC, RoC, 0., 0, sweep, +d / 2, 0])
+                                        [roc, roc, 0., 0, sweep, +d / 2, 0])
                 lens_path += [
                         [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
                         [[+d / 2, -e], [+d / 2, -e], [-d / 2, -e]],
                         [[+d / 2, -e], [-d / 2, -e], [-d / 2, +e]],
                 ]
+                # no need to close the path correctly as it's done after
         elif opts.lens_type == 'bi_con':
-            RoC = (optical_index - 1) * abs(f) \
+            roc = (optical_index - 1) * abs(f) \
                   * (1 + (1 - e / f / optical_index) ** .5)
-            if 2 * RoC < d:
+            if 2 * roc < d:
                 inkex.utils.errormsg("Focal power is too strong.")
                 return None
-            elif (RoC ** 2 - (d / 2) ** 2) ** .5 - RoC < -e / 2 and f < 0:
+            elif (roc ** 2 - (d / 2) ** 2) ** .5 - roc < -e / 2 and f < 0:
                 inkex.utils.errormsg("Edge thickness is too small.")
                 return None
             else:
                 sweep = 1 if f < 0 else 0
                 lens_path = arc_to_path([-d / 2, 0],
-                                        [RoC, RoC, 0., 0, sweep, +d / 2, 0])
+                                        [roc, roc, 0., 0, sweep, +d / 2, 0])
                 lens_path += [
                         [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
                         [[+d / 2, -e], [+d / 2, -e], [+d / 2, -e]],
                 ]
                 lens_path += arc_to_path([+d / 2, -e],
-                                         [RoC, RoC, 0., 0, sweep, -d / 2, -e])
+                                         [roc, roc, 0., 0, sweep, -d / 2, -e])
                 lens_path += [
                         [[-d / 2, -e], [-d / 2, -e], [-d / 2, 0]],
                         [[-d / 2, -e], [-d / 2, 0], [-d / 2, 0]],
