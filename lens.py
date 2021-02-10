@@ -38,68 +38,49 @@ class Lens(inkex.GenerateExtension):
         opts = self.options
         d = self.to_document_units(opts.diameter,
                                    opts.diameter_unit)
-        focal_length = self.to_document_units(opts.focal_length,
-                                              opts.focal_length_unit)
+        f = self.to_document_units(opts.focal_length,
+                                   opts.focal_length_unit)
         e = self.to_document_units(opts.edge_thickness,
                                    opts.edge_thickness_unit)
         optical_index = opts.optical_index
 
         lens_path = []
         if opts.lens_type == 'plano_con':
-            if focal_length >= 0:
-                RoC = (optical_index - 1) * focal_length
-                if 2 * RoC < d:
-                    inkex.utils.errormsg("Focal power is too strong.")
-                    return
-                else:
-                    lens_path = arc_to_path([-d / 2, 0],
-                                            [RoC, RoC, 0., 0, 0, +d / 2, 0])
+            RoC = (optical_index - 1) * abs(f)
+            if 2 * RoC < d:
+                inkex.utils.errormsg("Focal power is too strong.")
+                return None
+            elif (RoC ** 2 - (d / 2) ** 2) ** .5 - RoC < -e and f < 0:
+                inkex.utils.errormsg("Edge thickness is too small.")
+                return None
             else:
-                RoC = - (optical_index - 1) * focal_length
-                if 2 * RoC < d or (RoC ** 2 - (d / 2) ** 2) ** .5 - RoC < -e:
-                    inkex.utils.errormsg("Focal power is too strong or eged thicness is too small.")
-                    return
+                sweep = 1 if f < 0 else 0
                 lens_path = arc_to_path([-d / 2, 0],
-                                        [RoC, RoC, 0., 0, 1, +d / 2, 0])
-            lens_path += [
-                    [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
-                    [[+d / 2, -e], [+d / 2, -e], [-d / 2, -e]],
-                    [[+d / 2, -e], [-d / 2, -e], [-d / 2, +e]],
-            ]
+                                        [RoC, RoC, 0., 0, sweep, +d / 2, 0])
+                lens_path += [
+                        [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
+                        [[+d / 2, -e], [+d / 2, -e], [-d / 2, -e]],
+                        [[+d / 2, -e], [-d / 2, -e], [-d / 2, +e]],
+                ]
         elif opts.lens_type == 'bi_con':
-            if focal_length >= 0:
-                RoC = (optical_index - 1) * focal_length * (
-                        1 + (1 - e / focal_length / optical_index) ** .5)
-                if 2 * RoC < d:
-                    inkex.utils.errormsg("Focal power is too strong.")
-                    return
-                lens_path = arc_to_path([-d / 2, 0],
-                                        [RoC, RoC, 0., 0, 0, +d / 2, 0])
-                lens_path += [
-                        [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
-                        [[+d / 2, -e], [+d / 2, -e], [+d / 2, -e]],
-                ]
-                lens_path += arc_to_path([+d / 2, -e],
-                                         [RoC, RoC, 0., 0, 0, -d / 2, -e])
-                lens_path += [
-                        [[-d / 2, -e], [-d / 2, -e], [-d / 2, 0]],
-                        [[-d / 2, -e], [-d / 2, 0], [-d / 2, 0]],
-                ]
+            RoC = (optical_index - 1) * abs(f) \
+                  * (1 + (1 - e / f / optical_index) ** .5)
+            if 2 * RoC < d:
+                inkex.utils.errormsg("Focal power is too strong.")
+                return None
+            elif (RoC ** 2 - (d / 2) ** 2) ** .5 - RoC < -e / 2 and f < 0:
+                inkex.utils.errormsg("Edge thickness is too small.")
+                return None
             else:
-
-                RoC = - (optical_index - 1) * focal_length * (
-                        1 + (1 - e / focal_length / optical_index) ** .5)
-                if 2 * RoC < d or (RoC ** 2 - (d / 2) ** 2) ** .5 - RoC < -e/2:
-                    inkex.utils.errormsg("Focal power is too strong or edge thickness is too small.")
-                    return
+                sweep = 1 if f < 0 else 0
                 lens_path = arc_to_path([-d / 2, 0],
-                                        [RoC, RoC, 0., 0, 1, +d / 2, 0])
+                                        [RoC, RoC, 0., 0, sweep, +d / 2, 0])
                 lens_path += [
                         [[+d / 2, 0], [+d / 2, 0], [+d / 2, -e]],
                         [[+d / 2, -e], [+d / 2, -e], [+d / 2, -e]],
                 ]
                 lens_path += arc_to_path([+d / 2, -e],
-                                         [RoC, RoC, 0., 0, 1, -d / 2, -e])
+                                         [RoC, RoC, 0., 0, sweep, -d / 2, -e])
                 lens_path += [
                         [[-d / 2, -e], [-d / 2, -e], [-d / 2, 0]],
                         [[-d / 2, -e], [-d / 2, 0], [-d / 2, 0]],
