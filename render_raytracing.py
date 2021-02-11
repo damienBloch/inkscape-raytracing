@@ -22,15 +22,7 @@ def get_material(obj: inkex.ShapeElement) -> List[Union[mat.OpticMaterial,
     return materials_from_description(desc)
 
 
-def handle_arc(obj: inkex.ShapeElement):
-    if obj.get('sodipodi:type') == 'arc':
-        inkex.utils.errormsg(
-                f"Can't extract path info for element {obj.get_id()}.\n"
-                f"Please convert element to path.\n")
-
-
 def get_absolute_path(obj: inkex.ShapeElement) -> inkex.CubicSuperPath:
-    # handle_arc(obj)  # BUG: can't extract from arcs with this method
     path = obj.to_path_element().path.to_absolute()
     transformed_path = path.transform(obj.composed_transform())
     return transformed_path.to_superpath()
