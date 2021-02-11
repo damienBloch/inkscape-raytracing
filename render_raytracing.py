@@ -2,7 +2,7 @@
 Extension for rendering beams in 2D optics with Inkscape
 """
 
-from typing import Tuple, List, Union
+from typing import Tuple, List, Union, Iterable
 
 import inkex
 import numpy as np
@@ -43,13 +43,11 @@ def get_geometry(obj: inkex.ShapeElement) -> geom.GeometricObject:
     return composite_bezier
 
 
-def get_beam(element: inkex.ShapeElement) -> Ray:
-    # TODO: Find a better way to extract beam characteristics.
-    #  The current approach will only return the first beam if composite path
+def get_beams(element: inkex.ShapeElement) -> Iterable[Ray]:
     bezier_path = superpath_to_bezier_segments(get_absolute_path(element))
-    a = next(bezier_path.__iter__())
-    endpoint, tangent = a.endpoint_info()
-    return Ray(endpoint, tangent)
+    for subpath in bezier_path:
+        endpoint, tangent = subpath.endpoint_info()
+        yield Ray(endpoint, tangent)
 
 
 def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
@@ -151,8 +149,8 @@ class Tracer(inkex.EffectExtension):
         elif len(materials) == 1:
             material = materials[0]
             if isinstance(material, mat.BeamSeed):
-                ray = get_beam(obj)
-                self._beam_seeds.append({"source": ray, "node": obj})
+                for ray in get_beams(obj):
+                    self._beam_seeds.append({"source": ray, "node": obj})
             else:
                 geometry = get_geometry(obj)
                 opt_obj = OpticalObject(geometry, material)
