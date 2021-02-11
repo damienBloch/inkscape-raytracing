@@ -195,7 +195,8 @@ class Tracer(inkex.EffectExtension):
     def is_inside_document(self, ray: Ray) -> bool:
         return self._document_border.geometry.is_inside(ray)
 
-    def plot_beam(self, beam: List[Tuple[Ray, float]],
+    @staticmethod
+    def plot_beam(beam: List[Tuple[Ray, float]],
                   node: inkex.ShapeElement) -> None:
         path = inkex.Path()
         if len(beam) > 0:
@@ -206,6 +207,7 @@ class Tracer(inkex.EffectExtension):
         element = node.getparent().add(inkex.PathElement())
         element.style = node.get("style")
         element.path = path.transform(-node.composed_transform())
+
 
 if __name__ == '__main__':
     Tracer().run()
