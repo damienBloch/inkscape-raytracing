@@ -17,6 +17,7 @@ def englobing_aabbox(aabboxes: List[np.ndarray]) -> np.ndarray:
     return np.array([np.min(aabboxes[:, 0, :], axis=0),
                      np.max(aabboxes[:, 1, :], axis=0)])
 
+
 def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
                     List[float]:
     """
@@ -76,23 +77,6 @@ def find_first_hit(ray: Ray, objects: Iterable[Any]) -> ShadeRec:
         if Ray.min_travel < shade.travel_dist < result.travel_dist:
             result = shade
     return result
-
-
-def kernel_index(t: float, p: np.ndarray((4,), complex), z0: complex) -> float:
-    """
-    This function is a low level call for computing the index of a bezier
-    curve around a point.
-    """
-
-    p0, p1, p2, p3 = p
-    eval_ = + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3 \
-            + 3 * (p0 - 2 * p1 + p2) * t ** 2 \
-            - 3 * (p0 - p1) * t \
-            + p0
-    diff_1 = + 3 * (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 2 \
-             + 6 * (p0 - 2 * p1 + p2) * t \
-             - 3 * (p0 - p1)
-    return np.real(diff_1 / (eval_ - z0) / (2j * np.pi))
 
 
 class CubicBezier(object):
