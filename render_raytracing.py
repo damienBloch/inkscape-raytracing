@@ -203,11 +203,9 @@ class Tracer(inkex.EffectExtension):
             for ray, t in beam:
                 p1 = ray.origin + t * ray.direction
                 path += [Line(p1[0], p1[1])]
-        svg = self.document.getroot()
-        element = svg.add(inkex.PathElement())
+        element = node.getparent().add(inkex.PathElement())
         element.style = node.get("style")
-        element.path = path
-
+        element.path = path.transform(-node.composed_transform())
 
 if __name__ == '__main__':
     Tracer().run()
