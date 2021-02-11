@@ -1,0 +1,70 @@
+<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg6" version="1.1" viewBox="0 0 210 297" height="297mm" width="210mm" sodipodi:docname="beams.svg" inkscape:version="1.1-dev (1:0.92.0+devel+202005110039+9ce7266)">
+  <defs id="defs2">
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect1476" effect="bspline"/>
+    <inkscape:path-effect effect="bspline" id="path-effect1251" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect970" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect964" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect958" effect="bspline"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect952" effect="bspline"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect946" effect="bspline"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect942" effect="bspline"/>
+    <inkscape:path-effect effect="bspline" id="path-effect938" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect934" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect856" effect="bspline"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect852" effect="bspline"/>
+    <inkscape:path-effect effect="bspline" id="path-effect848" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect844" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect840" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect834" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect830" effect="bspline"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect826" effect="bspline"/>
+    <inkscape:path-effect effect="bspline" id="path-effect825" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+  </defs>
+  <sodipodi:namedview inkscape:snap-midpoints="true" inkscape:snap-smooth-nodes="true" inkscape:snap-intersection-paths="true" inkscape:object-paths="true" inkscape:snap-bbox-midpoints="true" inkscape:snap-bbox-edge-midpoints="true" inkscape:bbox-nodes="true" inkscape:bbox-paths="true" inkscape:snap-bbox="true" id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="0.79815972" inkscape:cx="320.08308" inkscape:cy="731.96759" inkscape:document-units="mm" inkscape:current-layer="layer1" showgrid="true" inkscape:window-width="1855" inkscape:window-height="1056" inkscape:window-x="1985" inkscape:window-y="24" inkscape:window-maximized="1">
+    <inkscape:grid id="grid836" type="xygrid"/>
+  </sodipodi:namedview>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+    <path inkscape:original-d="m 50,40 c 2.65e-4,5.418849 2.65e-4,10.837431 0,16.255751" inkscape:path-effect="#path-effect826" id="path824" d="m 50,40 c 0,5.418849 0,10.837431 0,16.255751" style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+    <path inkscape:original-d="m 70,50 c 5.736733,2.65e-4 11.678681,2.65e-4 17.517625,0" inkscape:path-effect="#path-effect830" id="path828" d="m 70,50 c 5.736733,0 11.678681,0 17.517625,0" style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 40,50 c -5.736733,0 -11.678681,0 -17.517625,0" id="path832" inkscape:path-effect="#path-effect834" inkscape:original-d="m 40,50 c -5.736733,2.65e-4 -11.678681,2.65e-4 -17.517625,0"/>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 60,56.255751 C 60,50.836902 60,45.41832 60,40" id="path838" inkscape:path-effect="#path-effect840" inkscape:original-d="M 60,56.255751 C 60.000265,50.836902 60.000265,45.41832 60,40"/>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 50,40 c 0,5.418849 0,10.837431 0,16.255751" id="p2" inkscape:path-effect="#path-effect844" inkscape:original-d="m 50,40 c 2.65e-4,5.418849 2.65e-4,10.837431 0,16.255751">
+      <desc id="desc874">optics:beam</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 70,50 c 5.736733,0 11.678681,0 17.517625,0" id="p4" inkscape:path-effect="#path-effect848" inkscape:original-d="m 70,50 c 5.736733,2.65e-4 11.678681,2.65e-4 17.517625,0">
+      <desc id="desc877">optics:beam</desc>
+    </path>
+    <path inkscape:original-d="m 40,50 c -5.736733,2.65e-4 -11.678681,2.65e-4 -17.517625,0" inkscape:path-effect="#path-effect852" id="p1" d="m 40,50 c -5.736733,0 -11.678681,0 -17.517625,0" style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
+      <desc id="desc880">optics:beam</desc>
+    </path>
+    <path inkscape:original-d="M 60,56.255751 C 60.000265,50.836902 60.000265,45.41832 60,40" inkscape:path-effect="#path-effect856" id="p3" d="M 60,56.255751 C 60,50.836902 60,45.41832 60,40" style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
+      <desc id="desc883">optics:beam</desc>
+    </path>
+    <g transform="rotate(45,157.02571,87.487218)" id="g1">
+      <g id="g1083">
+        <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 152.02571,79.359342 c 0,5.418849 0,10.837431 0,16.255751" id="path932" inkscape:path-effect="#path-effect934" inkscape:original-d="m 152.02571,79.359342 c 2.6e-4,5.418849 2.6e-4,10.837431 0,16.255751"/>
+        <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 172.02571,89.359342 c 5.73673,0 11.67868,0 17.51762,0" id="path936" inkscape:path-effect="#path-effect938" inkscape:original-d="m 172.02571,89.359342 c 5.73673,2.65e-4 11.67868,2.65e-4 17.51762,0"/>
+        <path inkscape:original-d="m 142.02571,89.359342 c -5.73674,2.65e-4 -11.67868,2.65e-4 -17.51763,0" inkscape:path-effect="#path-effect942" id="path940" d="m 142.02571,89.359342 c -5.73674,0 -11.67868,0 -17.51763,0" style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+        <path inkscape:original-d="m 162.02571,95.615093 c 2.6e-4,-5.418849 2.6e-4,-10.837431 0,-16.255751" inkscape:path-effect="#path-effect946" id="path944" d="m 162.02571,95.615093 c 0,-5.418849 0,-10.837431 0,-16.255751" style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"/>
+        <path inkscape:original-d="m 152.02571,79.359342 c 2.6e-4,5.418849 2.6e-4,10.837431 0,16.255751" inkscape:path-effect="#path-effect952" id="path950" d="m 152.02571,79.359342 c 0,5.418849 0,10.837431 0,16.255751" style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
+          <desc id="desc948">optics:beam</desc>
+        </path>
+        <path inkscape:original-d="m 172.02571,89.359342 c 5.73673,2.65e-4 11.67868,2.65e-4 17.51762,0" inkscape:path-effect="#path-effect958" id="path956" d="m 172.02571,89.359342 c 5.73673,0 11.67868,0 17.51762,0" style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
+          <desc id="desc954">optics:beam</desc>
+        </path>
+        <path style="fill:none;stroke:#ff0000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 142.02571,89.359342 c -5.73674,0 -11.67868,0 -17.51763,0" id="path962" inkscape:path-effect="#path-effect964" inkscape:original-d="m 142.02571,89.359342 c -5.73674,2.65e-4 -11.67868,2.65e-4 -17.51763,0">
+          <desc id="desc960">optics:beam</desc>
+        </path>
+        <path style="fill:none;stroke:#000000;stroke-width:0.865;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" d="m 162.02571,95.615093 c 0,-5.418849 0,-10.837431 0,-16.255751" id="path968" inkscape:path-effect="#path-effect970" inkscape:original-d="m 162.02571,95.615093 c 2.6e-4,-5.418849 2.6e-4,-10.837431 0,-16.255751">
+          <desc id="desc966">optics:beam</desc>
+        </path>
+      </g>
+    </g>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m -17.51763,159.86771 c 5.73673,0 11.67868,0 17.51763,0" id="p5" inkscape:path-effect="#path-effect1251" inkscape:original-d="m -17.51763,159.86771 c 5.73673,2.6e-4 11.67868,2.6e-4 17.51763,0">
+      <desc id="desc1247">optics:beam</desc>
+    </path>
+    <path inkscape:original-d="m -23.758815,150 c 5.73673,2.6e-4 11.67868,2.6e-4 17.51763,0" inkscape:path-effect="#path-effect1476" id="path1474" d="m -23.758815,150 c 5.73673,0 11.67868,0 17.51763,0" style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
+      <desc id="desc1472">optics:beam</desc>
+    </path>
+  <svg:path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 22.4824 50 L 0 50"/><svg:path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 50 56.2558 L 50 297"/><svg:path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 60 40 L 60 0"/><svg:path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 87.5176 50 L 210 50"/><svg:path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 0 159.868 L 210 159.868"/></g>
+</svg>
