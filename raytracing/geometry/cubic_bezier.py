@@ -2,8 +2,6 @@
 Module for handling objects composed of cubic bezier curves
 """
 
-import inkex
-
 from functools import lru_cache
 import numpy as np
 from typing import Any, List, Tuple, Optional,  Iterable, Iterator
