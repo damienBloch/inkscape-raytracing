@@ -17,7 +17,6 @@ def englobing_aabbox(aabboxes: List[np.ndarray]) -> np.ndarray:
     return np.array([np.min(aabboxes[:, 0, :], axis=0),
                      np.max(aabboxes[:, 1, :], axis=0)])
 
-
 def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
                     List[float]:
     """
@@ -28,16 +27,16 @@ def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
     """
 
     # For more info see wikipedia: cubic equation
-    if a3 != 0:
+    if not np.isclose(a3, 0):
         a, b, c, d = a3, a2, a1, a0
         p = (3*a*c-b**2)/3/a**2
         q = (2*b**3-9*a*b*c+27*a**2*d)/27/a**3
-        if p == 0:
+        if np.isclose(p, 0):
             t = [np.cbrt(-q)]
         else:
             discr = -(4*p**3+27*q**2)
-            if discr == 0:
-                if q == 0:
+            if np.isclose(discr, 0):
+                if np.isclose(q, 0):
                     t = [0]
                 else:
                     t = [3*q/p, -3*q/2/p]
@@ -50,7 +49,7 @@ def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
                 t = [2*np.sqrt(-p/3)*np.cos(1/3*np.arccos(3*q/2/p*np.sqrt(
                     -3/p))-2*np.pi*k/3) for k in range(3)]
         roots = [x-b/3/a for x in t]
-    elif a2 != 0:
+    elif not np.isclose(a2, 0):
         a, b, c = a2, a1, a0
         discr = b**2 - 4 * a * c
         if discr > 0:
@@ -58,11 +57,11 @@ def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
                 (-b + np.sqrt(discr))/2/a,
                 (-b - np.sqrt(discr))/2/a,
             ]
-        elif discr == 0:
+        elif np.isclose(discr, 0):
             roots = [-b/2/a]
         else:
             roots = []
-    elif a1 != 0:
+    elif not np.isclose(a1, 0):
         a, b = a1, a0
         roots = [-b/a]
     else:
