@@ -9,7 +9,7 @@ from .optic_material import OpticMaterial
 
 
 class Glass(OpticMaterial):
-    """Material reflecting beams that hit it"""
+    """Material that transmits and bends beams hitting it"""
 
     def __init__(self, optical_index):
         super().__init__()
@@ -26,9 +26,9 @@ class Glass(OpticMaterial):
         o, d = shade.local_hit_point, ray.direction
         n = shade.normal
         if shade.hit_geometry.is_inside(ray):
-            n_1, n_2 = self._optical_index, 1
+            n_1, n_2 = self.optical_index, 1
         else:
-            n_1, n_2 = 1, self._optical_index
+            n_1, n_2 = 1, self.optical_index
         r = n_1/n_2
         c1 = -np.dot(d, n)
         u = 1 - r**2*(1-c1**2)
