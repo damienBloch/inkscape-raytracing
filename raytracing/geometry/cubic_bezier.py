@@ -211,10 +211,10 @@ class CubicBezierPath(object):
         self._bezier_list.append(bezier)
         self._aabbox.cache_clear()
 
-    def start_point_info(self) -> Tuple[np.ndarray, np.ndarray]:
+    def endpoint_info(self) -> Tuple[np.ndarray, np.ndarray]:
         """Returns the location of the end point of the path and its tangent"""
-        last_segment = self._bezier_list[0]  # always at least one element
-        return last_segment.eval(0), last_segment.tangent(0)
+        last_segment = self._bezier_list[-1]  # always at least one element
+        return last_segment.eval(1), last_segment.tangent(1)
 
     @property
     def aabbox(self):

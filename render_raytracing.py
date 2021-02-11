@@ -56,8 +56,8 @@ def get_beam(element: inkex.ShapeElement) -> Ray:
     #  The current approach will only return the first beam if composite path
     bezier_path = superpath_to_bezier_segments(get_absolute_path(element))
     a = next(bezier_path.__iter__())
-    start_point, tangent = a.start_point_info()
-    return Ray(start_point, tangent)
+    endpoint, tangent = a.endpoint_info()
+    return Ray(endpoint, tangent)
 
 
 def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
