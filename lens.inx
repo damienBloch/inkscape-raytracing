@@ -4,7 +4,7 @@
     <id>damienbloch.effect.optics.lens</id>
 
     <param name="focal_length" type="float" gui-text="Focal length:" min="-10000." max="10000." precision="3">100.</param>
-    <param name="focal_length_unit" type="enum" gui-text="">
+    <param name="focal_length_unit" type="enum" gui-text=" ">
         <item value="mm">mm</item>
         <item value="cm">cm</item>
         <item value="m">m</item>
@@ -12,7 +12,7 @@
     </param>
 
     <param name="diameter" type="float" gui-text="Diameter:" min="0" max="10000" precision="3">1</param>
-    <param name="diameter_unit" type="enum" gui-text="">
+    <param name="diameter_unit" type="enum" gui-text=" ">
         <item value="in">in</item>
         <item value="mm">mm</item>
         <item value="cm">cm</item>
@@ -20,7 +20,7 @@
     </param>
 
     <param name="edge_thickness" type="float" gui-text="Edge thickness:" min="0" max="10000" precision="3">2</param>
-    <param name="edge_thickness_unit" type="enum" gui-text="">
+    <param name="edge_thickness_unit" type="enum" gui-text=" ">
         <item value="mm">mm</item>
         <item value="in">in</item>
         <item value="cm">cm</item>
