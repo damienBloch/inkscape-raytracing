@@ -7,7 +7,7 @@ An extension for Inkscape that makes it easier to draw optical diagrams.
 
 Allows to annotate Inkscape primitives with optical properties and draws beam paths by taking into account reflection and refraction. 
 
----
+[Bug reports](https://github.com/damienBloch/inkscape-raytracing/issues) or [suggestions](https://github.com/damienBloch/inkscape-raytracing/discussions) are welcome.
 
 # Examples
 
@@ -81,3 +81,4 @@ Note that the borders of the document blocks the beams and all objects outside t
 * Cannot write the properties in a group description. They must be written in the primitives description. 
 * Avoid overlapping or touching elements. It won't cause Inkscape to crash, but might give unexpected results.
 * The same goes for self-intersecting paths.
+* Some elements (like text or clones) are not handled even if they are annotated. If some elements are ignored, try to convert them to paths. 
