@@ -124,12 +124,19 @@ class Tracer(inkex.EffectExtension):
 
         self._document_as_border()
 
+        self._beam_layer = self.add_render_layer()
         for seed in self._beam_seeds:
             if self.is_inside_document(seed["source"]):
                 generated = self._world.propagate_beams(
                         [[(seed["source"], 0)]])
                 for beam in generated:
                     self.plot_beam(beam, seed["node"])
+
+    def add_render_layer(self):
+        svg = self.document.getroot()
+        layer = svg.add(inkex.Layer())
+        layer.label = "rendered_beams"
+        return layer
 
     def process_object(self, obj: inkex.BaseElement) -> None:
         if isinstance(obj, inkex.Group):
@@ -185,8 +192,7 @@ class Tracer(inkex.EffectExtension):
     def is_inside_document(self, ray: Ray) -> bool:
         return self._document_border.geometry.is_inside(ray)
 
-    @staticmethod
-    def plot_beam(beam: List[Tuple[Ray, float]],
+    def plot_beam(self, beam: List[Tuple[Ray, float]],
                   node: inkex.ShapeElement) -> None:
         path = inkex.Path()
         if len(beam) > 0:
@@ -194,7 +200,7 @@ class Tracer(inkex.EffectExtension):
             for ray, t in beam:
                 p1 = ray.origin + t * ray.direction
                 path += [Line(p1[0], p1[1])]
-        element = node.getparent().add(inkex.PathElement())
+        element = self._beam_layer.add(inkex.PathElement())
         element.style = node.get("style")
         element.path = path.transform(-node.composed_transform())
 
