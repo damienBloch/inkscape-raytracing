@@ -124,18 +124,26 @@ class Tracer(inkex.EffectExtension):
 
         self._document_as_border()
 
-        self._beam_layer = self.add_render_layer()
-        for seed in self._beam_seeds:
-            if self.is_inside_document(seed["source"]):
-                generated = self._world.propagate_beams(
-                        [[(seed["source"], 0)]])
-                for beam in generated:
-                    self.plot_beam(beam, seed["node"])
+        if len(self._beam_seeds) > 0:
+            self._beam_layer = self.add_render_layer()
+            for seed in self._beam_seeds:
+                if self.is_inside_document(seed["source"]):
+                    generated = self._world.propagate_beams(
+                            [[(seed["source"], 0)]])
+                    for beam in generated:
+                        self.plot_beam(beam, seed["node"])
 
     def add_render_layer(self):
+        """
+        Looks for an existing layer to render beams into and creates on if
+        not already present
+        """
+        for element in self.document.iter():
+            if element.label == 'rendered_beams':
+                return element
         svg = self.document.getroot()
         layer = svg.add(inkex.Layer())
-        layer.label = "rendered_beams"
+        layer.label = 'rendered_beams'
         return layer
 
     def process_object(self, obj: inkex.BaseElement) -> None:
