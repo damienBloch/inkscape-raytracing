@@ -1,13 +1,13 @@
 Inkscape Ray Optics
 ===================
 
-<img  src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="120">
+<img  src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="180">
 
 An extension for Inkscape that makes it easier to draw optical diagrams. 
 
 Allows to annotate Inkscape primitives with optical properties and draws beam paths by taking into account reflection and refraction. 
 
----
+[Bug reports](https://github.com/damienBloch/inkscape-raytracing/issues) or [suggestions](https://github.com/damienBloch/inkscape-raytracing/discussions) are welcome.
 
 # Examples
 
@@ -18,7 +18,10 @@ Allows to annotate Inkscape primitives with optical properties and draws beam pa
 
 
 # How to install 
-Copy the extension directory in inkscape user extensions directory. 
+
+Copy the extension directory in Inkscape extensions directory. 
+
+Inkscape extensions directory can be found with Edit/Preferences/System/User extensions
 
 Typically for Linux users:
   ```shell
@@ -26,8 +29,16 @@ Typically for Linux users:
   git clone https://github.com/damienBloch/inkscape-raytracing
   ```
   
-Requires python3.6 or above with numpy and Inkscape1.0 or above. 
-
+# Requirements
+  
+Requires [Inkscape1.0](https://inkscape.org/release/inkscape-1.0.2/) or above.
+  
+In addition, this extension also requires the following programs, but they are usually already installed with Inkscape:
+  
+   * [Python3.6](https://www.python.org/downloads/) or above
+   * [NumPy](https://numpy.org/install/)
+   * [Inkex](https://pypi.org/project/inkex/) 
+  
 
 # How to use
 
@@ -70,3 +81,4 @@ Note that the borders of the document blocks the beams and all objects outside t
 * Cannot write the properties in a group description. They must be written in the primitives description. 
 * Avoid overlapping or touching elements. It won't cause Inkscape to crash, but might give unexpected results.
 * The same goes for self-intersecting paths.
+* Some elements (like text or clones) are not handled even if they are annotated. If some elements are ignored, try to convert them to paths. 
