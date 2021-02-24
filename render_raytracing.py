@@ -210,7 +210,7 @@ class Tracer(inkex.EffectExtension):
                 path += [Line(p1[0], p1[1])]
         element = self._beam_layer.add(inkex.PathElement())
         element.style = node.get("style")
-        element.path = path.transform(-node.composed_transform())
+        element.path = path
 
 
 if __name__ == '__main__':
