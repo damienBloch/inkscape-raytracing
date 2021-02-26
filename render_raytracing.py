@@ -23,20 +23,18 @@ class Tracer(inkex.EffectExtension):
         self._beam_seeds = list()
 
         # Ray tracing is only implemented for the following inkex primitives
-        self._filter_primitives = (inkex.PathElement, inkex.Line,
+        self._filter_primitives = (inkex.Group, inkex.Use,
+                                   inkex.PathElement, inkex.Line,
                                    inkex.Polyline, inkex.Polygon,
                                    inkex.Rectangle, inkex.Ellipse,
-                                   inkex.Circle, inkex.Use)
+                                   inkex.Circle,)
 
     def effect(self) -> None:
         """
         Loads the objects and outputs a svg with the beams after propagation
         """
 
-        # In addition to the primitives handled, it is also necessary to
-        # break the groups apart
-        filter_ = self._filter_primitives + (inkex.Group,)
-        for obj in self.svg.selection.filter(filter_).values():
+        for obj in self.svg.selection.filter(self._filter_primitives).values():
             self.process_object(obj)
 
         self._document_as_border()
@@ -51,18 +49,11 @@ class Tracer(inkex.EffectExtension):
                         self.plot_beam(beam, seed["node"])
 
     def process_object(self, obj: inkex.BaseElement) -> None:
-        if isinstance(obj, inkex.Group):
-            self.process_group(obj)
-        elif isinstance(obj, self._filter_primitives):
-            self.process_optical_object(obj)
-
-    def process_group(self, group: inkex.Group) -> None:
-        """Splits the objects inside a group and treats them individually"""
-
-        for obj in group:
-            self.process_object(obj)
-        # TODO : broadcast the information in the group description to all
-        #  children. At this point it is discarded.
+        if isinstance(obj, self._filter_primitives):
+            for child in obj:
+                self.process_object(child)
+            if not isinstance(obj, inkex.Group):
+                self.process_optical_object(obj)
 
     def process_optical_object(self, obj: inkex.ShapeElement) -> None:
         """
