@@ -8,14 +8,10 @@ rgx_float = "[0-9]+(?:.[0-9])*"
 rgx_name = "[a-z,_]*"
 optics_pattern = f"optics *: *(?P<material>{rgx_name})(?:: *(?P<num>{rgx_float}))?"
 
-T = TypeVar('T')
 
-
-def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
-    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
-    a, b = itertools.tee(iterable)
-    next(b, None)
-    return zip(a, b)
+def get_optics_fields(string_: str):
+    fields = re.finditer(optics_pattern, string_.lower())
+    return fields
 
 
 def get_description(element: inkex.BaseElement) -> str:
@@ -38,11 +34,6 @@ def set_description(element: inkex.BaseElement, text: str) -> None:
             child.text = text
 
 
-def get_optics_fields(string_: str):
-    fields = re.finditer(optics_pattern, string_.lower())
-    return fields
-
-
 def clear_description(desc: str) -> str:
     """Removes text corresponding to an optical property"""
 
@@ -51,3 +42,13 @@ def clear_description(desc: str) -> str:
     new_desc = desc.lower()
     new_desc = re.sub(optics_pattern, '', new_desc)
     return new_desc
+
+
+T = TypeVar('T')
+
+
+def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
+    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
+    a, b = itertools.tee(iterable)
+    next(b, None)
+    return zip(a, b)
