@@ -1,8 +1,11 @@
 import abc
+
 import numpy as np
 
 from raytracing.ray import Ray
 from raytracing.shade import ShadeRec
+
+from typing import List
 
 
 class GeometryError(RuntimeError):
@@ -24,12 +27,36 @@ def hit_aabbox(ray: Ray, aabbox: np.ndarray) -> bool:
     # of ray.direction is zero so the warning for floating point error can be
     # ignored for this step
     with np.errstate(invalid='ignore', divide='ignore'):
-        a = 1/ray.direction
+        a = 1 / ray.direction
         t_min = (np.where(a >= 0, p0, p1) - ray.origin) * a
         t_max = (np.where(a >= 0, p1, p0) - ray.origin) * a
     t0 = np.max(t_min)
     t1 = np.min(t_max)
     return (t0 < t1) and (t1 > Ray.min_travel)
+
+
+class AABBox(object):
+    """
+    Implements an axis-aligned bounding box. This is used to accelerate the
+    intersection between a beam and an object. If the beam doesn't hit the
+    bounding box, it is not necessary to do expensive intersection
+    calculations.
+    """
+
+    def __init__(self, lower_left, upper_right):
+        self._corners = np.array([lower_left, upper_right])
+
+    def __eq__(self, other):
+        return np.array_equal(self._corners, other._corners)
+
+    @classmethod
+    def englobing_aabbox(cls, aabboxes: List['AABBox']) -> 'AABBox':
+        """Return a box that contains all boxes in a list"""
+
+        aabboxes_array = np.array([box._corners for box in aabboxes])
+        lower_left = np.min(aabboxes_array[:, 0, :], axis=0)
+        upper_right = np.max(aabboxes_array[:, 1, :], axis=0)
+        return AABBox(lower_left, upper_right)
 
 
 class GeometricObject(abc.ABC):
@@ -51,12 +78,8 @@ class GeometricObject(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def aabbox(self) -> np.ndarray:
-        """Computes an axis aligned bounding box for the object
-
-        :return: [[x_min, y_min], [x_max, y_max]], an array containing the
-            bottom left corner and top right corner of the box
-        """
+    def aabbox(self) -> AABBox:
+        """Computes an axis aligned bounding box for the object"""
 
         pass
 

@@ -11,11 +11,7 @@ from raytracing.shade import ShadeRec
 from .geometric_object import GeometricObject, hit_aabbox
 
 
-def englobing_aabbox(aabboxes: List[np.ndarray]) -> np.ndarray:
-    """Return a aabbox englobing a list of aabboxes"""
-    aabboxes = np.array(aabboxes)
-    return np.array([np.min(aabboxes[:, 0, :], axis=0),
-                     np.max(aabboxes[:, 1, :], axis=0)])
+
 
 
 def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
