@@ -26,7 +26,7 @@ class Tracer(inkex.EffectExtension):
         self._filter_primitives = (inkex.PathElement, inkex.Line,
                                    inkex.Polyline, inkex.Polygon,
                                    inkex.Rectangle, inkex.Ellipse,
-                                   inkex.Circle)
+                                   inkex.Circle, inkex.Use)
 
     def effect(self) -> None:
         """
@@ -126,7 +126,8 @@ class Tracer(inkex.EffectExtension):
                 p1 = ray.origin + t * ray.direction
                 path += [Line(p1[0], p1[1])]
         element = self._beam_layer.add(inkex.PathElement())
-        element.style = node.get("style")
+        # Need to convert to path to get the correct style for inkex.Use
+        element.style = node.to_path_element().style
         element.path = path
 
 
