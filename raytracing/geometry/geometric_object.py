@@ -1,38 +1,15 @@
 import abc
+from typing import List
 
 import numpy as np
 
 from raytracing.ray import Ray
 from raytracing.shade import ShadeRec
 
-from typing import List
-
 
 class GeometryError(RuntimeError):
     def __init__(self, message):
         self.message = message
-
-
-def hit_aabbox(ray: Ray, aabbox: np.ndarray) -> bool:
-    """Tests if a beam intersects the bounding box of the object"""
-
-    # This algorithm uses the properties of IEEE floating-point
-    # arithmetic to correctly handle cases where the ray travels
-    # parallel to a coordinate axis.
-    # See Williams et al. "An efficient and robust ray-box intersection
-    # algorithm" for more details.
-
-    p0, p1 = aabbox
-    # The implementation safely handles the case where an element
-    # of ray.direction is zero so the warning for floating point error can be
-    # ignored for this step
-    with np.errstate(invalid='ignore', divide='ignore'):
-        a = 1 / ray.direction
-        t_min = (np.where(a >= 0, p0, p1) - ray.origin) * a
-        t_max = (np.where(a >= 0, p1, p0) - ray.origin) * a
-    t0 = np.max(t_min)
-    t1 = np.min(t_max)
-    return (t0 < t1) and (t1 > Ray.min_travel)
 
 
 class AABBox(object):
@@ -46,7 +23,7 @@ class AABBox(object):
     def __init__(self, lower_left, upper_right):
         self._corners = np.array([lower_left, upper_right])
 
-    def __eq__(self, other):
+    def __eq__(self, other: 'AABBox'):
         return np.array_equal(self._corners, other._corners)
 
     @classmethod
@@ -57,6 +34,27 @@ class AABBox(object):
         lower_left = np.min(aabboxes_array[:, 0, :], axis=0)
         upper_right = np.max(aabboxes_array[:, 1, :], axis=0)
         return AABBox(lower_left, upper_right)
+
+    def hit(self, ray: Ray) -> bool:
+        """Tests if a beam intersects the bounding box"""
+
+        # This algorithm uses the properties of IEEE floating-point
+        # arithmetic to correctly handle cases where the ray travels
+        # parallel to a coordinate axis.
+        # See Williams et al. "An efficient and robust ray-box intersection
+        # algorithm" for more details.
+
+        p0, p1 = self._corners
+        # The implementation safely handles the case where an element
+        # of ray.direction is zero so the warning for floating point error
+        # can be ignored for this step.
+        with np.errstate(invalid='ignore', divide='ignore'):
+            a = 1 / ray.direction
+            t_min = (np.where(a >= 0, p0, p1) - ray.origin) * a
+            t_max = (np.where(a >= 0, p1, p0) - ray.origin) * a
+        t0 = np.max(t_min)
+        t1 = np.min(t_max)
+        return (t0 < t1) and (t1 > Ray.min_travel)
 
 
 class GeometricObject(abc.ABC):

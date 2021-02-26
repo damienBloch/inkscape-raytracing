@@ -3,19 +3,17 @@ Module for handling objects composed of cubic bezier curves
 """
 
 from functools import lru_cache
+from typing import Any, List, Tuple, Optional, Iterable, Iterator
+
 import numpy as np
-from typing import Any, List, Tuple, Optional,  Iterable, Iterator
 
 from raytracing.ray import orthogonal, Ray
 from raytracing.shade import ShadeRec
-from .geometric_object import GeometricObject, hit_aabbox
-
-
-
+from .geometric_object import GeometricObject, AABBox
 
 
 def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
-                    List[float]:
+        List[float]:
     """
     Returns the real roots X of a cubic polynomial defined as
 
@@ -26,41 +24,42 @@ def cubic_real_roots(a0: float, a1: float, a2: float, a3: float) -> \
     # For more info see wikipedia: cubic equation
     if not np.isclose(a3, 0):
         a, b, c, d = a3, a2, a1, a0
-        p = (3*a*c-b**2)/3/a**2
-        q = (2*b**3-9*a*b*c+27*a**2*d)/27/a**3
+        p = (3 * a * c - b ** 2) / 3 / a ** 2
+        q = (2 * b ** 3 - 9 * a * b * c + 27 * a ** 2 * d) / 27 / a ** 3
         if np.isclose(p, 0):
             t = [np.cbrt(-q)]
         else:
-            discr = -(4*p**3+27*q**2)
+            discr = -(4 * p ** 3 + 27 * q ** 2)
             if np.isclose(discr, 0):
                 if np.isclose(q, 0):
                     t = [0]
                 else:
-                    t = [3*q/p, -3*q/2/p]
+                    t = [3 * q / p, -3 * q / 2 / p]
             elif discr < 0:
                 t = [
-                    np.cbrt(-q/2+np.sqrt(-discr/108)) +
-                    np.cbrt(-q/2-np.sqrt(-discr/108))
+                        np.cbrt(-q / 2 + np.sqrt(-discr / 108)) +
+                        np.cbrt(-q / 2 - np.sqrt(-discr / 108))
                 ]
             else:
-                t = [2*np.sqrt(-p/3)*np.cos(1/3*np.arccos(3*q/2/p*np.sqrt(
-                    -3/p))-2*np.pi*k/3) for k in range(3)]
-        roots = [x-b/3/a for x in t]
+                t = [2 * np.sqrt(-p / 3) * np.cos(
+                    1 / 3 * np.arccos(3 * q / 2 / p * np.sqrt(
+                            -3 / p)) - 2 * np.pi * k / 3) for k in range(3)]
+        roots = [x - b / 3 / a for x in t]
     elif not np.isclose(a2, 0):
         a, b, c = a2, a1, a0
-        discr = b**2 - 4 * a * c
+        discr = b ** 2 - 4 * a * c
         if discr > 0:
             roots = [
-                (-b + np.sqrt(discr))/2/a,
-                (-b - np.sqrt(discr))/2/a,
+                    (-b + np.sqrt(discr)) / 2 / a,
+                    (-b - np.sqrt(discr)) / 2 / a,
             ]
         elif np.isclose(discr, 0):
-            roots = [-b/2/a]
+            roots = [-b / 2 / a]
         else:
             roots = []
     elif not np.isclose(a1, 0):
         a, b = a1, a0
-        roots = [-b/a]
+        roots = [-b / a]
     else:
         roots = []  # Ignore infinite solutions for 0*x = 0
     return roots
@@ -97,35 +96,38 @@ class CubicBezier(object):
 
     def eval(self, s):
         p0, p1, p2, p3 = self._p
-        return (1-s)**3*p0+3*s*(1-s)**2*p1+3*s**2*(1-s)*p2+s**3*p3
+        return (1 - s) ** 3 * p0 + 3 * s * (1 - s) ** 2 * p1 + 3 * s ** 2 * (
+                    1 - s) * p2 + s ** 3 * p3
 
     @property
-    def aabbox(self) -> np.ndarray:
+    def aabbox(self) -> AABBox:
         return self._aabbox()
 
     @lru_cache(maxsize=1)
-    def _aabbox(self) -> np.ndarray:
+    def _aabbox(self) -> AABBox:
         # The box is slightly larger than the minimal box.
         # It prevents the box to have a zero dimension if the object is a line
         # aligned with vertical or horizontal.
-        return np.array([np.min(self._p, axis=0)-1e-6,
-                         np.max(self._p, axis=0)+1e-6])
+        return AABBox(np.min(self._p, axis=0) - 1e-6,
+                      np.max(self._p, axis=0) + 1e-6)
 
     def tangent(self, s: float) -> np.ndarray:
         """Returns the tangent at the curve at curvilinear coordinate s"""
 
         p0, p1, p2, p3 = self._p
-        diff_1 = -3*(p0-3*p1+3*p2-p3)*s**2 + 6*(p0-2*p1+p2)*s-3*(p0-p1)
+        diff_1 = -3 * (p0 - 3 * p1 + 3 * p2 - p3) * s ** 2 + 6 * (
+                    p0 - 2 * p1 + p2) * s - 3 * (p0 - p1)
         # If the first derivative is not zero, it is parallel to the tangent
         if np.linalg.norm(diff_1) > 1e-8:
-            return diff_1/np.linalg.norm(diff_1)
+            return diff_1 / np.linalg.norm(diff_1)
         # but is the first derivative is zero, we need to get the second order
         else:
-            diff_2 = -6*(p0-3*p1+3*p2-p3)*s + 6*(p0-2*p1+p2)
+            diff_2 = -6 * (p0 - 3 * p1 + 3 * p2 - p3) * s + 6 * (
+                        p0 - 2 * p1 + p2)
             if np.linalg.norm(diff_2) > 1e-8:
                 return diff_2 / np.linalg.norm(diff_2)
             else:
-                diff_3 = -6*(p0-3*p1+3*p2-p3)
+                diff_3 = -6 * (p0 - 3 * p1 + 3 * p2 - p3)
                 return diff_3 / np.linalg.norm(diff_3)
 
     def normal(self, s: float) -> np.ndarray:
@@ -154,9 +156,10 @@ class CubicBezier(object):
         a2 = 3 * np.dot(a, p0 - 2 * p1 + p2)
         a3 = np.dot(a, -p0 + 3 * p1 - 3 * p2 + p3)
         roots = cubic_real_roots(a0, a1, a2, a3)
-        intersection_points = [(1-s)**3*p0 + 3*s*(1-s)**2*p1
-                               + 3*s**2*(1-s)*p2 + s**3*p3 for s in roots]
-        travel = [np.dot(X-ray.origin, ray.direction) for X in
+        intersection_points = [(1 - s) ** 3 * p0 + 3 * s * (1 - s) ** 2 * p1
+                               + 3 * s ** 2 * (1 - s) * p2 + s ** 3 * p3 for s
+                               in roots]
+        travel = [np.dot(X - ray.origin, ray.direction) for X in
                   intersection_points]
 
         def valid_domain(s, t):
@@ -165,7 +168,7 @@ class CubicBezier(object):
         return [(s, t) for (s, t) in zip(roots, travel) if valid_domain(s, t)]
 
     def num_hits(self, ray: Ray) -> int:
-        if hit_aabbox(ray, self.aabbox):
+        if self.aabbox.hit(ray):
             return len(self.intersection_beam(ray))
         else:
             return 0
@@ -177,7 +180,7 @@ class CubicBezier(object):
         """
 
         shade = ShadeRec()  # default no hit
-        if hit_aabbox(ray, self.aabbox):
+        if self.aabbox.hit(ray):
             intersect_params = self.intersection_beam(ray)
             travel_dist = [t for (__, t) in intersect_params]
             if len(travel_dist) > 0:  # otherwise error with np.argmin
@@ -213,19 +216,15 @@ class CubicBezierPath(object):
         return last_segment.eval(1), last_segment.tangent(1)
 
     @property
-    def aabbox(self):
+    def aabbox(self) -> AABBox:
         return self._aabbox()
 
     @lru_cache(maxsize=1)
-    def _aabbox(self) -> np.ndarray:
-        """Computes an axis aligned bounding box for the object
-
-        :return: [[x_min, y_min], [x_max, y_max]], an array containing
-            the bottom left corner and top right corner of the box
-        """
+    def _aabbox(self) -> AABBox:
+        """Computes an axis aligned bounding box for the object"""
 
         bezier_aabboxes = [bez.aabbox for bez in self._bezier_list]
-        return englobing_aabbox(bezier_aabboxes)
+        return AABBox.englobing_aabbox(bezier_aabboxes)
 
     def hit(self, ray: Ray) -> ShadeRec:
         """
@@ -234,12 +233,12 @@ class CubicBezierPath(object):
         """
 
         result = ShadeRec()
-        if hit_aabbox(ray, self.aabbox):
+        if self.aabbox.hit(ray):
             result = find_first_hit(ray, self._bezier_list)
         return result
 
     def num_hits(self, ray: Ray) -> int:
-        if hit_aabbox(ray, self.aabbox):
+        if self.aabbox.hit(ray):
             return sum([segment.num_hits(ray) for segment in
                         self._bezier_list])
         else:
@@ -270,19 +269,15 @@ class CompositeCubicBezier(GeometricObject):
         self._aabbox.cache_clear()
 
     @property
-    def aabbox(self) -> np.ndarray:
+    def aabbox(self) -> AABBox:
         return self._aabbox()
 
     @lru_cache(maxsize=1)
-    def _aabbox(self) -> np.ndarray:
-        """Computes an axis aligned bounding box for the object
-
-        :return: [[x_min, y_min], [x_max, y_max]], an array containing
-            the bottom left corner and top right corner of the box
-        """
+    def _aabbox(self) -> AABBox:
+        """Computes an axis aligned bounding box for the object"""
 
         subpaths_aabboxes = [sub.aabbox for sub in self._subpath_list]
-        return englobing_aabbox(subpaths_aabboxes)
+        return AABBox.englobing_aabbox(subpaths_aabboxes)
 
     def hit(self, ray: Ray) -> ShadeRec:
         """
@@ -291,7 +286,7 @@ class CompositeCubicBezier(GeometricObject):
         """
 
         result = ShadeRec()
-        if hit_aabbox(ray, self.aabbox):
+        if self.aabbox.hit(ray):
             result = find_first_hit(ray, self._subpath_list)
             result.hit_geometry = self
         return result
@@ -302,7 +297,7 @@ class CompositeCubicBezier(GeometricObject):
         return (self.num_hits(ray) % 2) == 1
 
     def num_hits(self, ray: Ray) -> int:
-        if hit_aabbox(ray, self.aabbox):
+        if self.aabbox.hit(ray):
             return sum([path.num_hits(ray) for path in
                         self._subpath_list])
         else:
