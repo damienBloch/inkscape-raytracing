@@ -44,11 +44,10 @@ class Tracer(inkex.EffectExtension):
         if len(self._beam_seeds) > 0:
             self._beam_layer = self.add_render_layer()
             for seed in self._beam_seeds:
-                if self.is_inside_document(seed["source"]):
-                    generated = self._world.propagate_beams(
-                            [[(seed["source"], 0)]])
+                if self.is_inside_document(seed['source']):
+                    generated = self._world.propagate_beams(seed['source'])
                     for beam in generated:
-                        self.plot_beam(beam, seed["node"])
+                        self.plot_beam(beam, seed['node'])
 
     def process_object(self, obj: inkex.BaseElement) -> None:
         if isinstance(obj, inkex.Group):
@@ -77,7 +76,7 @@ class Tracer(inkex.EffectExtension):
             material = materials[0]
             if isinstance(material, mat.BeamSeed):
                 for ray in get_beams(obj):
-                    self._beam_seeds.append({"source": ray, "node": obj})
+                    self._beam_seeds.append(dict(source=ray, node=obj))
             else:
                 geometry = get_geometry(obj)
                 opt_obj = OpticalObject(geometry, material)
@@ -117,13 +116,12 @@ class Tracer(inkex.EffectExtension):
     def is_inside_document(self, ray: Ray) -> bool:
         return self._document_border.geometry.is_inside(ray)
 
-    def plot_beam(self, beam: List[Tuple[Ray, float]],
-                  node: inkex.ShapeElement) -> None:
+    def plot_beam(self, beam: List[Ray], node: inkex.ShapeElement) -> None:
         path = inkex.Path()
         if len(beam) > 0:
-            path += [Move(beam[0][0].origin[0], beam[0][0].origin[1])]
-            for ray, t in beam:
-                p1 = ray.origin + t * ray.direction
+            path += [Move(beam[0].origin[0], beam[0].origin[1])]
+            for ray in beam:
+                p1 = ray.origin + ray.travel * ray.direction
                 path += [Line(p1[0], p1[1])]
         element = self._beam_layer.add(inkex.PathElement())
         # Need to convert to path to get the correct style for inkex.Use

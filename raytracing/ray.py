@@ -1,12 +1,6 @@
 import numpy as np
 
 
-def orthogonal(vec):
-    """Returns an orthogonal vector while conserving the norm"""
-
-    return np.array([-vec[1], vec[0]])
-
-
 class Ray(object):
     """This class implements a 2D line with an origin point and a direction.
 
@@ -17,10 +11,11 @@ class Ray(object):
     :vartype direction: array_like of size 2
     """
 
-    def __init__(self, origin, direction):
+    def __init__(self, origin, direction, travel=np.nan):
         self.origin: np.ndarray = np.array(origin)
         self.direction: np.ndarray = \
-            np.array(direction)/np.linalg.norm(direction)
+            np.array(direction) / np.linalg.norm(direction)
+        self.travel = travel
 
     def __repr__(self):
         return f"Ray({self.origin}, {self.direction})"
@@ -29,3 +24,9 @@ class Ray(object):
     # from its origin, the collision is ignored. This prevents infinite
     # collision in case the origin of a beam is on the surface of an object
     min_travel: float = 1e-8
+
+
+def orthogonal(vec):
+    """Returns an orthogonal vector while conserving the norm"""
+
+    return np.array([-vec[1], vec[0]])
