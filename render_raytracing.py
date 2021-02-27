@@ -2,7 +2,7 @@
 Extension for rendering beams in 2D optics with Inkscape
 """
 
-from typing import Tuple, List, Union, Iterable
+from typing import List, Union, Iterable
 
 import inkex
 import numpy as np
@@ -142,19 +142,18 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
     """Run through the description to extract the material properties"""
 
     materials = list()
-    mat_name = {
-            "beam_dump": mat.BeamDump, "mirror": mat.Mirror,
-            "beam_splitter": mat.BeamSplitter, "beam": mat.BeamSeed,
-            "glass": mat.Glass
-    }
+    class_alias = dict(beam_dump=mat.BeamDump, mirror=mat.Mirror,
+                       beam_splitter=mat.BeamSplitter, beam=mat.BeamSeed,
+                       glass=mat.Glass)
     for match in get_optics_fields(desc.lower()):
         material_type = match.group('material')
-        prop = match.group('num')
-        if material_type in mat_name:
-            if material_type == "glass":  # only material with parameter
-                materials.append(mat_name[material_type](float(prop)))
+        prop_str = match.group('num')
+        if material_type in class_alias:
+            if material_type == 'glass' and prop_str is not None:
+                optical_index = float(prop_str)
+                materials.append(class_alias[material_type](optical_index))
             else:
-                materials.append(mat_name[material_type]())
+                materials.append(class_alias[material_type]())
     return materials
 
 
@@ -167,7 +166,7 @@ def raise_err_num_materials(obj):
 def get_beams(element: inkex.ShapeElement) -> Iterable[Ray]:
     """
     Returns a beam with origin at the endpoint of the path and tangent to
-    the path
+    the path.
     """
     bezier_path = superpath_to_bezier_segments(get_absolute_path(element))
     for subpath in bezier_path:
