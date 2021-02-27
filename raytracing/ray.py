@@ -11,7 +11,7 @@ class Ray(object):
     :vartype direction: array_like of size 2
     """
 
-    def __init__(self, origin, direction, travel=np.nan):
+    def __init__(self, origin, direction, travel=0):
         self.origin: np.ndarray = np.array(origin)
         self.direction: np.ndarray = \
             np.array(direction) / np.linalg.norm(direction)

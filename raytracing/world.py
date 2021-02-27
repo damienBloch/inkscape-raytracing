@@ -83,7 +83,7 @@ class World(object):
         new_beams = list()
         for index, beam in enumerate(beams):
             ray = beam[-1]
-            if np.isnan(ray.travel):
+            if ray.travel <= 0:
                 shade, material = self.first_hit(ray)
                 new_seeds = material.generated_beams(ray, shade)
                 beams[index][-1] = Ray(ray.origin, ray.direction,
