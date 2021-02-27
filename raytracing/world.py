@@ -79,20 +79,20 @@ class World(object):
                       f"not all beams have been rendered."
             warnings.warn(err_msg)
             return beams
-
-        new_beams = list()
-        for index, beam in enumerate(beams):
-            ray = beam[-1]
-            if ray.travel <= 0:
-                shade, material = self.first_hit(ray)
-                new_seeds = material.generated_beams(ray, shade)
-                beams[index][-1] = Ray(ray.origin, ray.direction,
-                                       shade.travel_dist)
-                if len(new_seeds) == 0:
-                    new_beams.append(beams[index])
-                for seed in new_seeds:
-                    generated_beams = self._propagate_beams([[seed]],
-                                                            depth + 1)
-                    for new_beam in generated_beams:
-                        new_beams.append(beams[index] + new_beam)
-        return new_beams
+        else:
+            new_beams = list()
+            for index, beam in enumerate(beams):
+                ray = beam[-1]
+                if ray.travel <= 0:
+                    shade, material = self.first_hit(ray)
+                    new_seeds = material.generated_beams(ray, shade)
+                    beams[index][-1] = Ray(ray.origin, ray.direction,
+                                           shade.travel_dist)
+                    if len(new_seeds) == 0:
+                        new_beams.append(beams[index])
+                    for seed in new_seeds:
+                        generated_beams = self._propagate_beams([[seed]],
+                                                                depth + 1)
+                        for new_beam in generated_beams:
+                            new_beams.append(beams[index] + new_beam)
+            return new_beams
