@@ -81,4 +81,5 @@ Note that the borders of the document blocks the beams and all objects outside t
 * Cannot write the properties in a group description. They must be written in the primitives description. 
 * Avoid overlapping or touching elements. It won't cause Inkscape to crash, but might give unexpected results.
 * The same goes for self-intersecting paths.
-* Some elements (like text or clones) are not handled even if they are annotated. If some elements are ignored, try to convert them to paths. 
+* Text elements are ignored whatever their description. If they need to be considered, they must be converted to path first.
+* It is possible to use cloned object (Edit/Clone) that mirror all changes applied to the original. In this case the description is inferred from the original description and the clone description is ignored. Cloned groups are not correctly handled.  
