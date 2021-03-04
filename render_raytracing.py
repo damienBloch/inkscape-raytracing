@@ -117,11 +117,11 @@ class Tracer(inkex.EffectExtension):
 
     def add_render_layer(self):
         """
-        Looks for an existing layer to render beams into and creates on if
+        Looks for an existing layer to render beams into and creates one if
         not already present.
         """
         for element in self.document.iter():
-            if element.label == 'rendered_beams':
+            if element.get('inkscape:label') == 'rendered_beams':
                 return element
         svg = self.document.getroot()
         layer = svg.add(inkex.Layer())
