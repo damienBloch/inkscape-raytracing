@@ -2,7 +2,7 @@
 Extension for rendering beams in 2D optics with Inkscape
 """
 
-from typing import Tuple, List, Union, Iterable
+from typing import Tuple, List, Union, Iterable, Optional
 
 import inkex
 import numpy as np
@@ -50,10 +50,33 @@ class Tracer(inkex.EffectExtension):
 
     def process_object(self, obj: inkex.BaseElement) -> None:
         if isinstance(obj, self._filter_primitives):
-            for child in obj:
-                self.process_object(child)
-            if not isinstance(obj, inkex.Group):
+            if isinstance(obj, inkex.Group):
+                self.process_group(obj)
+            elif isinstance(obj, inkex.Use):
+                self.process_clone(obj)
+            else:
                 self.process_optical_object(obj)
+
+    def process_group(self, group: inkex.Group):
+        for child in group:
+            self.process_object(child)
+
+    def process_clone(self, clone: inkex.Use):
+        copy = self.clone_unlinked_copy(clone)
+        self.process_object(copy)
+
+    def clone_unlinked_copy(self, clone: inkex.Use) \
+            -> Optional[inkex.ShapeElement]:
+        """Creates a copy of the original with all transformations applied"""
+        ref = clone.get('xlink:href')
+        if ref is None:
+            return None
+        else:
+            href = self.svg.getElementById(ref.strip('#'))
+            copy = href.copy()
+            copy.transform = clone.composed_transform() * copy.transform
+            copy.style = clone.style + copy.style
+            return copy
 
     def process_optical_object(self, obj: inkex.ShapeElement) -> None:
         """
@@ -95,7 +118,7 @@ class Tracer(inkex.EffectExtension):
     def add_render_layer(self):
         """
         Looks for an existing layer to render beams into and creates on if
-        not already present
+        not already present.
         """
         for element in self.document.iter():
             if element.label == 'rendered_beams':
