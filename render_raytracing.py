@@ -2,7 +2,7 @@
 Extension for rendering beams in 2D optics with Inkscape
 """
 
-from typing import List, Union, Iterable
+from typing import List, Union, Iterable, Optional
 
 import inkex
 import numpy as np
@@ -23,20 +23,18 @@ class Tracer(inkex.EffectExtension):
         self._beam_seeds = list()
 
         # Ray tracing is only implemented for the following inkex primitives
-        self._filter_primitives = (inkex.PathElement, inkex.Line,
+        self._filter_primitives = (inkex.Group, inkex.Use,
+                                   inkex.PathElement, inkex.Line,
                                    inkex.Polyline, inkex.Polygon,
                                    inkex.Rectangle, inkex.Ellipse,
-                                   inkex.Circle, inkex.Use)
+                                   inkex.Circle,)
 
     def effect(self) -> None:
         """
         Loads the objects and outputs a svg with the beams after propagation
         """
 
-        # In addition to the primitives handled, it is also necessary to
-        # break the groups apart
-        filter_ = self._filter_primitives + (inkex.Group,)
-        for obj in self.svg.selection.filter(filter_).values():
+        for obj in self.svg.selection.filter(self._filter_primitives).values():
             self.process_object(obj)
 
         self._document_as_border()
@@ -50,18 +48,34 @@ class Tracer(inkex.EffectExtension):
                         self.plot_beam(beam, seed['node'])
 
     def process_object(self, obj: inkex.BaseElement) -> None:
-        if isinstance(obj, inkex.Group):
-            self.process_group(obj)
-        elif isinstance(obj, self._filter_primitives):
-            self.process_optical_object(obj)
+        if isinstance(obj, self._filter_primitives):
+            if isinstance(obj, inkex.Group):
+                self.process_group(obj)
+            elif isinstance(obj, inkex.Use):
+                self.process_clone(obj)
+            else:
+                self.process_optical_object(obj)
 
-    def process_group(self, group: inkex.Group) -> None:
-        """Splits the objects inside a group and treats them individually"""
+    def process_group(self, group: inkex.Group):
+        for child in group:
+            self.process_object(child)
 
-        for obj in group:
-            self.process_object(obj)
-        # TODO : broadcast the information in the group description to all
-        #  children. At this point it is discarded.
+    def process_clone(self, clone: inkex.Use):
+        copy = self.clone_unlinked_copy(clone)
+        self.process_object(copy)
+
+    def clone_unlinked_copy(self, clone: inkex.Use) \
+            -> Optional[inkex.ShapeElement]:
+        """Creates a copy of the original with all transformations applied"""
+        ref = clone.get('xlink:href')
+        if ref is None:
+            return None
+        else:
+            href = self.svg.getElementById(ref.strip('#'))
+            copy = href.copy()
+            copy.transform = clone.composed_transform() * copy.transform
+            copy.style = clone.style + copy.style
+            return copy
 
     def process_optical_object(self, obj: inkex.ShapeElement) -> None:
         """
@@ -102,11 +116,11 @@ class Tracer(inkex.EffectExtension):
 
     def add_render_layer(self):
         """
-        Looks for an existing layer to render beams into and creates on if
-        not already present
+        Looks for an existing layer to render beams into and creates one if
+        not already present.
         """
         for element in self.document.iter():
-            if element.get('label') == 'rendered_beams':
+            if element.get('inkscape:label') == 'rendered_beams':
                 return element
         svg = self.document.getroot()
         layer = svg.add(inkex.Layer())
@@ -166,7 +180,7 @@ def raise_err_num_materials(obj):
 def get_beams(element: inkex.ShapeElement) -> Iterable[Ray]:
     """
     Returns a beam with origin at the endpoint of the path and tangent to
-    the path.
+    the path
     """
     bezier_path = superpath_to_bezier_segments(get_absolute_path(element))
     for subpath in bezier_path:
