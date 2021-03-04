@@ -106,7 +106,7 @@ class Tracer(inkex.EffectExtension):
         not already present
         """
         for element in self.document.iter():
-            if element.label == 'rendered_beams':
+            if element.get('label') == 'rendered_beams':
                 return element
         svg = self.document.getroot()
         layer = svg.add(inkex.Layer())
