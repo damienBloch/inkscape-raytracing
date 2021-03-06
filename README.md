@@ -1,7 +1,6 @@
-<img  src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="180" align="right"/>
+<img  src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="150" align="right"/>
 
-Inkscape Ray Optics
-===================
+# Inkscape Ray Optics
 
 An extension for Inkscape that makes it easier to draw optical diagrams. 
 
@@ -9,15 +8,13 @@ Allows to annotate Inkscape primitives with optical properties and draws beam pa
 
 [Bug reports](https://github.com/damienBloch/inkscape-raytracing/issues) or [suggestions](https://github.com/damienBloch/inkscape-raytracing/discussions) are welcome.
 
-# Examples
+## Examples
 
 <img src="./pictures/sphere.svg"  width="700">
+
 <img src="./pictures/schematic.svg"  width="700">
 
-
-
-
-# How to install 
+## How to install 
 
 Copy the extension directory in Inkscape extensions directory. 
 
@@ -29,8 +26,8 @@ Typically for Linux users:
   git clone https://github.com/damienBloch/inkscape-raytracing
   ```
   
-# Requirements
-  
+## Requirements
+ 
 Requires [Inkscape1.0](https://inkscape.org/release/inkscape-1.0.2/) or above.
   
 In addition, this extension also requires the following programs, but they are usually already installed with Inkscape:
@@ -40,9 +37,9 @@ In addition, this extension also requires the following programs, but they are u
    * [Inkex](https://pypi.org/project/inkex/) 
   
 
-# How to use
+## How to use
 
-## 1. For each optical element or group of elements, select it and choose its material with Extenstions/Optics/Set material as:
+### 1. For each optical element or group of elements, select it and choose its material with Extenstions/Optics/Set material as:
 
 The material can be one of the following:
 
@@ -62,13 +59,13 @@ It is possible to add complementary text in the description. If it doesn't have 
 
 
 
-## 2. Select the elements to render and run the extension:
+### 2. Select the elements to render and run the extension:
 
 <img src="./pictures/ray_tracing_2.png"  width="1000">
 
 
 
-## 3. This will trace all the beams originated from an `optics:beam` element:
+### 3. This will trace all the beams originated from an `optics:beam` element:
 
 <img src="./pictures/ray_tracing_3.png"  width="1000">
 
@@ -76,7 +73,7 @@ Note that the borders of the document blocks the beams and all objects outside t
 
 
 
-# Known limitations
+## Known limitations
 
 * Cannot write the properties in a group description. They must be written in the primitives description. 
 * Avoid overlapping or touching elements. It won't cause Inkscape to crash, but might give unexpected results.
