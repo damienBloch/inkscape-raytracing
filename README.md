@@ -69,9 +69,11 @@ It is possible to add complementary text in the description. If it doesn't have 
 
 <img src="./pictures/ray_tracing_2.png"  width="1000">
 
-### 3. This will trace all the beams originated from an `optics:beam` element:
+### 3. This will trace all the beams originated from a beam element:
 
 <img src="./pictures/ray_tracing_3.png"  width="1000">
+
+The beams are added to a new layer `rendered_beams`.
 
 Note that the borders of the document blocks the beams and all objects outside the document page will be ignored.
 
@@ -89,5 +91,4 @@ Note that the borders of the document blocks the beams and all objects outside t
 * Avoid overlapping or touching elements. It won't cause Inkscape to crash, but might give unexpected results.
 * The same goes for self-intersecting paths.
 * Text elements are ignored whatever their description. If they need to be considered, they must be converted to path first.
-* Sometimes a repeated use of the extension slows down Inkscape. The latest version of Inkscape (1.1alpha) appears to be more stable to this regards, but it is probably safer to save often.
-
+* Sometimes, a repeated use of the extension slows down Inkscape. The latest version of Inkscape (1.1alpha) appears to be more stable to this regards, but it is probably safer to save often.
