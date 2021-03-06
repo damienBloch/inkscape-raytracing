@@ -77,6 +77,11 @@ It is possible to add complementary text in the description. If it doesn't have 
 
 Note that the borders of the document blocks the beams and all objects outside the document page will be ignored.
 
+## Tips
+
+* Using `Extensions > Optics > Lens...` adds a lens to the document with the right radius of curvature to get the desired focal length.
+* For frequent use, it is possible to bind an extension to a hotkey with `Edit > Preferences > Interface > Keyboard Shortcuts > Extensions`. 
+* This extension is compatible with clone objects (`Edit > Clone`). They are symbolic clones that mirrors all changes applied to the original object. 
 
 
 ## Known limitations
@@ -85,4 +90,5 @@ Note that the borders of the document blocks the beams and all objects outside t
 * Avoid overlapping or touching elements. It won't cause Inkscape to crash, but might give unexpected results.
 * The same goes for self-intersecting paths.
 * Text elements are ignored whatever their description. If they need to be considered, they must be converted to path first.
-* It is possible to use cloned object (Edit/Clone) that mirror all changes applied to the original. In this case the description is inferred from the original description and the clone description is ignored. 
+* Sometimes a repeated use of the extension slows down Inkscape. The latest version of Inkscape (1.1alpha) appears to be more stable to this regards, but it is probably safer to save often.
+
