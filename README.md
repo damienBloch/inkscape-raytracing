@@ -1,7 +1,7 @@
+<img  src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="180" align="right"/>
+
 Inkscape Ray Optics
 ===================
-
-<img  src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="180">
 
 An extension for Inkscape that makes it easier to draw optical diagrams. 
 
