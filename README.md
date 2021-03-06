@@ -26,7 +26,7 @@ Copy the extension directory in Inkscape extensions directory.
 
 Inkscape extensions directory can be found with Edit > Preferences > System > User extensions.
 
-Typically for Linux users:
+For Linux users this can typically be done with:
   ```shell
   cd ~/.config/inkscape/extensions
   git clone https://github.com/damienBloch/inkscape-raytracing
@@ -43,9 +43,11 @@ In addition, this extension also requires the following programs, but they are u
    * [Inkex](https://pypi.org/project/inkex/) 
   
 
-## How to use
+## How to use 
 
-### 1. For each optical element or group of elements, select it and choose its material with Extenstions/Optics/Set material as:
+### 1. For each optical element or group of elements, select it and choose its material with `Extensions > Optics > Set material as...`:
+
+![](./pictures/ray_tracing_1.png)
 
 The material can be one of the following:
 
@@ -56,8 +58,6 @@ The material can be one of the following:
   * `Glass`: with optical index. Transmits and bends a beam depending on its optical index. **Element must be a closed shape**.
 
 This will automatically write some text in the element description. This text is used to reccord the properties of the elements. It is also possible to directly write the text in the description.
-
-![](./pictures/ray_tracing_1.png)
   
 An element can have at most one optical property and will be ignored if it has two or more.
 
@@ -65,17 +65,16 @@ It is possible to add complementary text in the description. If it doesn't have 
 
 
 
-### 2. Select the elements to render and run the extension:
+### 2. Select the elements to render and run the extension with `Extensions > Optics > Ray Tracing`:
 
 <img src="./pictures/ray_tracing_2.png"  width="1000">
-
-
 
 ### 3. This will trace all the beams originated from an `optics:beam` element:
 
 <img src="./pictures/ray_tracing_3.png"  width="1000">
 
 Note that the borders of the document blocks the beams and all objects outside the document page will be ignored.
+
 
 ## Tips
 
