@@ -24,7 +24,7 @@ Allows to annotate Inkscape primitives with optical properties and draws beam pa
 
 Copy the extension directory in Inkscape extensions directory. 
 
-Inkscape extensions directory can be found with Edit/Preferences/System/User extensions
+Inkscape extensions directory can be found with Edit > Preferences > System > User extensions.
 
 Typically for Linux users:
   ```shell
@@ -34,7 +34,7 @@ Typically for Linux users:
   
 ## Requirements
  
-Requires [Inkscape1.0](https://inkscape.org/release/inkscape-1.0.2/) or above.
+Requires [Inkscape1.0](https://inkscape.org/release/) or above.
   
 In addition, this extension also requires the following programs, but they are usually already installed with Inkscape:
   
