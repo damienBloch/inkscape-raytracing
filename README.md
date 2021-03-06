@@ -1,4 +1,4 @@
-<img  src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="150" align="right"/>
+<img  src="https://github.com/damienBloch/inkscape-raytracing/blob/master/pictures/logo.jpeg" height="170" align="right"/>
 
 # Inkscape Ray Optics
 
@@ -10,9 +10,15 @@ Allows to annotate Inkscape primitives with optical properties and draws beam pa
 
 ## Examples
 
-<img src="./pictures/sphere.svg"  width="700">
 
-<img src="./pictures/schematic.svg"  width="700">
+| <img src="./pictures/sphere.svg"  width="500"> |
+|:--:|
+| *Beams through a sphere* |
+
+
+| <img src="./pictures/schematic.svg"  width="500"> |
+|:--:|
+| *Microscope alignment* |
 
 ## How to install 
 
