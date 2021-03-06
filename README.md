@@ -47,7 +47,7 @@ In addition, this extension also requires the following programs, but they are u
 
 ### 1. For each optical element or group of elements, select it and choose its material with `Extensions > Optics > Set material as...`:
 
-![](./pictures/ray_tracing_1.png)
+<img src="./pictures/ray_tracing_1.png"  width="800">
 
 The material can be one of the following:
 
@@ -67,11 +67,11 @@ It is possible to add complementary text in the description. If it doesn't have 
 
 ### 2. Select the elements to render and run the extension with `Extensions > Optics > Ray Tracing`:
 
-<img src="./pictures/ray_tracing_2.png"  width="1000">
+<img src="./pictures/ray_tracing_2.png"  width="800">
 
 ### 3. This will trace all the beams originated from a beam element:
 
-<img src="./pictures/ray_tracing_3.png"  width="1000">
+<img src="./pictures/ray_tracing_3.png"  width="800">
 
 The beams are added to a new layer `rendered_beams`.
 
