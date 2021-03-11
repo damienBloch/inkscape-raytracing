@@ -4,8 +4,8 @@ from typing import TypeVar, Iterator, Tuple
 
 import inkex
 
-rgx_float = "[0-9]+(?:.[0-9])*"
-rgx_name = "[a-z,_]*"
+rgx_float = r'[-+]?(\d+([.,]\d*)?|[.,]\d+)([eE][-+]?\d+)?'
+rgx_name = '[a-z,_]*'
 optics_pattern = re.compile(
     f"optics *: *(?P<material>{rgx_name})(?:: *(?P<num>{rgx_float}))?")
 

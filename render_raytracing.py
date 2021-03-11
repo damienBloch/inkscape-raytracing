@@ -194,8 +194,9 @@ def get_absolute_path(obj: inkex.ShapeElement) -> inkex.CubicSuperPath:
     return transformed_path.to_superpath()
 
 
-def superpath_to_bezier_segments(superpath: inkex.CubicSuperPath) \
-        -> geom.CompositeCubicBezier:
+def superpath_to_bezier_segments(
+        superpath: inkex.CubicSuperPath
+) -> geom.CompositeCubicBezier:
     """
     Converts a superpath with a representation
     [Subpath0[handle0_0, point0, handle0_1], ...], ...]
