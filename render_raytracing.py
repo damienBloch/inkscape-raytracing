@@ -109,8 +109,8 @@ class Tracer(inkex.EffectExtension):
                 geom.CubicBezier(np.array([[0, 0], [0, 0], [w, 0], [w, 0]])),
                 geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
                 geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
-                geom.CubicBezier(
-                        np.array([[0, h], [0, h], [0, 0], [0, 0]]))])])
+                geom.CubicBezier(np.array([[0, h], [0, h], [0, 0], [0, 0]])),
+        ])])
         self._document_border = OpticalObject(contour_geometry, mat.BeamDump())
         self._world.add_object(self._document_border)
 
