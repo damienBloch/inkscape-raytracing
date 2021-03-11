@@ -54,7 +54,7 @@ class SetMaterial(inkex.Effect):
         if material_name is not None:
             new_desc += f'optics:{material_name}'
             if material_name == 'glass':
-                new_desc += f':{self.options.optical_index}'
+                new_desc += f':{self.options.optical_index:.4f}'
         set_description(obj, new_desc)
 
 

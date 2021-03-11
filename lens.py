@@ -103,7 +103,7 @@ class Lens(inkex.GenerateExtension):
         closed_path = inkex.Path(inkex.CubicSuperPath([lens_path]))
         closed_path.close()
         lens.path = closed_path.transform(Transform('rotate(90)'))
-        set_description(lens, f"optics:glass:{optical_index}")
+        set_description(lens, f"optics:glass:{optical_index:.4f}")
         yield lens
 
 
