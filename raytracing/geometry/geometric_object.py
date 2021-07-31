@@ -1,5 +1,5 @@
-import abc
-from typing import List
+from abc import abstractmethod
+from typing import List, Protocol
 
 import numpy as np
 
@@ -12,7 +12,7 @@ class GeometryError(RuntimeError):
         self.message = message
 
 
-class AABBox(object):
+class AABBox:
     """
     Implements an axis-aligned bounding box. This is used to accelerate the
     intersection between a beam and an object. If the beam doesn't hit the
@@ -23,11 +23,11 @@ class AABBox(object):
     def __init__(self, lower_left, upper_right):
         self._corners = np.array([lower_left, upper_right])
 
-    def __eq__(self, other: 'AABBox'):
+    def __eq__(self, other: "AABBox"):
         return np.array_equal(self._corners, other._corners)
 
     @classmethod
-    def englobing_aabbox(cls, aabboxes: List['AABBox']) -> 'AABBox':
+    def englobing_aabbox(cls, aabboxes: List["AABBox"]) -> "AABBox":
         """Return a box that contains all boxes in a list"""
 
         aabboxes_array = np.array([box._corners for box in aabboxes])
@@ -48,7 +48,7 @@ class AABBox(object):
         # The implementation safely handles the case where an element
         # of ray.direction is zero so the warning for floating point error
         # can be ignored for this step.
-        with np.errstate(invalid='ignore', divide='ignore'):
+        with np.errstate(invalid="ignore", divide="ignore"):
             a = 1 / ray.direction
             t_min = (np.where(a >= 0, p0, p1) - ray.origin) * a
             t_max = (np.where(a >= 0, p1, p0) - ray.origin) * a
@@ -57,13 +57,10 @@ class AABBox(object):
         return (t0 < t1) and (t1 > Ray.min_travel)
 
 
-class GeometricObject(abc.ABC):
-    """Abstract class for a geometric object (line, sphere, lens, ...)"""
+class GeometricObject(Protocol):
+    """Protocol for a geometric object (line, sphere, lens, ...)"""
 
-    def __init__(self):
-        pass
-
-    @abc.abstractmethod
+    @abstractmethod
     def hit(self, ray: Ray) -> ShadeRec:
         """Tests the collision of a beam with the object.
 
@@ -71,24 +68,21 @@ class GeometricObject(abc.ABC):
         :return: A shade indicating if a collision occurred and in
             this case it contains the information of the hit point
         """
-
-        pass
+        raise NotImplementedError
 
     @property
-    @abc.abstractmethod
+    @abstractmethod
     def aabbox(self) -> AABBox:
         """Computes an axis aligned bounding box for the object"""
+        raise NotImplementedError
 
-        pass
-
-    @abc.abstractmethod
+    @abstractmethod
     def is_inside(self, ray: Ray) -> bool:
-        """Indicates is a point is inside or outside of the object
+        """Indicates if a point is inside or outside of the object
 
         :params point:  The point to be checked, array [x, y] of size 2
         :return: True if the point is inside the object, False otherwise
         :raise GeometryError: if the instantiated object has no well defined
             inside and outside
         """
-
-        pass
+        raise NotImplementedError
