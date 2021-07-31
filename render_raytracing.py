@@ -23,11 +23,17 @@ class Tracer(inkex.EffectExtension):
         self._beam_seeds = list()
 
         # Ray tracing is only implemented for the following inkex primitives
-        self._filter_primitives = (inkex.Group, inkex.Use,
-                                   inkex.PathElement, inkex.Line,
-                                   inkex.Polyline, inkex.Polygon,
-                                   inkex.Rectangle, inkex.Ellipse,
-                                   inkex.Circle,)
+        self._filter_primitives = (
+            inkex.Group,
+            inkex.Use,
+            inkex.PathElement,
+            inkex.Line,
+            inkex.Polyline,
+            inkex.Polygon,
+            inkex.Rectangle,
+            inkex.Ellipse,
+            inkex.Circle,
+        )
 
     def effect(self) -> None:
         """
@@ -42,10 +48,10 @@ class Tracer(inkex.EffectExtension):
         if len(self._beam_seeds) > 0:
             self._beam_layer = self.add_render_layer()
             for seed in self._beam_seeds:
-                if self.is_inside_document(seed['source']):
-                    generated = self._world.propagate_beams(seed['source'])
+                if self.is_inside_document(seed["source"]):
+                    generated = self._world.propagate_beams(seed["source"])
                     for beam in generated:
-                        self.plot_beam(beam, seed['node'])
+                        self.plot_beam(beam, seed["node"])
 
     def process_object(self, obj: inkex.BaseElement) -> None:
         if isinstance(obj, self._filter_primitives):
@@ -64,14 +70,13 @@ class Tracer(inkex.EffectExtension):
         copy = self.clone_unlinked_copy(clone)
         self.process_object(copy)
 
-    def clone_unlinked_copy(self, clone: inkex.Use) \
-            -> Optional[inkex.ShapeElement]:
+    def clone_unlinked_copy(self, clone: inkex.Use) -> Optional[inkex.ShapeElement]:
         """Creates a copy of the original with all transformations applied"""
-        ref = clone.get('xlink:href')
+        ref = clone.get("xlink:href")
         if ref is None:
             return None
         else:
-            href = self.svg.getElementById(ref.strip('#'))
+            href = self.svg.getElementById(ref.strip("#"))
             copy = href.copy()
             copy.transform = clone.composed_transform() * copy.transform
             copy.style = clone.style + copy.style
@@ -103,14 +108,20 @@ class Tracer(inkex.EffectExtension):
         """
 
         svg = self.document.getroot()
-        w = self.svg.unittouu(svg.get('width'))
-        h = self.svg.unittouu(svg.get('height'))
-        contour_geometry = geom.CompositeCubicBezier([geom.CubicBezierPath([
-                geom.CubicBezier(np.array([[0, 0], [0, 0], [w, 0], [w, 0]])),
-                geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
-                geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
-                geom.CubicBezier(np.array([[0, h], [0, h], [0, 0], [0, 0]])),
-        ])])
+        w = self.svg.unittouu(svg.get("width"))
+        h = self.svg.unittouu(svg.get("height"))
+        contour_geometry = geom.CompositeCubicBezier(
+            [
+                geom.CubicBezierPath(
+                    [
+                        geom.CubicBezier(np.array([[0, 0], [0, 0], [w, 0], [w, 0]])),
+                        geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
+                        geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
+                        geom.CubicBezier(np.array([[0, h], [0, h], [0, 0], [0, 0]])),
+                    ]
+                )
+            ]
+        )
         self._document_border = OpticalObject(contour_geometry, mat.BeamDump())
         self._world.add_object(self._document_border)
 
@@ -120,11 +131,11 @@ class Tracer(inkex.EffectExtension):
         not already present.
         """
         for element in self.document.iter():
-            if element.get('inkscape:label') == 'rendered_beams':
+            if element.get("inkscape:label") == "rendered_beams":
                 return element
         svg = self.document.getroot()
         layer = svg.add(inkex.Layer())
-        layer.label = 'rendered_beams'
+        layer.label = "rendered_beams"
         return layer
 
     def is_inside_document(self, ray: Ray) -> bool:
@@ -143,27 +154,33 @@ class Tracer(inkex.EffectExtension):
         element.path = path
 
 
-def get_material(obj: inkex.ShapeElement) -> List[Union[mat.OpticMaterial,
-                                                        mat.BeamSeed]]:
+def get_material(
+    obj: inkex.ShapeElement,
+) -> List[Union[mat.OpticMaterial, mat.BeamSeed]]:
     """Extracts the optical material of an object from its description"""
 
     desc = get_description(obj)
     return materials_from_description(desc)
 
 
-def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
-                                                        mat.BeamSeed]]:
+def materials_from_description(
+    desc: str,
+) -> List[Union[mat.OpticMaterial, mat.BeamSeed]]:
     """Run through the description to extract the material properties"""
 
     materials = list()
-    class_alias = dict(beam_dump=mat.BeamDump, mirror=mat.Mirror,
-                       beam_splitter=mat.BeamSplitter, beam=mat.BeamSeed,
-                       glass=mat.Glass)
+    class_alias = dict(
+        beam_dump=mat.BeamDump,
+        mirror=mat.Mirror,
+        beam_splitter=mat.BeamSplitter,
+        beam=mat.BeamSeed,
+        glass=mat.Glass,
+    )
     for match in get_optics_fields(desc.lower()):
-        material_type = match.group('material')
-        prop_str = match.group('num')
+        material_type = match.group("material")
+        prop_str = match.group("num")
         if material_type in class_alias:
-            if material_type == 'glass' and prop_str is not None:
+            if material_type == "glass" and prop_str is not None:
                 optical_index = float(prop_str)
                 materials.append(class_alias[material_type](optical_index))
             else:
@@ -172,8 +189,10 @@ def materials_from_description(desc: str) -> List[Union[mat.OpticMaterial,
 
 
 def raise_err_num_materials(obj):
-    message = f"The element {obj.get_id()} has more than one optical " \
-              f"material and will be ignored:\n{get_description(obj)}\n"
+    message = (
+        f"The element {obj.get_id()} has more than one optical "
+        f"material and will be ignored:\n{get_description(obj)}\n"
+    )
     inkex.utils.errormsg(message)
 
 
@@ -195,7 +214,7 @@ def get_absolute_path(obj: inkex.ShapeElement) -> inkex.CubicSuperPath:
 
 
 def superpath_to_bezier_segments(
-        superpath: inkex.CubicSuperPath
+    superpath: inkex.CubicSuperPath,
 ) -> geom.CompositeCubicBezier:
     """
     Converts a superpath with a representation
@@ -230,5 +249,5 @@ def get_geometry(obj: inkex.ShapeElement) -> geom.GeometricObject:
     return composite_bezier
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Tracer().run()
