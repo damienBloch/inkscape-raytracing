@@ -1,33 +1,58 @@
 from abc import abstractmethod
-from typing import List, Protocol
+from typing import Protocol, List
 
-import numpy as np
+import numpy
 
 from raytracing.ray import Ray
 from raytracing.shade import ShadeRec
 
 
+class GeometricObject(Protocol):
+    """Protocol for a geometric object (line, sphere, lens, ...)"""
+
+    @abstractmethod
+    def hit(self, ray: Ray) -> ShadeRec:
+        """Tests if a collision between a beam and the object occurred
+
+        Returns a shade that contains the information about the collision in
+        case it happened.
+        """
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def aabbox(self) -> "AABBox":
+        """Computes an axis aligned bounding box for the object"""
+        raise NotImplementedError
+
+    @abstractmethod
+    def is_inside(self, ray: Ray) -> bool:
+        """Indicates if a ray is inside or outside of the object"""
+        raise NotImplementedError
+
+
 class AABBox:
     """
-    Implements an axis-aligned bounding box. This is used to accelerate the
-    intersection between a beam and an object. If the beam doesn't hit the
-    bounding box, it is not necessary to do expensive intersection
-    calculations.
+    Implements an axis-aligned bounding box
+
+    This is used to accelerate the intersection between a beam and an object.
+    If the beam doesn't hit the bounding box, it is not necessary to do
+    expensive intersection calculations with the object.
     """
 
     def __init__(self, lower_left, upper_right):
-        self._corners = np.array([lower_left, upper_right])
+        self._corners = numpy.array([lower_left, upper_right])
 
     def __eq__(self, other: "AABBox"):
-        return np.array_equal(self._corners, other._corners)
+        return numpy.array_equal(self._corners, other._corners)
 
     @classmethod
     def englobing_aabbox(cls, aabboxes: List["AABBox"]) -> "AABBox":
         """Return a box that contains all boxes in a list"""
 
-        aabboxes_array = np.array([box._corners for box in aabboxes])
-        lower_left = np.min(aabboxes_array[:, 0, :], axis=0)
-        upper_right = np.max(aabboxes_array[:, 1, :], axis=0)
+        aabboxes_array = numpy.array([box._corners for box in aabboxes])
+        lower_left = numpy.min(aabboxes_array[:, 0, :], axis=0)
+        upper_right = numpy.max(aabboxes_array[:, 1, :], axis=0)
         return AABBox(lower_left, upper_right)
 
     def hit(self, ray: Ray) -> bool:
@@ -43,41 +68,10 @@ class AABBox:
         # The implementation safely handles the case where an element
         # of ray.direction is zero so the warning for floating point error
         # can be ignored for this step.
-        with np.errstate(invalid="ignore", divide="ignore"):
+        with numpy.errstate(invalid="ignore", divide="ignore"):
             a = 1 / ray.direction
-            t_min = (np.where(a >= 0, p0, p1) - ray.origin) * a
-            t_max = (np.where(a >= 0, p1, p0) - ray.origin) * a
-        t0 = np.max(t_min)
-        t1 = np.min(t_max)
+            t_min = (numpy.where(a >= 0, p0, p1) - ray.origin) * a
+            t_max = (numpy.where(a >= 0, p1, p0) - ray.origin) * a
+        t0 = numpy.max(t_min)
+        t1 = numpy.min(t_max)
         return (t0 < t1) and (t1 > Ray.min_travel)
-
-
-class GeometricObject(Protocol):
-    """Protocol for a geometric object (line, sphere, lens, ...)"""
-
-    @abstractmethod
-    def hit(self, ray: Ray) -> ShadeRec:
-        """Tests the collision of a beam with the object.
-
-        :params ray: The beam to be checked for intersection with this object
-        :return: A shade indicating if a collision occurred and in
-            this case it contains the information of the hit point
-        """
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def aabbox(self) -> AABBox:
-        """Computes an axis aligned bounding box for the object"""
-        raise NotImplementedError
-
-    @abstractmethod
-    def is_inside(self, ray: Ray) -> bool:
-        """Indicates if a point is inside or outside of the object
-
-        :params point:  The point to be checked, array [x, y] of size 2
-        :return: True if the point is inside the object, False otherwise
-        :raise GeometryError: if the instantiated object has no well defined
-            inside and outside
-        """
-        raise NotImplementedError
