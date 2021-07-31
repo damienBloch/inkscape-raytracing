@@ -6,8 +6,6 @@ objects
 import warnings
 from typing import Optional, List, NamedTuple, Iterable, Tuple
 
-import numpy as np
-
 from .geometry import GeometricObject
 from .material import OpticMaterial, BeamDump
 from .ray import Ray
@@ -19,7 +17,7 @@ class OpticalObject(NamedTuple):
     material: OpticMaterial
 
 
-class World(object):
+class World:
     """Stores a scene and computes the interaction with a ray"""
 
     def __init__(self, list_: Optional[List[OpticalObject]] = None,
