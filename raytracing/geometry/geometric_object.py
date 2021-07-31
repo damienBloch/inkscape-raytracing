@@ -7,11 +7,6 @@ from raytracing.ray import Ray
 from raytracing.shade import ShadeRec
 
 
-class GeometryError(RuntimeError):
-    def __init__(self, message):
-        self.message = message
-
-
 class AABBox:
     """
     Implements an axis-aligned bounding box. This is used to accelerate the
