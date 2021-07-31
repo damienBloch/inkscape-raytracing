@@ -2,9 +2,9 @@ from typing import List
 
 import numpy
 
-from .optic_material import OpticMaterial
 from raytracing.ray import Ray
 from raytracing.shade import ShadeRec
+from .optic_material import OpticMaterial
 
 
 class Mirror(OpticMaterial):

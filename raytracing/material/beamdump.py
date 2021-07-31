@@ -2,7 +2,6 @@ from typing import List
 
 from raytracing.ray import Ray
 from raytracing.shade import ShadeRec
-
 from .optic_material import OpticMaterial
 
 
