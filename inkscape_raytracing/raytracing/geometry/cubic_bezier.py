@@ -2,14 +2,15 @@
 Module for handling objects composed of cubic bezier curves
 """
 
+from dataclasses import dataclass
 from functools import cached_property
-from typing import List, Tuple
 
 import numpy
 
 from .geometric_object import AABBox
 from ..ray import Ray
 from ..shade import ShadeRec
+from ..vector import Vector, UnitVector
 
 
 # def endpoint_info(self) -> Tuple[numpy.ndarray, numpy.ndarray]:
@@ -18,6 +19,7 @@ from ..shade import ShadeRec
 #     return last_segment.eval(1), last_segment.tangent(1)
 
 
+@dataclass(frozen=True)
 class CubicBezier:
     r"""
     Cubic bezier segment defined as
@@ -27,89 +29,94 @@ class CubicBezier:
                       + 3 s^2 (1-s) \vec{p_2} + s^3 \vec{p_3}
 
     for :math:`0 \le s \le 1`
-
-    :type points: array_like of size (4,2)
     """
 
-    def __init__(self, points: numpy.ndarray):
-        self._p = numpy.array(points)
-
-    def __repr__(self) -> str:
-        return f"CubicBezier([{self._p[0]}, {self._p[1]}, {self._p[2]}, {self._p[3]}])"
+    p0: Vector
+    p1: Vector
+    p2: Vector
+    p3: Vector
 
     def eval(self, s):
-        p0, p1, p2, p3 = self._p
         return (
-            (1 - s) ** 3 * p0
-            + 3 * s * (1 - s) ** 2 * p1
-            + 3 * s ** 2 * (1 - s) * p2
-            + s ** 3 * p3
+            (1 - s) ** 3 * self.p0
+            + 3 * s * (1 - s) ** 2 * self.p1
+            + 3 * s ** 2 * (1 - s) * self.p2
+            + s ** 3 * self.p3
         )
+
+    # def __hash__(self):
+    #     raise NotImplementedError
 
     @cached_property
     def aabbox(self) -> AABBox:
         # The box is slightly larger than the minimal box.
         # It prevents the box to have a zero dimension if the object is a line
         # aligned with vertical or horizontal.
-        return AABBox(
-            numpy.min(self._p, axis=0) - 1e-6, numpy.max(self._p, axis=0) + 1e-6
+        lower_left = Vector(
+            min(self.p0.x, self.p1.x, self.p2.x, self.p3.x) - 1e-6,
+            min(self.p0.y, self.p1.y, self.p2.y, self.p3.y) - 1e-6,
         )
+        upper_right = Vector(
+            max(self.p0.x, self.p1.x, self.p2.x, self.p3.x) + 1e-6,
+            max(self.p0.y, self.p1.y, self.p2.y, self.p3.y) + 1e-6,
+        )
+        return AABBox(lower_left, upper_right)
 
-    def tangent(self, s: float) -> numpy.ndarray:
+    def tangent(self, s: float) -> UnitVector:
         """Returns the tangent at the curve at curvilinear coordinate s"""
 
-        p0, p1, p2, p3 = self._p
         diff_1 = (
-            -3 * (p0 - 3 * p1 + 3 * p2 - p3) * s ** 2
-            + 6 * (p0 - 2 * p1 + p2) * s
-            - 3 * (p0 - p1)
+            -3 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s ** 2
+            + 6 * (self.p0 - 2 * self.p1 + self.p2) * s
+            - 3 * (self.p0 - self.p1)
         )
         # If the first derivative is not zero, it is parallel to the tangent
-        if numpy.linalg.norm(diff_1) > 1e-8:
-            return diff_1 / numpy.linalg.norm(diff_1)
+        if diff_1.norm() > 1e-8:
+            return diff_1.normalize()
         # but is the first derivative is zero, we need to get the second order
         else:
-            diff_2 = -6 * (p0 - 3 * p1 + 3 * p2 - p3) * s + 6 * (p0 - 2 * p1 + p2)
-            if numpy.linalg.norm(diff_2) > 1e-8:
-                return diff_2 / numpy.linalg.norm(diff_2)
-            else:
-                diff_3 = -6 * (p0 - 3 * p1 + 3 * p2 - p3)
-                return diff_3 / numpy.linalg.norm(diff_3)
+            diff_2 = -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s + 6 * (
+                self.p0 - 2 * self.p1 + self.p2
+            )
+            if diff_2.norm() > 1e-8:
+                return diff_2.normalize()
+            else:  # and even to the 3rd derivative if necessary
+                diff_3 = -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3)
+                return diff_3.normalize()
 
-    def normal(self, s: float) -> numpy.ndarray:
+    def normal(self, s: float) -> UnitVector:
         """Returns a vector normal at the curve at curvilinear coordinate s"""
 
-        return orthogonal(self.tangent(s))
+        return self.tangent(s).orthogonal()
 
-    def intersection_beam(self, ray: Ray) -> List[Tuple[float, float]]:
-        """
+    def intersection_beam(self, ray: Ray) -> list[tuple[float, float]]:
+        r"""
         Returns all couples :math:`(s, t)` such that there exist
-        :math:`\\vec{X}` satisfying
+        :math:`\vec{X}` satisfying
 
         .. math::
-            \\vec{X} = (1-s)^3 \\vec{p_0} + 3 s (1-s)^2 \\vec{p_1}
-            + 3 s^2 (1-s) \\vec{p_2} + s^3 \\vec{p_3}
+            \vec{X} = (1-s)^3 \vec{p_0} + 3 s (1-s)^2 \vec{p_1}
+            + 3 s^2 (1-s) \vec{p_2} + s^3 \vec{p_3}
         and
         .. math::
-            \\vec{X} = \\vec{o} + t \\vec{d}
-        with :math:`0 \\lq s \\lq 1` and :math:`t >= 0`
+            \vec{X} = \vec{o} + t \vec{d}
+        with :math:`0 \lq s \lq 1` and :math:`t >= 0`
         """
 
-        p0, p1, p2, p3 = self._p
-        a = orthogonal(ray.direction)
-        a0 = numpy.dot(a, p0 - ray.origin)
-        a1 = -3 * numpy.dot(a, p0 - p1)
-        a2 = 3 * numpy.dot(a, p0 - 2 * p1 + p2)
-        a3 = numpy.dot(a, -p0 + 3 * p1 - 3 * p2 + p3)
+        a = ray.direction.orthogonal()
+        a0 = a * (self.p0 - ray.origin)
+        a1 = -3 * a * (self.p0 - self.p1)
+        a2 = 3 * a * (self.p0 - 2 * self.p1 + self.p2)
+        a3 = a * (-self.p0 + 3 * self.p1 - 3 * self.p2 + self.p3)
         roots = cubic_real_roots(a0, a1, a2, a3)
         intersection_points = [
-            (1 - s) ** 3 * p0
-            + 3 * s * (1 - s) ** 2 * p1
-            + 3 * s ** 2 * (1 - s) * p2
-            + s ** 3 * p3
+            (1 - s) ** 3 * self.p0
+            + 3 * s * (1 - s) ** 2 * self.p1
+            + 3 * s ** 2 * (1 - s) * self.p2
+            + s ** 3 * self.p3
             for s in roots
         ]
-        travel = [numpy.dot(X - ray.origin, ray.direction) for X in intersection_points]
+        travel = [(X - ray.origin) * ray.direction for X in intersection_points]
 
         def valid_domain(s, t):
             return 0 <= s <= 1 and t > Ray.min_travel
@@ -142,7 +149,7 @@ class CubicBezier:
         return shade
 
 
-def cubic_real_roots(d: float, c: float, b: float, a: float) -> List[float]:
+def cubic_real_roots(d: float, c: float, b: float, a: float) -> list[float]:
     """
     Returns the real roots X of a cubic polynomial defined as
 
