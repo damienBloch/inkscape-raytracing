@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <inkscape-extension>
     <_name>Lens</_name>
-    <id>damienbloch.effect.optics.lens</id>
+    <id>damienBloch/inkscape-raytracing/lens</id>
 
     <param name="focal_length" type="float" gui-text="Focal length:" min="-10000." max="10000." precision="3">100.</param>
     <param name="focal_length_unit" type="enum" gui-text=" ">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
     <name>Ray Tracing</name>
-    <id>com.dbloch.ray_tracing</id>
+    <id>damienBloch/inkscape-raytracing</id>
     <effect>
         <object-type>all</object-type>
         <effects-menu>
@@ -9,7 +9,7 @@
         </effects-menu>
     </effect>
     <script>
-        <command location="inx" interpreter="python">render_raytracing.py</command>
+        <command location="inx" interpreter="python">render.py</command>
     </script>
 </inkscape-extension>
 

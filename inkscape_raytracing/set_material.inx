@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
     <name>Set material as</name>
-    <id>com.dbloch.ray_tracing_set_material</id>
+    <id>damienBloch/inkscape-raytracing/set_material</id>
     <effect>
         <object-type>all</object-type>
         <effects-menu>
