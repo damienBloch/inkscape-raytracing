@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "inkscape-raytracing"
+version = "1.1"
+description = "An extension for Inkscape that makes it easier to draw optical diagrams."
+authors = ["Your Name <you@example.com>"]
+license = "GPL3"
+
+[tool.poetry.dependencies]
+python = ">=3.7, <3.10"
+numpy = "^1.21.2"
+inkex = "^1.0.1"
+
+[tool.poetry.dev-dependencies]
+black = "^21.7b0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
