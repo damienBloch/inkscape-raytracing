@@ -2,8 +2,8 @@ from typing import List
 
 import numpy as np
 
-from raytracing.ray import Ray
-from raytracing.shade import ShadeRec
+from inkscape_raytracing.raytracing.ray import Ray
+from inkscape_raytracing.raytracing.shade import ShadeRec
 from .optic_material import OpticMaterial
 
 

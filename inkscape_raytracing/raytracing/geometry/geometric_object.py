@@ -1,10 +1,14 @@
+from __future__ import annotations
+
+import functools
 from abc import abstractmethod
-from typing import Protocol, List
+from dataclasses import dataclass
+from typing import Protocol, Iterable
 
 import numpy
 
-from raytracing.ray import Ray
-from raytracing.shade import ShadeRec
+from inkscape_raytracing.raytracing.ray import Ray
+from inkscape_raytracing.raytracing.shade import ShadeRec
 
 
 class GeometricObject(Protocol):
@@ -21,7 +25,7 @@ class GeometricObject(Protocol):
 
     @property
     @abstractmethod
-    def aabbox(self) -> "AABBox":
+    def aabbox(self) -> AABBox:
         """Computes an axis aligned bounding box for the object"""
         raise NotImplementedError
 
@@ -31,6 +35,13 @@ class GeometricObject(Protocol):
         raise NotImplementedError
 
 
+@dataclass(frozen=True)
+class Point:
+    x: float
+    y: float
+
+
+@dataclass(frozen=True)
 class AABBox:
     """
     Implements an axis-aligned bounding box
@@ -40,20 +51,24 @@ class AABBox:
     expensive intersection calculations with the object.
     """
 
-    def __init__(self, lower_left, upper_right):
-        self._corners = numpy.array([lower_left, upper_right])
-
-    def __eq__(self, other: "AABBox"):
-        return numpy.array_equal(self._corners, other._corners)
+    lower_left: Point
+    upper_right: Point
 
     @classmethod
-    def englobing_aabbox(cls, aabboxes: List["AABBox"]) -> "AABBox":
-        """Return a box that contains all boxes in a list"""
+    def englobing(cls, aabboxes: Iterable[AABBox]) -> AABBox:
+        return functools.reduce(cls.englobing_two, aabboxes)
 
-        aabboxes_array = numpy.array([box._corners for box in aabboxes])
-        lower_left = numpy.min(aabboxes_array[:, 0, :], axis=0)
-        upper_right = numpy.max(aabboxes_array[:, 1, :], axis=0)
-        return AABBox(lower_left, upper_right)
+    @classmethod
+    def englobing_two(cls, b1: AABBox, b2: AABBox) -> AABBox:
+        union_lower_left = Point(
+            min(b1.lower_left.x, b2.lower_left.x),
+            min(b1.lower_left.y, b2.lower_left.y),
+        )
+        union_upper_right = Point(
+            max(b1.upper_right.x, b2.upper_right.x),
+            max(b1.upper_right.y, b2.upper_right.y),
+        )
+        return AABBox(union_lower_left, union_upper_right)
 
     def hit(self, ray: Ray) -> bool:
         """Tests if a beam intersects the bounding box"""
@@ -64,9 +79,10 @@ class AABBox:
         # See Williams et al. "An efficient and robust ray-box intersection
         # algorithm" for more details.
 
-        p0, p1 = self._corners
+        p0 = numpy.array(self.lower_left)
+        p1 = numpy.array(self.upper_right)
         # The implementation safely handles the case where an element
-        # of ray.direction is zero so the warning for floating point error
+        # of ray.direction is zero. Warning for floating point error
         # can be ignored for this step.
         with numpy.errstate(invalid="ignore", divide="ignore"):
             a = 1 / ray.direction

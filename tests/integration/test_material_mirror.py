@@ -1,11 +1,13 @@
 from inkex.tester import ComparisonMixin, TestCase
+from inkex.tester.filters import CompareNumericFuzzy
 
-from render_raytracing import Tracer
+from inkscape_raytracing.render import Tracer
 
 
 class MirrorTest(ComparisonMixin, TestCase):
     effect_class = type("mirror_test", (Tracer,), {})
-    compare_file = 'svg/mirror.svg'
+    compare_file = "svg/mirror.svg"
+    compare_filters = [CompareNumericFuzzy()]
     comparisons = [
-            ('--id=g1553',),
+        ("--id=g1553",),
     ]

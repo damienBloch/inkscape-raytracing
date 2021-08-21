@@ -7,8 +7,8 @@ from typing import Any, List, Tuple, Optional, Iterable, Iterator
 
 import numpy
 
-from raytracing.ray import orthogonal, Ray
-from raytracing.shade import ShadeRec
+from inkscape_raytracing.raytracing.ray import orthogonal, Ray
+from inkscape_raytracing.raytracing.shade import ShadeRec
 from .geometric_object import GeometricObject, AABBox
 
 

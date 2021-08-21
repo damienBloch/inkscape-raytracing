@@ -7,10 +7,10 @@ from typing import List, Union, Iterable, Optional
 import inkex
 import numpy as np
 from inkex.paths import Line, Move
+from line_profiler_pycharm import profile
 
-import raytracing.geometry as geom
-import raytracing.material as mat
-from raytracing import World, OpticalObject, Ray
+from inkscape_raytracing import raytracing as geom, raytracing as mat
+from inkscape_raytracing.raytracing import World, OpticalObject, Ray
 from utils import get_description, pairwise, get_optics_fields
 
 
@@ -35,6 +35,7 @@ class Tracer(inkex.EffectExtension):
             inkex.Circle,
         )
 
+    @profile
     def effect(self) -> None:
         """
         Loads the objects and outputs a svg with the beams after propagation
@@ -43,7 +44,7 @@ class Tracer(inkex.EffectExtension):
         for obj in self.svg.selection.filter(self._filter_primitives).values():
             self.process_object(obj)
 
-        self._document_as_border()
+        self.set_document_as_border()
 
         if len(self._beam_seeds) > 0:
             self._beam_layer = self.add_render_layer()
@@ -101,7 +102,7 @@ class Tracer(inkex.EffectExtension):
                 opt_obj = OpticalObject(geometry, material)
                 self._world.add_object(opt_obj)
 
-    def _document_as_border(self) -> None:
+    def set_document_as_border(self) -> None:
         """
         Adds a beam blocking contour on the borders of the document to
         prevent the beams from going to infinity

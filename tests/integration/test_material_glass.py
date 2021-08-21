@@ -1,6 +1,6 @@
 from inkex.tester import ComparisonMixin, TestCase
 
-from render_raytracing import Tracer
+from inkscape_raytracing.render import Tracer
 
 
 class GlassTest(ComparisonMixin, TestCase):

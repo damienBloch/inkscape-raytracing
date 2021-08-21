@@ -1,8 +1,10 @@
-from raytracing.geometry.geometric_object import AABBox
+from inkscape_raytracing.raytracing.geometry import AABBox, Point
+
 
 def test_englobing_AABBox():
-    A0 = AABBox([0, 0], [1, 2])
-    A1 = AABBox([1, 0], [2, 1])
+    A0 = AABBox(Point(0, 0), Point(1, 2))
+    A1 = AABBox(Point(1, 0), Point(2, 1))
 
-    englobing = AABBox.englobing_aabbox([A0, A1])
-    assert englobing == AABBox([0, 0], [2, 2])
+    englobing = AABBox.englobing((A0, A1))
+    assert englobing == AABBox(Point(0, 0), Point(2, 2))
+

@@ -1,7 +1,5 @@
 from pytest import approx
 
-from raytracing.geometry.cubic_bezier import *
-
 
 def test_cubic_real_roots():
     def roots_set(a0, a1, a2, a3):
