@@ -30,10 +30,7 @@ def get_description(element: inkex.BaseElement) -> str:
 def clear_description(desc: str) -> str:
     """Removes text corresponding to an optical property"""
 
-    # This will return the string converted to lower case and should be
-    # changed to keep the case untouched
-    new_desc = desc.lower()
-    new_desc = re.sub(optics_pattern, "", new_desc)
+    new_desc = re.sub(optics_pattern, "", desc)
     return new_desc
 
 
