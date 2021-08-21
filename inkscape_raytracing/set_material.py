@@ -36,7 +36,7 @@ class SetMaterial(inkex.Effect):
 
     def effect(self) -> None:
         filter_ = self.filter_primitives + (inkex.Group,)
-        for obj in self.svg.selection.filter(filter_).values():
+        for obj in self.svg.selection.filter(filter_):
             self.update_description(obj)
 
     @singledispatchmethod

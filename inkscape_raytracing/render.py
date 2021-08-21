@@ -40,7 +40,7 @@ class Tracer(inkex.EffectExtension):
         """
 
         filter_ = self.filter_primitives + (inkex.Group, inkex.Use)
-        for obj in self.svg.selection.filter(filter_).values():
+        for obj in self.svg.selection.filter(filter_):
             self.add_to_world(obj)
 
         self.set_document_as_border()
