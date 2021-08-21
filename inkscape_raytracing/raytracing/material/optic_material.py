@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Protocol, List
 
-from inkscape_raytracing.raytracing.ray import Ray
-from inkscape_raytracing.raytracing.shade import ShadeRec
+from ..ray import Ray
+from ..shade import ShadeRec
 
 
 class OpticMaterial(Protocol):
