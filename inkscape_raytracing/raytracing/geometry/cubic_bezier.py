@@ -13,12 +13,6 @@ from ..shade import ShadeRec
 from ..vector import Vector, UnitVector
 
 
-# def endpoint_info(self) -> Tuple[numpy.ndarray, numpy.ndarray]:
-#     """Returns the location of the end point of the path and its tangent"""
-#     last_segment = self._bezier_list[-1]  # always at least one element
-#     return last_segment.eval(1), last_segment.tangent(1)
-
-
 @dataclass(frozen=True)
 class CubicBezier:
     r"""
@@ -43,9 +37,6 @@ class CubicBezier:
             + 3 * s ** 2 * (1 - s) * self.p2
             + s ** 3 * self.p3
         )
-
-    # def __hash__(self):
-    #     raise NotImplementedError
 
     @cached_property
     def aabbox(self) -> AABBox:
