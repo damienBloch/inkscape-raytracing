@@ -14,6 +14,6 @@ class UnitVector:
         self.x /= norm
         self.y /= norm
 
-    @staticmethod
-    def orthogonal(vec: UnitVector) -> UnitVector:
-        return UnitVector(-vec.y, vec.x)
+    def orthogonal(self) -> UnitVector:
+        """Return a vector obtained by a pi/2 rotation"""
+        return UnitVector(-self.y, self.x)
