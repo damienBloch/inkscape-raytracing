@@ -50,7 +50,7 @@ class Lens(inkex.GenerateExtension):
                                    opts.edge_thickness_unit)
         optical_index = opts.optical_index
 
-        lens_path = []
+        lens_path =[]
         if opts.lens_type == 'plano_con':
             # Radius of curvature from Lensmaker's equation
             roc = (optical_index - 1) * abs(f)
