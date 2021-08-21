@@ -1,20 +1,19 @@
 from __future__ import annotations
 
 import functools
-from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Protocol, Iterable
+from typing import Protocol, Iterable, Hashable
 
 import numpy
 
-from inkscape_raytracing.raytracing.ray import Ray
-from inkscape_raytracing.raytracing.shade import ShadeRec
+from ..point import Point
+from ..ray import Ray
+from ..shade import ShadeRec
 
 
-class GeometricObject(Protocol):
+class GeometricObject(Protocol, Hashable):
     """Protocol for a geometric object (line, sphere, lens, ...)"""
 
-    @abstractmethod
     def hit(self, ray: Ray) -> ShadeRec:
         """Tests if a collision between a beam and the object occurred
 
@@ -23,22 +22,63 @@ class GeometricObject(Protocol):
         """
         raise NotImplementedError
 
+    def num_hits(self, ray: Ray) -> int:
+        """Returns the number of times a beam intersect the object boundary"""
+        raise NotImplementedError
+
     @property
-    @abstractmethod
     def aabbox(self) -> AABBox:
         """Computes an axis aligned bounding box for the object"""
         raise NotImplementedError
 
-    @abstractmethod
     def is_inside(self, ray: Ray) -> bool:
         """Indicates if a ray is inside or outside of the object"""
         raise NotImplementedError
 
 
 @dataclass(frozen=True)
-class Point:
-    x: float
-    y: float
+class CompoundGeometricObject(GeometricObject):
+    sub_objects: tuple[GeometricObject]
+
+    def __iter__(self) -> Iterable[GeometricObject]:
+        return self.sub_objects
+
+    @functools.cached_property
+    def aabbox(self):
+        sub_boxes = (sub.aabbox for sub in self.sub_objects)
+        return AABBox.englobing(sub_boxes)
+
+    def hit(self, ray: Ray) -> ShadeRec:
+        """
+        Returns a shade with the information for the first intersection
+        of a beam with one of the object composing the composite object
+        """
+
+        result = ShadeRec()
+        if self.aabbox.hit(ray):
+            result = find_first_hit(ray, self.sub_objects)
+            result.hit_geometry = self
+        return result
+
+    def is_inside(self, ray: Ray) -> bool:
+        # A ray is inside an object if it intersect its boundary an odd
+        # number of times
+        return (self.num_hits(ray) % 2) == 1
+
+    def num_hits(self, ray: Ray) -> int:
+        if self.aabbox.hit(ray):
+            return sum([obj.num_hits(ray) for obj in self.sub_objects])
+        else:
+            return 0
+
+
+def find_first_hit(ray: Ray, objects: Iterable[GeometricObject]) -> ShadeRec:
+    result = ShadeRec()
+    for obj in objects:
+        shade = obj.hit(ray)
+        if Ray.min_travel < shade.travel_dist < result.travel_dist:
+            result = shade
+    return result
 
 
 @dataclass(frozen=True)
@@ -81,11 +121,12 @@ class AABBox:
 
         p0 = numpy.array(self.lower_left)
         p1 = numpy.array(self.upper_right)
+        direction = numpy.array([ray.direction.x, ray.direction.y])
         # The implementation safely handles the case where an element
         # of ray.direction is zero. Warning for floating point error
         # can be ignored for this step.
         with numpy.errstate(invalid="ignore", divide="ignore"):
-            a = 1 / ray.direction
+            a = 1 / direction
             t_min = (numpy.where(a >= 0, p0, p1) - ray.origin) * a
             t_max = (numpy.where(a >= 0, p1, p0) - ray.origin) * a
         t0 = numpy.max(t_min)
