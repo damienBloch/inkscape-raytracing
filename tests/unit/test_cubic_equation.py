@@ -1,5 +1,7 @@
 from pytest import approx
 
+from inkscape_raytracing.raytracing.geometry.cubic_bezier import cubic_real_roots
+
 
 def test_cubic_real_roots():
     def roots_set(a0, a1, a2, a3):
