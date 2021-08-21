@@ -1,6 +1,6 @@
 import inkex
 
-from utils import get_description, clear_description, set_description
+from utils import clear_description
 
 
 class SetMaterial(inkex.Effect):
@@ -10,15 +10,23 @@ class SetMaterial(inkex.Effect):
         super().__init__()
 
         # only change the description for these objects
-        self._filter_primitives = (inkex.PathElement, inkex.Line,
-                                   inkex.Polyline, inkex.Polygon,
-                                   inkex.Rectangle, inkex.Ellipse,
-                                   inkex.Circle)
+        self._filter_primitives = (
+            inkex.PathElement,
+            inkex.Line,
+            inkex.Polyline,
+            inkex.Polygon,
+            inkex.Rectangle,
+            inkex.Ellipse,
+            inkex.Circle,
+        )
 
     def add_arguments(self, pars):
-        pars.add_argument("--optical_material", type=str, default='none',
-                          help="Name of the optical material to convert the "
-                               "selection to.")
+        pars.add_argument(
+            "--optical_material",
+            type=str,
+            default="none",
+            help="Name of the optical material to convert the selection to.",
+        )
         pars.add_argument("--optical_index", type=float, default=1.5168)
 
     def effect(self) -> None:
@@ -43,20 +51,27 @@ class SetMaterial(inkex.Effect):
         In the description of the element, replaces the optical properties
         with the new one.
         """
-        name_alias = {
-                "None": None, "Beam": 'beam', "Mirror": 'mirror',
-                "Beam dump": 'beam_dump', "Beam splitter": 'beam_splitter',
-                "Glass": 'glass'
-        }
-        desc = get_description(obj)
+
+        desc = obj.desc
+        if desc is None:
+            desc = ""
         new_desc = clear_description(desc)
+
+        name_alias = {
+            "None": None,
+            "Beam": "beam",
+            "Mirror": "mirror",
+            "Beam dump": "beam_dump",
+            "Beam splitter": "beam_splitter",
+            "Glass": "glass",
+        }
         material_name = name_alias[self.options.optical_material]
         if material_name is not None:
-            new_desc += f'optics:{material_name}'
-            if material_name == 'glass':
-                new_desc += f':{self.options.optical_index:.4f}'
-        set_description(obj, new_desc)
+            new_desc += f"optics:{material_name}"
+            if material_name == "glass":
+                new_desc += f":{self.options.optical_index:.4f}"
+        obj.desc = new_desc
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     SetMaterial().run()
