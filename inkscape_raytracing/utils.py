@@ -4,10 +4,10 @@ from typing import TypeVar, Iterator, Tuple
 
 import inkex
 
-rgx_float = r'[-+]?(\d+([.,]\d*)?|[.,]\d+)([eE][-+]?\d+)?'
-rgx_name = '[a-z,_]*'
+rgx_float = r"[-+]?(\d+([.,]\d*)?|[.,]\d+)([eE][-+]?\d+)?"
+rgx_name = "[a-z,_]*"
 optics_pattern = re.compile(
-    f'optics *: *(?P<material>{rgx_name})(: *(?P<num>{rgx_float}))?'
+    f"optics *: *(?P<material>{rgx_name})(: *(?P<num>{rgx_float}))?"
 )
 
 
@@ -18,22 +18,12 @@ def get_optics_fields(string_: str):
 
 def get_description(element: inkex.BaseElement) -> str:
     for child in element.getchildren():
-        if child.tag == inkex.addNS('desc', 'svg'):
+        if child.tag == inkex.addNS("desc", "svg"):
             if child.text is None:
-                return ''
+                return ""
             else:
                 return str(child.text)
-    return ''
-
-
-def set_description(element: inkex.BaseElement, text: str) -> None:
-    has_desc = any((child.tag == inkex.addNS('desc', 'svg')
-                    for child in element.getchildren()))
-    if not has_desc:
-        element.add(inkex.Desc())
-    for child in element.getchildren():
-        if child.tag == inkex.addNS('desc', 'svg'):
-            child.text = text
+    return ""
 
 
 def clear_description(desc: str) -> str:
@@ -42,11 +32,11 @@ def clear_description(desc: str) -> str:
     # This will return the string converted to lower case and should be
     # changed to keep the case untouched
     new_desc = desc.lower()
-    new_desc = re.sub(optics_pattern, '', new_desc)
+    new_desc = re.sub(optics_pattern, "", new_desc)
     return new_desc
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def pairwise(iterable: Iterator[T]) -> Iterator[Tuple[T, T]]:
