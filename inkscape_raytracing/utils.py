@@ -2,8 +2,6 @@ import itertools
 import re
 from typing import TypeVar, Iterator, Tuple
 
-import inkex
-
 rgx_float = r"[-+]?(\d+([.,]\d*)?|[.,]\d+)([eE][-+]?\d+)?"
 rgx_name = "[a-z,_]*"
 optics_pattern = re.compile(
@@ -13,18 +11,8 @@ optics_pattern = re.compile(
 
 
 def get_optics_fields(string_: str):
-    fields = re.finditer(optics_pattern, string_.lower())
+    fields = re.finditer(optics_pattern, string_)
     return fields
-
-
-def get_description(element: inkex.BaseElement) -> str:
-    for child in element.getchildren():
-        if child.tag == inkex.addNS("desc", "svg"):
-            if child.text is None:
-                return ""
-            else:
-                return str(child.text)
-    return ""
 
 
 def clear_description(desc: str) -> str:
