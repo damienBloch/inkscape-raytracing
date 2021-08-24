@@ -5,7 +5,7 @@ from typing import Final
 
 import inkex
 
-from utils import clear_description
+from desc_parser import clear_description
 
 
 class SetMaterial(inkex.Effect):
@@ -60,9 +60,9 @@ class SetMaterial(inkex.Effect):
             desc = obj.desc
             if desc is None:
                 desc = ""
-            elif desc != "":
-                desc += "\n"
             new_desc = clear_description(desc)
+            if desc != "" and desc[-1] != "\n":
+                desc += "\n"
 
             name_alias = {
                 "None": None,
