@@ -151,9 +151,9 @@ class Tracer(inkex.EffectExtension):
         return OpticalObject(contour_geometry, raytracing.material.BeamDump())
 
     def register_layers(self):
-        layers = [obj for obj in self.document.iter() if isinstance(obj, inkex.Layer)]
+        layers = self.document.getroot().descendants().filter(inkex.Layer)
         layer_ids = [layer.get("inkscape:label") for layer in layers]
-        self.layers = {**self.layers, **dict(zip(layer_ids, layers))}
+        self.layers.update(dict(zip(layer_ids, layers)))
 
     def get_or_create_layer(self, layer: str) -> inkex.Layer:
         if layer in self.layers:
@@ -181,7 +181,7 @@ class Tracer(inkex.EffectExtension):
 
 
 def get_material(
-        obj: inkex.ShapeElement,
+    obj: inkex.ShapeElement,
 ) -> Optional[raytracing.material.OpticMaterial | BeamSeed]:
     """Extracts the optical material of an object from its description"""
 
@@ -198,7 +198,7 @@ def get_material(
 
 
 def get_materials_from_description(
-        desc: str,
+    desc: str,
 ) -> list[raytracing.material.OpticMaterial | BeamSeed]:
     """Run through the description to extract the material properties"""
 
@@ -264,7 +264,7 @@ def get_beams(element: inkex.ShapeElement) -> Iterable[Ray]:
 
 
 def convert_to_composite_bezier(
-        superpath: inkex.CubicSuperPath,
+    superpath: inkex.CubicSuperPath,
 ) -> CompoundGeometricObject:
     """
     Converts a superpath with a representation
