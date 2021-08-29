@@ -2,19 +2,21 @@
 Module for handling objects composed of cubic bezier curves
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from functools import cached_property
 
 import numpy
 
-from .geometric_object import AABBox
+from .geometric_object import AABBox, GeometricObject, GeometryError
 from ..ray import Ray
 from ..shade import ShadeRec
 from ..vector import Vector, UnitVector
 
 
 @dataclass(frozen=True)
-class CubicBezier:
+class CubicBezier(GeometricObject):
     r"""
     Cubic bezier segment defined as
 
@@ -138,6 +140,9 @@ class CubicBezier:
                 shade.normal = self.normal(intersect_params[first_hit][0])
                 shade.set_normal_same_side(ray.origin)
         return shade
+
+    def is_inside(self, ray: Ray) -> bool:
+        raise GeometryError(f"Can't define an inside for {self}.")
 
 
 def cubic_real_roots(d: float, c: float, b: float, a: float) -> list[float]:

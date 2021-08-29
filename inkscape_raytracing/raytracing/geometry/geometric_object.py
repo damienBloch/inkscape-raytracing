@@ -2,17 +2,17 @@ from __future__ import annotations
 
 import functools
 from dataclasses import dataclass
-from typing import Protocol, Iterable, Hashable
+from typing import Protocol, Iterable, TypeVar, Generic
 
 import numpy
 
-from ..point import Point
 from ..ray import Ray
 from ..shade import ShadeRec
+from ..vector import Vector
 
 
-class GeometricObject(Protocol, Hashable):
-    """Protocol for a geometric object (line, sphere, lens, ...)"""
+class GeometricObject(Protocol):
+    """Protocol for a geometric object (line, rectangle, circle, ...)"""
 
     def hit(self, ray: Ray) -> ShadeRec:
         """Tests if a collision between a beam and the object occurred
@@ -32,16 +32,33 @@ class GeometricObject(Protocol, Hashable):
         raise NotImplementedError
 
     def is_inside(self, ray: Ray) -> bool:
-        """Indicates if a ray is inside or outside of the object"""
+        """Indicates if a ray is inside or outside the object
+
+        It is not possible to define an inside for every object, for example if it is
+        not closed. In this case it should raise a GeometryError.
+        """
         raise NotImplementedError
 
 
-@dataclass(frozen=True)
-class CompoundGeometricObject(GeometricObject):
-    sub_objects: tuple[GeometricObject]
+class GeometryError(RuntimeError):
+    pass
 
-    def __iter__(self) -> Iterable[GeometricObject]:
-        return self.sub_objects
+
+T = TypeVar("T", bound=GeometricObject)
+
+
+@dataclass(frozen=True)
+class CompoundGeometricObject(GeometricObject, Generic[T]):
+    sub_objects: tuple[T, ...]
+
+    def __init__(self, sub_objects: Iterable[T]):
+        object.__setattr__(self, "sub_objects", tuple(sub_objects))
+
+    def __iter__(self) -> Iterable[T]:
+        return iter(self.sub_objects)
+
+    def __getitem__(self, item) -> T:
+        return self.sub_objects[item]
 
     @functools.cached_property
     def aabbox(self):
@@ -91,8 +108,8 @@ class AABBox:
     expensive intersection calculations with the object.
     """
 
-    lower_left: Point
-    upper_right: Point
+    lower_left: Vector
+    upper_right: Vector
 
     @classmethod
     def englobing(cls, aabboxes: Iterable[AABBox]) -> AABBox:
@@ -100,11 +117,11 @@ class AABBox:
 
     @classmethod
     def englobing_two(cls, b1: AABBox, b2: AABBox) -> AABBox:
-        union_lower_left = Point(
+        union_lower_left = Vector(
             min(b1.lower_left.x, b2.lower_left.x),
             min(b1.lower_left.y, b2.lower_left.y),
         )
-        union_upper_right = Point(
+        union_upper_right = Vector(
             max(b1.upper_right.x, b2.upper_right.x),
             max(b1.upper_right.y, b2.upper_right.y),
         )
@@ -119,16 +136,17 @@ class AABBox:
         # See Williams et al. "An efficient and robust ray-box intersection
         # algorithm" for more details.
 
-        p0 = numpy.array(self.lower_left)
-        p1 = numpy.array(self.upper_right)
+        p0 = numpy.array([self.lower_left.x, self.lower_left.y])
+        p1 = numpy.array([self.upper_right.x, self.upper_right.y])
         direction = numpy.array([ray.direction.x, ray.direction.y])
+        origin = numpy.array([ray.origin.x, ray.origin.y])
         # The implementation safely handles the case where an element
         # of ray.direction is zero. Warning for floating point error
         # can be ignored for this step.
         with numpy.errstate(invalid="ignore", divide="ignore"):
             a = 1 / direction
-            t_min = (numpy.where(a >= 0, p0, p1) - ray.origin) * a
-            t_max = (numpy.where(a >= 0, p1, p0) - ray.origin) * a
+            t_min = (numpy.where(a >= 0, p0, p1) - origin) * a
+            t_max = (numpy.where(a >= 0, p1, p0) - origin) * a
         t0 = numpy.max(t_min)
         t1 = numpy.min(t_max)
         return (t0 < t1) and (t1 > Ray.min_travel)
