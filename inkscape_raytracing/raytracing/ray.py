@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from typing import ClassVar
 
-from geometry import Point, UnitVector
+from .vector import UnitVector, Vector
 
 
 @dataclass(frozen=True)
 class Ray:
     """This class implements a 2D line with an origin point and a direction."""
 
-    origin: Point
+    origin: Vector
     direction: UnitVector
     travel: float = 0
 
