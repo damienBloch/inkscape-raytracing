@@ -75,7 +75,6 @@ class Tracer(inkex.EffectExtension):
         super().__init__()
         self.world = World()
         self.beam_seeds: list[BeamSeed] = list()
-        self.layers: dict[str, inkex.Layer] = dict()
 
     def effect(self) -> None:
         """
@@ -85,8 +84,6 @@ class Tracer(inkex.EffectExtension):
         # Can't set the border earlier because self.svg is not yet defined
         self.document_border = self.get_document_borders_as_beamdump()
         self.world.add(self.document_border)
-
-        self.register_layers()
 
         filter_ = self.filter_primitives + (inkex.Group, inkex.Use)
         for obj in self.svg.selection.filter(filter_):
@@ -170,11 +167,6 @@ class Tracer(inkex.EffectExtension):
             )
         )
         return OpticalObject(contour_geometry, raytracing.material.BeamDump())
-
-    def register_layers(self):
-        layers = self.document.getroot().descendants().filter(inkex.Layer)
-        layer_ids = [layer.get("inkscape:label") for layer in layers]
-        self.layers.update(dict(zip(layer_ids, layers)))
 
     def is_inside_document(self, ray: Ray) -> bool:
         return self.document_border.geometry.is_inside(ray)
