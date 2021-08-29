@@ -85,15 +85,10 @@ class Tracer(inkex.EffectExtension):
 
     def get_unlinked_copy(self, clone: inkex.Use) -> Optional[inkex.ShapeElement]:
         """Creates a copy of the original with all transformations applied"""
-        ref = clone.get("xlink:href")
-        if ref is None:
-            return None
-        else:
-            href = self.svg.getElementById(ref.strip("#"))
-            copy = href.copy()
-            copy.transform = clone.composed_transform() * copy.transform
-            copy.style = clone.style + copy.style
-            return copy
+        copy = clone.href.copy()
+        copy.transform = clone.composed_transform() * copy.transform
+        copy.style = clone.style + copy.style
+        return copy
 
     for type in filter_primitives:
 
