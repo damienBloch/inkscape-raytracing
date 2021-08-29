@@ -54,17 +54,20 @@ class Tracer(inkex.EffectExtension):
         self.document_border = self.get_document_borders_as_beamdump()
         self.world.add(self.document_border)
 
+        self.register_layers()
+
         filter_ = self.filter_primitives + (inkex.Group, inkex.Use)
         for obj in self.svg.selection.filter(filter_):
             self.add(obj)
 
         if self.beam_seeds:
-            self._beam_layer = self.add_render_layer()
             for seed in self.beam_seeds:
                 if self.is_inside_document(seed.ray):
                     generated = self.world.propagate_beams(seed.ray)
                     for beam in generated:
-                        self.plot_beam(beam, seed.parent)
+                        new_layer_label = "beams:" + get_containing_layer(seed.parent)
+                        new_layer = self.get_or_create_layer(new_layer_label)
+                        self.plot_beam(beam, seed.parent, new_layer)
 
     @singledispatchmethod
     def add(self, obj):
@@ -151,32 +154,34 @@ class Tracer(inkex.EffectExtension):
         layers = [obj for obj in self.document.iter() if isinstance(obj, inkex.Layer)]
         layer_ids = [layer.get("inkscape:label") for layer in layers]
         self.layers = {**self.layers, **dict(zip(layer_ids, layers))}
-        # for element in layers:
-        #     if element.get("inkscape:label") == "rendered_beams":
-        #         return element
-        # svg = self.document.getroot()
-        # layer = svg.add(inkex.Layer())
-        # layer.label = "rendered_beams"
-        # return layer
+
+    def get_or_create_layer(self, layer: str) -> inkex.Layer:
+        if layer in self.layers:
+            return self.layers[layer]
+        else:
+            svg = self.document.getroot()
+            new_layer = svg.add(inkex.Layer())
+            new_layer.label = layer
+            return new_layer
 
     def is_inside_document(self, ray: Ray) -> bool:
         return self.document_border.geometry.is_inside(ray)
 
-    def plot_beam(self, beam: list[Ray], node: inkex.ShapeElement) -> None:
+    def plot_beam(self, beam: list[Ray], node: inkex.ShapeElement, layer: inkex.Layer):
         path = inkex.Path()
-        if len(beam) > 0:
+        if beam:
             path += [Move(beam[0].origin.x, beam[0].origin.y)]
             for ray in beam:
                 p1 = ray.origin + ray.travel * ray.direction
                 path += [Line(p1.x, p1.y)]
-        element = self._beam_layer.add(inkex.PathElement())
+        element = layer.add(inkex.PathElement())
         # Need to convert to path to get the correct style for inkex.Use
         element.style = node.to_path_element().style
         element.path = path
 
 
 def get_material(
-    obj: inkex.ShapeElement,
+        obj: inkex.ShapeElement,
 ) -> Optional[raytracing.material.OpticMaterial | BeamSeed]:
     """Extracts the optical material of an object from its description"""
 
@@ -193,7 +198,7 @@ def get_material(
 
 
 def get_materials_from_description(
-    desc: str,
+        desc: str,
 ) -> list[raytracing.material.OpticMaterial | BeamSeed]:
     """Run through the description to extract the material properties"""
 
@@ -259,7 +264,7 @@ def get_beams(element: inkex.ShapeElement) -> Iterable[Ray]:
 
 
 def convert_to_composite_bezier(
-    superpath: inkex.CubicSuperPath,
+        superpath: inkex.CubicSuperPath,
 ) -> CompoundGeometricObject:
     """
     Converts a superpath with a representation
@@ -277,6 +282,10 @@ def convert_to_composite_bezier(
             bezier_path.append(bezier)
         composite_bezier.append(CompoundGeometricObject(bezier_path))
     return CompoundGeometricObject(composite_bezier)
+
+
+def get_containing_layer(obj: inkex.BaseElement) -> str:
+    return obj.ancestors().filter(inkex.Layer)[0].get("inkscape:label")
 
 
 if __name__ == "__main__":
