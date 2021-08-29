@@ -69,3 +69,7 @@ def _(self, other: Vector):
 @Vector.__mul__.register
 def _(self, other: Vector) -> float:
     return self.x * other.x + self.y * other.y
+
+@Vector.__rmul__.register
+def _(self, other: Vector) -> float:
+    return self.x * other.x + self.y * other.y
