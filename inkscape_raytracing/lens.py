@@ -5,7 +5,6 @@ Module to add a lens object in the document
 from math import cos, pi, sin, sqrt, acos, tan
 
 import inkex
-from inkex import Transform
 
 
 class Lens(inkex.GenerateExtension):
@@ -103,7 +102,7 @@ class Lens(inkex.GenerateExtension):
         lens.style = self.style
         closed_path = inkex.Path(inkex.CubicSuperPath([lens_path]))
         closed_path.close()
-        lens.path = closed_path.transform(Transform("rotate(90)"))
+        lens.path = closed_path.transform(inkex.Transform("rotate(90)"))
         lens.desc = (
             f"L{opts.focal_length}{opts.focal_length_unit}\n"
             f"optics:glass:{optical_index:.4f}"
