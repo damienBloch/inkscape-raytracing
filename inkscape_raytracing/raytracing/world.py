@@ -2,11 +2,11 @@
 Module to describe and interact with a scene composed of various optical
 objects
 """
+from __future__ import annotations
 
 import warnings
+from dataclasses import dataclass, field
 from typing import Optional, List, NamedTuple, Iterable, Tuple
-
-from line_profiler_pycharm import profile
 
 from .geometry import GeometricObject
 from .material import OpticMaterial, BeamDump
@@ -19,32 +19,25 @@ class OpticalObject(NamedTuple):
     material: OpticMaterial
 
 
+@dataclass
 class World:
     """Stores a scene and computes the interaction with a ray"""
 
-    def __init__(
-        self,
-        list_: Optional[List[OpticalObject]] = None,
-        recursion_depth: Optional[int] = 500,
-    ):
-        if list_ is None:
-            list_ = []
-        self._objects = list(list_)
-        # default recursion depth can be changed, but should not exceed
-        # system recursion limit.
-        self._max_recursion_depth = recursion_depth
+    objects: Optional[list[OpticalObject]] = field(default_factory=list)
+    # default recursion depth can be changed, but should not exceed
+    # system recursion limit.
+    max_recursion_depth: Optional[int] = 500
 
-    def add_object(self, obj: OpticalObject):
-        self._objects.append(obj)
+    def add(self, obj: OpticalObject):
+        self.objects.append(obj)
 
     def __iter__(self) -> Iterable[OpticalObject]:
-        return iter(self._objects)
+        return iter(self.objects)
 
     @property
     def num_objects(self) -> int:
-        return len(self._objects)
+        return len(self.objects)
 
-    @profile
     def first_hit(self, ray: Ray) -> Tuple[ShadeRec, OpticMaterial]:
         """
         Returns the information about the first collision of the beam
@@ -65,7 +58,6 @@ class World:
     def propagate_beams(self, seed):
         return self._propagate_beams([[seed]], 0)
 
-    @profile
     def _propagate_beams(self, beams: List[List[Ray]], depth) -> List[List[Ray]]:
         """Computes the propagation of beams in the system
 
@@ -77,11 +69,10 @@ class World:
         :raise: warning if recursion depth hits a limit.
         """
 
-        if depth >= self._max_recursion_depth:
+        if depth >= self.max_recursion_depth:
             err_msg = (
-                "Maximal recursion depth exceeded ("
-                f"{self._max_recursion_depth}). It is  likely that "
-                "not all beams have been rendered."
+                f"Maximal recursion depth exceeded ({self.max_recursion_depth})."
+                "It is  likely that not all beams have been rendered."
             )
             warnings.warn(err_msg)
             return beams
