@@ -1,5 +1,5 @@
-from inkex.tester import ComparisonMixin, TestCase
-from inkex.tester.filters import CompareNumericFuzzy
+from inkscape_raytracing.inkex.tester import ComparisonMixin, TestCase
+from inkscape_raytracing.inkex.tester.filters import CompareNumericFuzzy
 
 from inkscape_raytracing.render import Tracer
 
