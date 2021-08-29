@@ -8,10 +8,12 @@ license = "GPL3"
 [tool.poetry.dependencies]
 python = ">=3.7, <3.10"
 numpy = "^1.21.2"
-inkex = "^1.0.1"
+lxml = "^4.6.3"
 
 [tool.poetry.dev-dependencies]
 black = "^21.7b0"
+pre-commit = "^2.14.0"
+pytest = "^6.2.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
