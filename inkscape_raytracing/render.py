@@ -43,13 +43,14 @@ class Tracer(inkex.EffectExtension):
         super().__init__()
         self.world = World()
         self.beam_seeds: list[BeamSeed] = list()
+        self.layers: dict[str, inkex.Layer] = dict()
 
     def effect(self) -> None:
         """
         Loads the objects and outputs a svg with the beams after propagation
         """
 
-        # Can't set the border earlier because self.document is not defined
+        # Can't set the border earlier because self.svg is not yet defined
         self.document_border = self.get_document_borders_as_beamdump()
         self.world.add(self.document_border)
 
@@ -146,18 +147,17 @@ class Tracer(inkex.EffectExtension):
         )
         return OpticalObject(contour_geometry, raytracing.material.BeamDump())
 
-    def add_render_layer(self):
-        """
-        Looks for an existing layer to render beams into and creates one if
-        not already present.
-        """
-        for element in self.document.iter():
-            if element.get("inkscape:label") == "rendered_beams":
-                return element
-        svg = self.document.getroot()
-        layer = svg.add(inkex.Layer())
-        layer.label = "rendered_beams"
-        return layer
+    def register_layers(self):
+        layers = [obj for obj in self.document.iter() if isinstance(obj, inkex.Layer)]
+        layer_ids = [layer.get("inkscape:label") for layer in layers]
+        self.layers = {**self.layers, **dict(zip(layer_ids, layers))}
+        # for element in layers:
+        #     if element.get("inkscape:label") == "rendered_beams":
+        #         return element
+        # svg = self.document.getroot()
+        # layer = svg.add(inkex.Layer())
+        # layer.label = "rendered_beams"
+        # return layer
 
     def is_inside_document(self, ray: Ray) -> bool:
         return self.document_border.geometry.is_inside(ray)
