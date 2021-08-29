@@ -25,6 +25,38 @@ class BeamSeed:
     parent: Optional[inkex.ShapeElement] = None
 
 
+def get_unlinked_copy(clone: inkex.Use) -> Optional[inkex.ShapeElement]:
+    """Creates a copy of the original with all transformations applied"""
+    copy = clone.href.copy()
+    copy.transform = clone.composed_transform() * copy.transform
+    copy.style = clone.style + copy.style
+    copy.getparent = clone.getparent
+    return copy
+
+
+def get_or_create_beam_layer(parent_layer: inkex.Layer) -> inkex.Layer:
+    for child in parent_layer:
+        if isinstance(child, inkex.Layer):
+            if child.get("inkscape:label") == "generated_beams":
+                return child
+    new_layer = parent_layer.add(inkex.Layer())
+    new_layer.label = "generated_beams"
+    return new_layer
+
+
+def plot_beam(beam: list[Ray], node: inkex.ShapeElement, layer: inkex.Layer):
+    path = inkex.Path()
+    if beam:
+        path += [Move(beam[0].origin.x, beam[0].origin.y)]
+        for ray in beam:
+            p1 = ray.origin + ray.travel * ray.direction
+            path += [Line(p1.x, p1.y)]
+    element = layer.add(inkex.PathElement())
+    # Need to convert to path to get the correct style for inkex.Use
+    element.style = node.to_path_element().style
+    element.path = path
+
+
 class Tracer(inkex.EffectExtension):
     """Extension to renders the beams present in the document"""
 
@@ -65,9 +97,10 @@ class Tracer(inkex.EffectExtension):
                 if self.is_inside_document(seed.ray):
                     generated = self.world.propagate_beams(seed.ray)
                     for beam in generated:
-                        new_layer_label = "beams:" + get_containing_layer(seed.parent)
-                        new_layer = self.get_or_create_layer(new_layer_label)
-                        self.plot_beam(beam, seed.parent, new_layer)
+                        new_layer = get_or_create_beam_layer(
+                            get_containing_layer(seed.parent)
+                        )
+                        plot_beam(beam, seed.parent, new_layer)
 
     @singledispatchmethod
     def add(self, obj):
@@ -80,16 +113,8 @@ class Tracer(inkex.EffectExtension):
 
     @add.register
     def _(self, clone: inkex.Use):
-        copy = self.get_unlinked_copy(clone)
+        copy = get_unlinked_copy(clone)
         self.add(copy)
-
-    def get_unlinked_copy(self, clone: inkex.Use) -> Optional[inkex.ShapeElement]:
-        """Creates a copy of the original with all transformations applied"""
-        copy = clone.href.copy()
-        copy.transform = clone.composed_transform() * copy.transform
-        copy.style = clone.style + copy.style
-        copy.getparent = clone.getparent
-        return copy
 
     for type in filter_primitives:
 
@@ -151,29 +176,8 @@ class Tracer(inkex.EffectExtension):
         layer_ids = [layer.get("inkscape:label") for layer in layers]
         self.layers.update(dict(zip(layer_ids, layers)))
 
-    def get_or_create_layer(self, layer: str) -> inkex.Layer:
-        if layer in self.layers:
-            return self.layers[layer]
-        else:
-            svg = self.document.getroot()
-            new_layer = svg.add(inkex.Layer())
-            new_layer.label = layer
-            return new_layer
-
     def is_inside_document(self, ray: Ray) -> bool:
         return self.document_border.geometry.is_inside(ray)
-
-    def plot_beam(self, beam: list[Ray], node: inkex.ShapeElement, layer: inkex.Layer):
-        path = inkex.Path()
-        if beam:
-            path += [Move(beam[0].origin.x, beam[0].origin.y)]
-            for ray in beam:
-                p1 = ray.origin + ray.travel * ray.direction
-                path += [Line(p1.x, p1.y)]
-        element = layer.add(inkex.PathElement())
-        # Need to convert to path to get the correct style for inkex.Use
-        element.style = node.to_path_element().style
-        element.path = path
 
 
 def get_material(
@@ -280,8 +284,8 @@ def convert_to_composite_bezier(
     return CompoundGeometricObject(composite_bezier)
 
 
-def get_containing_layer(obj: inkex.BaseElement) -> str:
-    return obj.ancestors().filter(inkex.Layer)[0].get("inkscape:label")
+def get_containing_layer(obj: inkex.BaseElement) -> inkex.Layer:
+    return obj.ancestors().filter(inkex.Layer)[0]
 
 
 if __name__ == "__main__":
