@@ -57,7 +57,7 @@ def plot_beam(beam: list[Ray], node: inkex.ShapeElement, layer: inkex.Layer):
     element.path = path
 
 
-class Tracer(inkex.EffectExtension):
+class Raytracing(inkex.EffectExtension):
     """Extension to renders the beams present in the document"""
 
     # Ray tracing is only implemented for the following inkex primitives
@@ -251,7 +251,7 @@ def get_beams(element: inkex.ShapeElement) -> Iterable[Ray]:
     for sub_path in bezier_path:
         last_segment = sub_path[-1]
         endpoint = last_segment.eval(1)
-        tangent = last_segment.tangent(1)
+        tangent = -last_segment.tangent(1)
         yield Ray(endpoint, tangent)
 
 
@@ -281,4 +281,4 @@ def get_containing_layer(obj: inkex.BaseElement) -> inkex.Layer:
 
 
 if __name__ == "__main__":
-    Tracer().run()
+    Raytracing().run()
