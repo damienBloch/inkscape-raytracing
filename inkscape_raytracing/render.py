@@ -88,6 +88,7 @@ class Tracer(inkex.EffectExtension):
         copy = clone.href.copy()
         copy.transform = clone.composed_transform() * copy.transform
         copy.style = clone.style + copy.style
+        copy.getparent = clone.getparent
         return copy
 
     for type in filter_primitives:
