@@ -1,25 +1,35 @@
 """
 Extension for rendering beams in 2D optics with Inkscape
 """
+from __future__ import annotations
+
+from dataclasses import dataclass
 from functools import singledispatchmethod
-from typing import List, Union, Iterable, Optional
+from typing import Iterable, Optional, Final
 
 import inkex
-import numpy as np
 from inkex.paths import Line, Move
 
-from inkscape_raytracing import raytracing as geom, raytracing as mat
-from inkscape_raytracing.raytracing import World, OpticalObject, Ray
-from utils import get_description, pairwise, get_optics_fields
+import raytracing.material
+from desc_parser import get_optics_fields
+from raytracing import Vector
+from raytracing import World, OpticalObject, Ray
+from raytracing.geometry import CubicBezier, CompoundGeometricObject
+from raytracing.geometry import GeometricObject
+from utils import pairwise
+
+
+@dataclass
+class BeamSeed:
+    ray: Optional[Ray] = None
+    parent: Optional[inkex.ShapeElement] = None
 
 
 class Tracer(inkex.EffectExtension):
     """Extension to renders the beams present in the document"""
 
     # Ray tracing is only implemented for the following inkex primitives
-    filter_primitives = (
-        inkex.Group,
-        inkex.Use,
+    filter_primitives: Final = (
         inkex.PathElement,
         inkex.Line,
         inkex.Polyline,
@@ -32,40 +42,42 @@ class Tracer(inkex.EffectExtension):
     def __init__(self):
         super().__init__()
         self.world = World()
-        self.beam_seeds = list()
+        self.beam_seeds: list[BeamSeed] = list()
 
     def effect(self) -> None:
         """
         Loads the objects and outputs a svg with the beams after propagation
         """
 
+        # Can't set the border earlier because self.document is not defined
+        self.document_border = self.get_document_borders_as_beamdump()
+        self.world.add(self.document_border)
+
         filter_ = self.filter_primitives + (inkex.Group, inkex.Use)
         for obj in self.svg.selection.filter(filter_):
-            self.add_to_world(obj)
+            self.add(obj)
 
-        self.set_document_as_border()
-
-        if len(self.beam_seeds) > 0:
+        if self.beam_seeds:
             self._beam_layer = self.add_render_layer()
             for seed in self.beam_seeds:
-                if self.is_inside_document(seed["source"]):
-                    generated = self.world.propagate_beams(seed["source"])
+                if self.is_inside_document(seed.ray):
+                    generated = self.world.propagate_beams(seed.ray)
                     for beam in generated:
-                        self.plot_beam(beam, seed["node"])
+                        self.plot_beam(beam, seed.parent)
 
     @singledispatchmethod
-    def add_to_world(self, obj):
-        raise NotImplementedError
+    def add(self, obj):
+        pass
 
-    @add_to_world.register
+    @add.register
     def _(self, group: inkex.Group):
         for child in group:
-            self.add_to_world(child)
+            self.add(child)
 
-    @add_to_world.register
+    @add.register
     def _(self, clone: inkex.Use):
         copy = self.get_unlinked_copy(clone)
-        self.add_to_world(copy)
+        self.add(copy)
 
     def get_unlinked_copy(self, clone: inkex.Use) -> Optional[inkex.ShapeElement]:
         """Creates a copy of the original with all transformations applied"""
@@ -81,49 +93,58 @@ class Tracer(inkex.EffectExtension):
 
     for type in filter_primitives:
 
-        @add_to_world.register(type)
+        @add.register(type)
         def _(self, obj):
             """
             Extracts properties and adds the object to the ray tracing data
             structure
             """
-
-            materials = get_material(obj)
-            if len(materials) > 1:
-                raise_err_num_materials(obj)
-            elif len(materials) == 1:
-                material = materials[0]
-                if isinstance(material, mat.BeamSeed):
+            material = get_material(obj)
+            if material:
+                if isinstance(material, BeamSeed):
                     for ray in get_beams(obj):
-                        self.beam_seeds.append(dict(source=ray, node=obj))
+                        self.beam_seeds.append(BeamSeed(ray, parent=obj))
                 else:
                     geometry = get_geometry(obj)
                     opt_obj = OpticalObject(geometry, material)
-                    self.world.add_object(opt_obj)
+                    self.world.add(opt_obj)
 
-    def set_document_as_border(self) -> None:
+    def get_document_borders_as_beamdump(self) -> OpticalObject:
         """
         Adds a beam blocking contour on the borders of the document to
         prevent the beams from going to infinity
         """
 
-        svg = self.document.getroot()
-        w = self.svg.unittouu(svg.get("width"))
-        h = self.svg.unittouu(svg.get("height"))
-        contour_geometry = geom.CompositeCubicBezier(
-            [
-                geom.CubicBezierPath(
-                    [
-                        geom.CubicBezier(np.array([[0, 0], [0, 0], [w, 0], [w, 0]])),
-                        geom.CubicBezier(np.array([[w, 0], [w, 0], [w, h], [w, h]])),
-                        geom.CubicBezier(np.array([[w, h], [w, h], [0, h], [0, h]])),
-                        geom.CubicBezier(np.array([[0, h], [0, h], [0, 0], [0, 0]])),
-                    ]
-                )
-            ]
+        c1x, c1y, c2x, c2y = self.svg.get_viewbox()
+        contour_geometry = CompoundGeometricObject(
+            (
+                CubicBezier(
+                    Vector(c1x, c1y),
+                    Vector(c1x, c1y),
+                    Vector(c2x, c1y),
+                    Vector(c2x, c1y),
+                ),
+                CubicBezier(
+                    Vector(c2x, c1y),
+                    Vector(c2x, c1y),
+                    Vector(c2x, c2y),
+                    Vector(c2x, c2y),
+                ),
+                CubicBezier(
+                    Vector(c2x, c2y),
+                    Vector(c2x, c2y),
+                    Vector(c1x, c2y),
+                    Vector(c1x, c2y),
+                ),
+                CubicBezier(
+                    Vector(c1x, c2y),
+                    Vector(c1x, c2y),
+                    Vector(c1x, c1y),
+                    Vector(c1x, c1y),
+                ),
+            )
         )
-        self._document_border = OpticalObject(contour_geometry, mat.BeamDump())
-        self.world.add_object(self._document_border)
+        return OpticalObject(contour_geometry, raytracing.material.BeamDump())
 
     def add_render_layer(self):
         """
@@ -139,15 +160,15 @@ class Tracer(inkex.EffectExtension):
         return layer
 
     def is_inside_document(self, ray: Ray) -> bool:
-        return self._document_border.geometry.is_inside(ray)
+        return self.document_border.geometry.is_inside(ray)
 
-    def plot_beam(self, beam: List[Ray], node: inkex.ShapeElement) -> None:
+    def plot_beam(self, beam: list[Ray], node: inkex.ShapeElement) -> None:
         path = inkex.Path()
         if len(beam) > 0:
-            path += [Move(beam[0].origin[0], beam[0].origin[1])]
+            path += [Move(beam[0].origin.x, beam[0].origin.y)]
             for ray in beam:
                 p1 = ray.origin + ray.travel * ray.direction
-                path += [Line(p1[0], p1[1])]
+                path += [Line(p1.x, p1.y)]
         element = self._beam_layer.add(inkex.PathElement())
         # Need to convert to path to get the correct style for inkex.Use
         element.style = node.to_path_element().style
@@ -156,27 +177,35 @@ class Tracer(inkex.EffectExtension):
 
 def get_material(
     obj: inkex.ShapeElement,
-) -> List[Union[mat.OpticMaterial, mat.BeamSeed]]:
+) -> Optional[raytracing.material.OpticMaterial | BeamSeed]:
     """Extracts the optical material of an object from its description"""
 
-    desc = get_description(obj)
-    return materials_from_description(desc)
+    desc = obj.desc
+    if desc is None:
+        desc = ""
+    materials = get_materials_from_description(desc)
+    if len(materials) == 0:
+        return None
+    if len(materials) > 1:
+        raise_err_num_materials(obj)
+    elif len(materials) == 1:
+        return materials[0]
 
 
-def materials_from_description(
+def get_materials_from_description(
     desc: str,
-) -> List[Union[mat.OpticMaterial, mat.BeamSeed]]:
+) -> list[raytracing.material.OpticMaterial | BeamSeed]:
     """Run through the description to extract the material properties"""
 
     materials = list()
     class_alias = dict(
-        beam_dump=mat.BeamDump,
-        mirror=mat.Mirror,
-        beam_splitter=mat.BeamSplitter,
-        beam=mat.BeamSeed,
-        glass=mat.Glass,
+        beam_dump=raytracing.material.BeamDump,
+        mirror=raytracing.material.Mirror,
+        beam_splitter=raytracing.material.BeamSplitter,
+        glass=raytracing.material.Glass,
+        beam=BeamSeed,
     )
-    for match in get_optics_fields(desc.lower()):
+    for match in get_optics_fields(desc):
         material_type = match.group("material")
         prop_str = match.group("num")
         if material_type in class_alias:
@@ -189,22 +218,25 @@ def materials_from_description(
 
 
 def raise_err_num_materials(obj):
-    message = (
-        f"The element {obj.get_id()} has more than one optical "
-        f"material and will be ignored:\n{get_description(obj)}\n"
+    inkex.utils.errormsg(
+        f"The element {obj.get_id()} has more than one optical material and will be"
+        f" ignored:\n{obj.desc}\n"
     )
-    inkex.utils.errormsg(message)
 
 
-def get_beams(element: inkex.ShapeElement) -> Iterable[Ray]:
+def get_geometry(obj: inkex.ShapeElement) -> GeometricObject:
     """
-    Returns a beam with origin at the endpoint of the path and tangent to
-    the path
+    Converts the geometry of inkscape elements to a form suitable for the
+    ray tracing module
     """
-    bezier_path = superpath_to_bezier_segments(get_absolute_path(element))
-    for subpath in bezier_path:
-        endpoint, tangent = subpath.endpoint_info()
-        yield Ray(endpoint, tangent)
+
+    # Treats all objects as cubic Bezier curves. This treatment is exact
+    # for most primitives except circles and ellipses that are only
+    # approximated by Bezier curves.
+    # TODO: implement exact representation for ellipses
+    path = get_absolute_path(obj)
+    composite_bezier = convert_to_composite_bezier(path)
+    return composite_bezier
 
 
 def get_absolute_path(obj: inkex.ShapeElement) -> inkex.CubicSuperPath:
@@ -213,9 +245,22 @@ def get_absolute_path(obj: inkex.ShapeElement) -> inkex.CubicSuperPath:
     return transformed_path.to_superpath()
 
 
-def superpath_to_bezier_segments(
+def get_beams(element: inkex.ShapeElement) -> Iterable[Ray]:
+    """
+    Returns a beam with origin at the endpoint of the path and tangent to
+    the path
+    """
+    bezier_path = convert_to_composite_bezier(get_absolute_path(element))
+    for sub_path in bezier_path:
+        last_segment = sub_path[-1]
+        endpoint = last_segment.eval(1)
+        tangent = last_segment.tangent(1)
+        yield Ray(endpoint, tangent)
+
+
+def convert_to_composite_bezier(
     superpath: inkex.CubicSuperPath,
-) -> geom.CompositeCubicBezier:
+) -> CompoundGeometricObject:
     """
     Converts a superpath with a representation
     [Subpath0[handle0_0, point0, handle0_1], ...], ...]
@@ -228,25 +273,10 @@ def superpath_to_bezier_segments(
     for subpath in superpath:
         bezier_path = list()
         for (__, p0, p1), (p2, p3, __) in pairwise(subpath):
-            bezier = geom.CubicBezier(np.array([p0, p1, p2, p3]))
+            bezier = CubicBezier(Vector(*p0), Vector(*p1), Vector(*p2), Vector(*p3))
             bezier_path.append(bezier)
-        composite_bezier.append(geom.CubicBezierPath(bezier_path))
-    return geom.CompositeCubicBezier(composite_bezier)
-
-
-def get_geometry(obj: inkex.ShapeElement) -> geom.GeometricObject:
-    """
-    Converts the geometry of inkscape elements to a form suitable for the
-    ray tracing module
-    """
-
-    # Treats all objects as cubic Bezier curves. This treatment is exact
-    # for most primitives except circles and ellipses that are only
-    # approximated by Bezier curves.
-    # TODO: implement exact representation for ellipses
-    path = get_absolute_path(obj)
-    composite_bezier = superpath_to_bezier_segments(path)
-    return composite_bezier
+        composite_bezier.append(CompoundGeometricObject(bezier_path))
+    return CompoundGeometricObject(composite_bezier)
 
 
 if __name__ == "__main__":
