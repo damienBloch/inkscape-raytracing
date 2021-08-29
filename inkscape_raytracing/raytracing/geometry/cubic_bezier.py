@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from functools import cached_property
+from math import isclose
 
 import numpy
 
@@ -32,7 +33,7 @@ class CubicBezier(GeometricObject):
     p2: Vector
     p3: Vector
 
-    def eval(self, s):
+    def eval(self, s) -> Vector:
         return (
             (1 - s) ** 3 * self.p0
             + 3 * s * (1 - s) ** 2 * self.p1
@@ -102,13 +103,7 @@ class CubicBezier(GeometricObject):
         a2 = 3 * a * (self.p0 - 2 * self.p1 + self.p2)
         a3 = a * (-self.p0 + 3 * self.p1 - 3 * self.p2 + self.p3)
         roots = cubic_real_roots(a0, a1, a2, a3)
-        intersection_points = [
-            (1 - s) ** 3 * self.p0
-            + 3 * s * (1 - s) ** 2 * self.p1
-            + 3 * s ** 2 * (1 - s) * self.p2
-            + s ** 3 * self.p3
-            for s in roots
-        ]
+        intersection_points = [self.eval(s) for s in roots]
         travel = [(X - ray.origin) * ray.direction for X in intersection_points]
 
         def valid_domain(s, t):
@@ -156,15 +151,15 @@ def cubic_real_roots(d: float, c: float, b: float, a: float) -> list[float]:
     # For more information see:
     # https://en.wikipedia.org/wiki/Cubic_equation#General_cubic_formula
 
-    if not numpy.isclose(a, 0):  # true cubic equation
+    if not isclose(a, 0):  # true cubic equation
         p = (3 * a * c - b ** 2) / 3 / a ** 2
         q = (2 * b ** 3 - 9 * a * b * c + 27 * a ** 2 * d) / 27 / a ** 3
-        if numpy.isclose(p, 0):
+        if isclose(p, 0):
             t = [numpy.cbrt(-q)]
         else:
             discr = -(4 * p ** 3 + 27 * q ** 2)
-            if numpy.isclose(discr, 0):
-                if numpy.isclose(q, 0):
+            if isclose(discr, 0):
+                if isclose(q, 0):
                     t = [0]
                 else:
                     t = [3 * q / p, -3 * q / 2 / p]
@@ -189,14 +184,14 @@ def cubic_real_roots(d: float, c: float, b: float, a: float) -> list[float]:
 
 
 def quadratic_roots(a: float, b: float, c: float) -> list[float]:
-    if not numpy.isclose(a, 0):
+    if not isclose(a, 0):
         discr = b ** 2 - 4 * a * c
         if discr > 0:
             return [
                 (-b + numpy.sqrt(discr)) / 2 / a,
                 (-b - numpy.sqrt(discr)) / 2 / a,
             ]
-        elif numpy.isclose(discr, 0):
+        elif isclose(discr, 0):
             return [-b / 2 / a]
         else:
             return []
@@ -205,7 +200,7 @@ def quadratic_roots(a: float, b: float, c: float) -> list[float]:
 
 
 def linear_root(a: float, b: float) -> list[float]:
-    if numpy.isclose(a, 0):  # No solutions for 0*X+b=0
+    if isclose(a, 0):  # No solutions for 0*X+b=0
         return []  # Ignore infinite solutions for a=b=0
     else:
         return [-b / a]
