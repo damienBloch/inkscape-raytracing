@@ -4,6 +4,6 @@ Structure
 .. graphviz::
 
    digraph foo {
-      "svg file" -> "render_raytracing.Tracer" [label="add"];
-      "render_raytracing.Tracer" -> "svg file";
+      "svg file" -> "render_raytracing.Raytracing" [label="add"];
+      "render_raytracing.Raytracing" -> "svg file";
    }
