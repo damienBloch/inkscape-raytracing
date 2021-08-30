@@ -94,10 +94,13 @@ class Raytracing(inkex.EffectExtension):
                 if self.is_inside_document(seed.ray):
                     generated = self.world.propagate_beams(seed.ray)
                     for beam in generated:
-                        new_layer = get_or_create_beam_layer(
-                            get_containing_layer(seed.parent)
-                        )
-                        plot_beam(beam, seed.parent, new_layer)
+                        try:
+                            new_layer = get_or_create_beam_layer(
+                                get_containing_layer(seed.parent)
+                            )
+                            plot_beam(beam, seed.parent, new_layer)
+                        except LayerError as e:
+                            inkex.utils.errormsg(f"{e} It will be ignored.")
 
     @singledispatchmethod
     def add(self, obj):
@@ -277,7 +280,14 @@ def convert_to_composite_bezier(
 
 
 def get_containing_layer(obj: inkex.BaseElement) -> inkex.Layer:
-    return obj.ancestors().filter(inkex.Layer)[0]
+    try:
+        return obj.ancestors().filter(inkex.Layer)[0]
+    except IndexError:
+        raise LayerError(f"Object '{obj.get_id()}' is not inside a layer.")
+
+
+class LayerError(RuntimeError):
+    pass
 
 
 if __name__ == "__main__":
