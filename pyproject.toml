@@ -9,11 +9,13 @@ license = "GPL3"
 python = ">=3.7, <3.10"
 numpy = "^1.21.2"
 lxml = "^4.6.3"
+inkex = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 black = "^21.7b0"
 pre-commit = "^2.14.0"
 pytest = "^6.2.4"
+line-profiler-pycharm = "^1.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
