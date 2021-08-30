@@ -9,5 +9,5 @@ class MirrorTest(ComparisonMixin, TestCase):
     compare_file = "svg/mirror.svg"
     compare_filters = [CompareNumericFuzzy()]
     comparisons = [
-        ("--id=g1553",),
+        ("--id=layer1",),
     ]

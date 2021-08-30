@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg6"
    version="1.1"
    viewBox="0 0 100 100"
    height="100mm"
    width="100mm"
    sodipodi:docname="beamsplitter.svg"
-   inkscape:version="1.1-dev (1:0.92.0+devel+202005110039+9ce7266)">
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -97,22 +97,23 @@
      fit-margin-left="0"
      fit-margin-top="0"
      inkscape:window-maximized="1"
-     inkscape:window-y="24"
-     inkscape:window-x="1985"
-     inkscape:window-height="1056"
-     inkscape:window-width="1855"
+     inkscape:window-y="-8"
+     inkscape:window-x="-8"
+     inkscape:window-height="1017"
+     inkscape:window-width="1920"
      showgrid="true"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="161.59474"
-     inkscape:cx="195.95588"
-     inkscape:zoom="1.4142136"
+     inkscape:cy="278.42329"
+     inkscape:cx="165.10943"
+     inkscape:zoom="2.8284272"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
      bordercolor="#666666"
      pagecolor="#ffffff"
-     id="base">
+     id="base"
+     inkscape:pagecheckerboard="0">
     <inkscape:grid
        originy="0"
        originx="0"
@@ -123,89 +124,79 @@
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
-    <g
-       id="g1116">
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 50,0 c 0,33.333597 0,66.666929 0,100"
-         id="path10"
-         inkscape:path-effect="#path-effect12"
-         inkscape:original-d="m 50,0 c 2.64e-4,33.333597 2.64e-4,66.666929 0,100">
-        <desc
-           id="desc23">optics:beam_dump</desc>
-      </path>
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 0,50 c 33.333597,0 66.666929,0 100,0"
-         id="path14"
-         inkscape:path-effect="#path-effect16"
-         inkscape:original-d="m 0,50 c 33.333597,2.64e-4 66.666929,2.64e-4 100,0">
-        <desc
-           id="desc26">optics:beam_dump</desc>
-      </path>
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-         d="M 20,30 C 25.000061,26.666626 30.000061,23.333292 34.999998,20"
-         id="path34"
-         inkscape:path-effect="#path-effect36"
-         inkscape:original-d="M 20,30 C 25.000264,26.66693 30.000265,23.333598 34.999998,20">
-        <desc
-           id="desc72">optics:beam_splitter</desc>
-      </path>
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="M 20,20 C 20,20 15,10 15,10"
-         id="path38"
-         inkscape:path-effect="#path-effect40"
-         inkscape:original-d="M 20,20 15,10">
-        <desc
-           id="desc54">optics:beam</desc>
-      </path>
-      <path
-         inkscape:original-d="m 60,30 c 6.666932,2.65e-4 13.333599,2.65e-4 20,0"
-         inkscape:path-effect="#path-effect152"
-         id="path150"
-         d="m 60,30 c 6.666932,0 13.333599,0 20,0"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         sodipodi:nodetypes="cc">
-        <desc
-           id="desc148">optics:beam_splitter</desc>
-      </path>
-      <path
-         inkscape:original-d="M 70.000002,20 70,10"
-         inkscape:path-effect="#path-effect158"
-         id="path156"
-         d="m 70.000002,20 c 0,0 -2e-6,-10 -2e-6,-10"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         sodipodi:nodetypes="cc">
-        <desc
-           id="desc154">optics:beam</desc>
-      </path>
-      <path
-         style="opacity:1;fill:none;stroke:#000000;stroke-width:0.265;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-         id="path199"
-         sodipodi:type="arc"
-         sodipodi:cx="22.5"
-         sodipodi:cy="72.5"
-         sodipodi:rx="7.5"
-         sodipodi:ry="2.5"
-         sodipodi:start="0"
-         sodipodi:end="3.1415927"
-         sodipodi:arc-type="arc"
-         d="m 30,72.5 a 7.5,2.5 0 0 1 -3.75,2.165064 7.5,2.5 0 0 1 -7.5,-10e-7 A 7.5,2.5 0 0 1 15,72.5"
-         sodipodi:open="true">
-        <desc
-           id="desc1037">optics:beam_splitter</desc>
-      </path>
-      <path
-         inkscape:original-d="M 20,65 15,55"
-         inkscape:path-effect="#path-effect1048"
-         id="path1046"
-         d="M 20,65 C 20,65 15,55 15,55"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
-        <desc
-           id="desc1044">optics:beam</desc>
-      </path>
-    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50,0 c 0,33.333597 0,66.666929 0,100"
+       id="path10"
+       inkscape:path-effect="#path-effect12"
+       inkscape:original-d="m 50,0 c 2.64e-4,33.333597 2.64e-4,66.666929 0,100">
+      <desc
+         id="desc23">optics:beam_dump</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 0,50 c 33.333597,0 66.666929,0 100,0"
+       id="path14"
+       inkscape:path-effect="#path-effect16"
+       inkscape:original-d="m 0,50 c 33.333597,2.64e-4 66.666929,2.64e-4 100,0">
+      <desc
+         id="desc26">optics:beam_dump</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 20,30 C 25.000061,26.666626 30.000061,23.333292 34.999998,20"
+       id="path34"
+       inkscape:path-effect="#path-effect36"
+       inkscape:original-d="M 20,30 C 25.000264,26.66693 30.000265,23.333598 34.999998,20">
+      <desc
+         id="desc72">optics:beam_splitter</desc>
+    </path>
+    <path
+       inkscape:original-d="m 60,30 c 6.666932,2.65e-4 13.333599,2.65e-4 20,0"
+       inkscape:path-effect="#path-effect152"
+       id="path150"
+       d="m 60,30 c 6.666932,0 13.333599,0 20,0"
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       sodipodi:nodetypes="cc">
+      <desc
+         id="desc148">optics:beam_splitter</desc>
+    </path>
+    <path
+       style="opacity:1;fill:none;stroke:#000000;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path199"
+       sodipodi:type="arc"
+       sodipodi:cx="22.5"
+       sodipodi:cy="72.5"
+       sodipodi:rx="7.5"
+       sodipodi:ry="2.5"
+       sodipodi:start="0"
+       sodipodi:end="3.1415927"
+       sodipodi:arc-type="arc"
+       sodipodi:open="true"
+       d="m 30,72.5 a 7.5,2.5 0 0 1 -3.75,2.165064 7.5,2.5 0 0 1 -7.5,-10e-7 A 7.5,2.5 0 0 1 15,72.5">
+      <desc
+         id="desc1037">optics:beam_splitter</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 14.552083,10.583333 6.614583,9.260417"
+       id="path975">
+      <desc
+         id="desc1028">optics:beam</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 64.822916,10.583333 V 19.84375"
+       id="path1068">
+      <desc
+         id="desc1125">optics:beam</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 13.229167,56.885416 6.614583,7.9375"
+       id="path1438">
+      <desc
+         id="desc1491">optics:beam</desc>
+    </path>
   </g>
 </svg>

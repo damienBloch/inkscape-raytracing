@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="glass.svg"
-   width="25cm"
-   height="10cm"
-   viewBox="0 0 249.99999 100"
-   version="1.1"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    id="svg6"
-   inkscape:version="1.1-dev (1:0.92.0+devel+202005110039+9ce7266)">
+   version="1.1"
+   viewBox="0 0 249.99999 100"
+   height="10cm"
+   width="25cm"
+   sodipodi:docname="glass.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -202,7 +202,7 @@
        effect="bspline" />
   </defs>
   <sodipodi:namedview
-     inkscape:snap-global="false"
+     inkscape:snap-global="true"
      lock-margins="true"
      units="cm"
      fit-margin-bottom="0"
@@ -219,23 +219,24 @@
      inkscape:bbox-paths="true"
      inkscape:snap-bbox="true"
      inkscape:window-maximized="1"
-     inkscape:window-y="24"
-     inkscape:window-x="1985"
-     inkscape:window-height="1056"
-     inkscape:window-width="1855"
+     inkscape:window-y="-8"
+     inkscape:window-x="-8"
+     inkscape:window-height="1017"
+     inkscape:window-width="1920"
      showgrid="true"
-     inkscape:current-layer="g757"
+     inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="496.62685"
-     inkscape:cx="384.56816"
-     inkscape:zoom="0.7"
+     inkscape:cy="260.89286"
+     inkscape:cx="141.42857"
+     inkscape:zoom="2.8"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     showguides="false">
+     showguides="false"
+     inkscape:pagecheckerboard="0">
     <inkscape:grid
        type="xygrid"
        id="grid23"
@@ -243,244 +244,199 @@
        originy="0" />
   </sodipodi:namedview>
   <g
-     transform="translate(10.735782,-11.947569)"
-     id="layer1"
      inkscape:groupmode="layer"
-     inkscape:label="Layer 1" />
-  <g
-     id="g757">
+     id="layer1"
+     inkscape:label="Layer 1">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50,0 c 0,33.333597 0,66.666929 0,100"
+       id="path25"
+       inkscape:original-d="m 50,0 c 2.64e-4,33.333597 2.64e-4,66.666929 0,100"
+       inkscape:path-effect="#path-effect27">
+      <desc
+         id="desc57">optics:beam_dump</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 100,0 c 0,33.838396 0,66.666929 0,100"
+       id="path29"
+       inkscape:original-d="m 100,0 c 0.1909,33.838396 2.6e-4,66.666929 0,100"
+       inkscape:path-effect="#path-effect31">
+      <desc
+         id="desc60">optics:beam_dump</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 150,0 c 0,33.333597 0,66.666929 0,100"
+       id="path33"
+       inkscape:original-d="m 150,0 c 2.6e-4,33.333597 2.6e-4,66.666929 0,100"
+       inkscape:path-effect="#path-effect35">
+      <desc
+         id="desc63">optics:beam_dump</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 200,0 c 0,33.333597 0,66.666929 0,100"
+       id="path37"
+       inkscape:original-d="m 200,0 c 2.6e-4,33.333597 2.6e-4,66.666929 0,100"
+       inkscape:path-effect="#path-effect39">
+      <desc
+         id="desc66">optics:beam_dump</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 0,50 c 83.333597,0 166.66693,0 249.99999,0"
+       id="path41"
+       inkscape:original-d="m 0,50 c 83.333597,2.64e-4 166.66693,2.64e-4 249.99999,0"
+       inkscape:path-effect="#path-effect43">
+      <desc
+         id="desc69">optics:beam_dump</desc>
+    </path>
+    <rect
+       style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
+       id="rect80"
+       width="30.000002"
+       height="10"
+       x="9.999999"
+       y="20">
+      <desc
+         id="desc140">optics:glass:1.516800045967102</desc>
+    </rect>
+    <rect
+       y="20"
+       x="60"
+       height="10"
+       width="30.000002"
+       id="rect202"
+       style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877">
+      <desc
+         id="desc200">optics:glass:1.516800045967102</desc>
+    </rect>
+    <rect
+       style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
+       id="rect275"
+       width="30.000002"
+       height="10"
+       x="114.99999"
+       y="20">
+      <desc
+         id="desc273">optics:glass:1.516800045967102</desc>
+    </rect>
+    <rect
+       y="18.520834"
+       x="162.71875"
+       height="10"
+       width="30.000002"
+       id="rect360"
+       style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877">
+      <desc
+         id="desc358">optics:glass:1.516800045967102</desc>
+    </rect>
+    <rect
+       style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
+       id="rect457"
+       width="30.000002"
+       height="10"
+       x="210"
+       y="20">
+      <desc
+         id="desc455">optics:glass:1.516800045967102</desc>
+    </rect>
+    <circle
+       style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
+       id="path564"
+       cx="22.5"
+       cy="77.5"
+       r="7.5">
+      <desc
+         id="desc614">optics:glass:1.516800045967102</desc>
+    </circle>
+    <circle
+       r="7.5"
+       cy="78.052086"
+       cx="75.40625"
+       id="circle852"
+       style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877">
+      <desc
+         id="desc850">optics:glass:1.516800045967102</desc>
+    </circle>
     <g
-       id="g1271">
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 39.264218,11.947569 c 0,33.333597 0,66.666929 0,100.000001"
-         id="path25"
-         inkscape:path-effect="#path-effect27"
-         inkscape:original-d="m 39.264218,11.947569 c 2.64e-4,33.333597 2.64e-4,66.666929 0,100.000001"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc57">optics:beam_dump</desc>
-      </path>
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 89.264218,11.947569 c 0,33.838396 0,66.666929 0,100.000001"
-         id="path29"
-         inkscape:path-effect="#path-effect31"
-         inkscape:original-d="m 89.264218,11.947569 c 0.190899,33.838396 2.64e-4,66.666929 0,100.000001"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc60">optics:beam_dump</desc>
-      </path>
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 139.26422,11.947569 c 0,33.333597 0,66.666929 0,100.000001"
-         id="path33"
-         inkscape:path-effect="#path-effect35"
-         inkscape:original-d="m 139.26422,11.947569 c 2.6e-4,33.333597 2.6e-4,66.666929 0,100.000001"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc63">optics:beam_dump</desc>
-      </path>
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 189.26422,11.947569 c 0,33.333597 0,66.666929 0,100.000001"
-         id="path37"
-         inkscape:path-effect="#path-effect39"
-         inkscape:original-d="m 189.26422,11.947569 c 2.6e-4,33.333597 2.6e-4,66.666929 0,100.000001"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc66">optics:beam_dump</desc>
-      </path>
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m -10.735782,61.947569 c 83.333597,0 166.666932,0 249.999992,0"
-         id="path41"
-         inkscape:path-effect="#path-effect43"
-         inkscape:original-d="m -10.735782,61.947569 c 83.333597,2.64e-4 166.666932,2.64e-4 249.999992,0"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc69">optics:beam_dump</desc>
-      </path>
-      <rect
-         style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
-         id="rect80"
-         width="30.000002"
-         height="10"
-         x="-0.73578286"
-         y="31.947569"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc140">optics:glass:1.516800045967102</desc>
-      </rect>
-      <path
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 4.2642169,16.947569 c 1.6668253,3.333651 3.3334918,6.666984 4.9999997,10"
-         id="path82"
-         inkscape:path-effect="#path-effect84"
-         inkscape:original-d="m 4.2642169,16.947569 c 1.6669311,3.333598 3.3335978,6.666931 4.9999997,10"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc110">optics:beam</desc>
-      </path>
-      <rect
-         y="31.947569"
-         x="49.264217"
-         height="10"
-         width="30.000002"
-         id="rect202"
-         style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc200">optics:glass:1.516800045967102</desc>
-      </rect>
-      <path
-         inkscape:original-d="m 59.264217,16.947569 c 2.64e-4,3.333598 2.64e-4,6.666931 -1e-6,10"
-         inkscape:path-effect="#path-effect208"
-         id="path206"
-         d="m 59.264217,16.947569 c 0,3.333598 -1e-6,6.666931 -1e-6,10"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         sodipodi:nodetypes="cc"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc204">optics:beam</desc>
-      </path>
-      <rect
-         style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
-         id="rect275"
-         width="30.000002"
-         height="10"
-         x="104.26421"
-         y="31.947569"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc273">optics:glass:1.516800045967102</desc>
-      </rect>
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 94.264217,36.947569 c 1.666931,0 3.333598,0 5,0"
-         id="path279"
-         inkscape:path-effect="#path-effect281"
-         inkscape:original-d="m 94.264217,36.947569 c 1.666931,2.65e-4 3.333598,2.65e-4 5,0"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc277">optics:beam</desc>
-      </path>
-      <rect
-         y="31.947569"
-         x="154.26422"
-         height="10"
-         width="30.000002"
-         id="rect360"
-         style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc358">optics:glass:1.516800045967102</desc>
-      </rect>
-      <path
-         inkscape:original-d="m 144.26422,32.07986 c 1.66693,2.65e-4 3.3336,2.65e-4 5,0"
-         inkscape:path-effect="#path-effect366"
-         id="path364"
-         d="m 144.26422,32.07986 c 1.66693,0 3.3336,0 5,0"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         sodipodi:nodetypes="cc"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc362">optics:beam</desc>
-      </path>
-      <rect
-         style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
-         id="rect457"
-         width="30.000002"
-         height="10"
-         x="199.26422"
-         y="31.947569"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc455">optics:glass:1.516800045967102</desc>
-      </rect>
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 210,25 c 0,0 -6.91976,-2.450185 -6.91976,-2.450185"
-         id="path461"
-         inkscape:path-effect="#path-effect463"
-         inkscape:original-d="m 210,25 -6.91976,-2.450185">
-        <desc
-           id="desc459">optics:beam</desc>
-      </path>
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         d="m 9.3965095,66.947569 c -3e-7,3.333598 -7e-7,6.666931 -1e-6,10"
-         id="path622"
-         inkscape:path-effect="#path-effect624"
-         inkscape:original-d="m 9.3965095,66.947569 c 2.64e-4,3.333598 2.64e-4,6.666931 -1e-6,10"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc620">optics:beam</desc>
-      </path>
-      <path
-         inkscape:original-d="m 64.131926,66.947569 c 2.64e-4,3.333598 2.64e-4,6.666931 -1e-6,10"
-         inkscape:path-effect="#path-effect848"
-         id="path846"
-         d="m 64.131926,66.947569 c 0,3.333598 -1e-6,6.666931 -1e-6,10"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         sodipodi:nodetypes="cc"
-         transform="translate(10.735782,-11.947569)">
-        <desc
-           id="desc844">optics:beam</desc>
-      </path>
+       id="g528">
       <circle
          style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
-         id="path564"
-         cx="22.5"
-         cy="77.5"
-         r="7.5">
+         id="path305"
+         cx="125"
+         cy="80"
+         r="5">
         <desc
-           id="desc614">optics:glass:1.516800045967102</desc>
+           id="desc439">optics:glass:1.516800045967102</desc>
       </circle>
-      <circle
-         r="7.5"
-         cy="77.5"
-         cx="75"
-         id="circle852"
-         style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877">
+      <rect
+         style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
+         id="rect307"
+         width="15"
+         height="5"
+         x="120"
+         y="65">
         <desc
-           id="desc850">optics:glass:1.516800045967102</desc>
-      </circle>
-      <g
-         id="g528">
-        <circle
-           style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
-           id="path305"
-           cx="125"
-           cy="80"
-           r="5">
-          <desc
-             id="desc439">optics:glass:1.516800045967102</desc>
-        </circle>
-        <rect
-           style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877"
-           id="rect307"
-           width="15"
-           height="5"
-           x="120"
-           y="65">
-          <desc
-             id="desc442">optics:glass:1.516800045967102</desc>
-        </rect>
-      </g>
-      <path
-         sodipodi:nodetypes="cc"
-         inkscape:original-d="m 135,55 c -0.6411,2.347895 -1.28247,4.695515 -1.9241,7.042875"
-         inkscape:path-effect="#path-effect311"
-         id="path309"
-         d="m 135,55 c -0.64142,2.347808 -1.28278,4.69543 -1.9241,7.042875"
-         style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
-        <desc
-           id="desc374">optics:beam</desc>
-      </path>
+           id="desc442">optics:glass:1.516800045967102</desc>
+      </rect>
     </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 16.158482,6.5200892 7.370536,8.5044638"
+       id="path2896">
+      <desc
+         id="desc4984">optics:beam</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 79.374999,6.6145832 V 15.875"
+       id="path3091">
+      <desc
+         id="desc4645">optics:beam</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 107.15625,25.135416 H 111.125"
+       id="path3366">
+      <desc
+         id="desc4648">optics:beam</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 157.42708,18.520833 h 2.64583"
+       id="path3594">
+      <desc
+         id="desc4651">optics:beam</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 202.93541,22.489583 6.61459,2.38125"
+       id="path3902">
+      <desc
+         id="desc4654">optics:beam</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 27.78125,55.562499 v 9.260417"
+       id="path4097">
+      <desc
+         id="desc4657">optics:beam</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 75.406249,56.885417 v 7.9375"
+       id="path4372">
+      <desc
+         id="desc4660">optics:beam</desc>
+    </path>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 134.9375,55.562499 -2.64584,6.614584"
+       id="path4374">
+      <desc
+         id="desc4663">optics:beam</desc>
+    </path>
   </g>
 </svg>

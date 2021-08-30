@@ -7,5 +7,5 @@ class BeamSplitterTest(ComparisonMixin, TestCase):
     effect_class = type("beamsplitter_test", (Raytracing,), {})
     compare_file = 'svg/beamsplitter.svg'
     comparisons = [
-            ('--id=g1116',),
+            ('--id=layer1',),
     ]

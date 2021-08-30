@@ -7,5 +7,5 @@ class GlassTest(ComparisonMixin, TestCase):
     effect_class = type("glass_test", (Raytracing,), {})
     compare_file = 'svg/glass.svg'
     comparisons = [
-            ('--id=g1271',),
+            ('--id=layer1',),
     ]

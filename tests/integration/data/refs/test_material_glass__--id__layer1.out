@@ -1,0 +1,94 @@
+<svg xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" inkscape:version="1.1 (c68e22c387, 2021-05-23)" id="svg6" version="1.1" viewBox="0 0 249.99999 100" height="10cm" width="25cm" sodipodi:docname="glass.svg">
+  <defs id="defs2">
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect311" effect="bspline"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect848" effect="bspline"/>
+    <inkscape:path-effect effect="bspline" id="path-effect624" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect463" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect366" effect="bspline"/>
+    <inkscape:path-effect effect="bspline" id="path-effect281" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect208" effect="bspline"/>
+    <inkscape:path-effect effect="bspline" id="path-effect84" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect43" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect39" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect35" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect31" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect27" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect effect="bspline" id="path-effect966" is_visible="true" lpeversion="1" weight="33.333333" steps="2" helper_size="0" apply_no_weight="true" apply_with_weight="true" only_selected="false"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect962" effect="bspline"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect839" effect="bspline"/>
+    <inkscape:path-effect only_selected="false" apply_with_weight="true" apply_no_weight="true" helper_size="0" steps="2" weight="33.333333" lpeversion="1" is_visible="true" id="path-effect835" effect="bspline"/>
+  </defs>
+  <sodipodi:namedview inkscape:snap-global="true" lock-margins="true" units="cm" fit-margin-bottom="0" fit-margin-right="0" fit-margin-left="0" fit-margin-top="0" inkscape:snap-midpoints="true" inkscape:snap-smooth-nodes="true" inkscape:snap-intersection-paths="true" inkscape:object-paths="true" inkscape:snap-bbox-midpoints="true" inkscape:snap-bbox-edge-midpoints="true" inkscape:bbox-nodes="true" inkscape:bbox-paths="true" inkscape:snap-bbox="true" inkscape:window-maximized="1" inkscape:window-y="-8" inkscape:window-x="-8" inkscape:window-height="1017" inkscape:window-width="1920" showgrid="true" inkscape:current-layer="layer1" inkscape:document-units="mm" inkscape:cy="260.89286" inkscape:cx="141.42857" inkscape:zoom="2.8" inkscape:pageshadow="2" inkscape:pageopacity="0.0" borderopacity="1.0" bordercolor="#666666" pagecolor="#ffffff" id="base" showguides="false" inkscape:pagecheckerboard="0">
+    <inkscape:grid type="xygrid" id="grid23" originx="-9.9999996e-07" originy="0"/>
+  </sodipodi:namedview>
+  <g inkscape:groupmode="layer" id="layer1" inkscape:label="Layer 1">
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 50,0 c 0,33.333597 0,66.666929 0,100" id="path25" inkscape:original-d="m 50,0 c 2.64e-4,33.333597 2.64e-4,66.666929 0,100" inkscape:path-effect="#path-effect27">
+      <desc id="desc57">optics:beam_dump</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 100,0 c 0,33.838396 0,66.666929 0,100" id="path29" inkscape:original-d="m 100,0 c 0.1909,33.838396 2.6e-4,66.666929 0,100" inkscape:path-effect="#path-effect31">
+      <desc id="desc60">optics:beam_dump</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 150,0 c 0,33.333597 0,66.666929 0,100" id="path33" inkscape:original-d="m 150,0 c 2.6e-4,33.333597 2.6e-4,66.666929 0,100" inkscape:path-effect="#path-effect35">
+      <desc id="desc63">optics:beam_dump</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 200,0 c 0,33.333597 0,66.666929 0,100" id="path37" inkscape:original-d="m 200,0 c 2.6e-4,33.333597 2.6e-4,66.666929 0,100" inkscape:path-effect="#path-effect39">
+      <desc id="desc66">optics:beam_dump</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 0,50 c 83.333597,0 166.66693,0 249.99999,0" id="path41" inkscape:original-d="m 0,50 c 83.333597,2.64e-4 166.66693,2.64e-4 249.99999,0" inkscape:path-effect="#path-effect43">
+      <desc id="desc69">optics:beam_dump</desc>
+    </path>
+    <rect style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877" id="rect80" width="30.000002" height="10" x="9.999999" y="20">
+      <desc id="desc140">optics:glass:1.516800045967102</desc>
+    </rect>
+    <rect y="20" x="60" height="10" width="30.000002" id="rect202" style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877">
+      <desc id="desc200">optics:glass:1.516800045967102</desc>
+    </rect>
+    <rect style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877" id="rect275" width="30.000002" height="10" x="114.99999" y="20">
+      <desc id="desc273">optics:glass:1.516800045967102</desc>
+    </rect>
+    <rect y="18.520834" x="162.71875" height="10" width="30.000002" id="rect360" style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877">
+      <desc id="desc358">optics:glass:1.516800045967102</desc>
+    </rect>
+    <rect style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877" id="rect457" width="30.000002" height="10" x="210" y="20">
+      <desc id="desc455">optics:glass:1.516800045967102</desc>
+    </rect>
+    <circle style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877" id="path564" cx="22.5" cy="77.5" r="7.5">
+      <desc id="desc614">optics:glass:1.516800045967102</desc>
+    </circle>
+    <circle r="7.5" cy="78.052086" cx="75.40625" id="circle852" style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877">
+      <desc id="desc850">optics:glass:1.516800045967102</desc>
+    </circle>
+    <g id="g528">
+      <circle style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877" id="path305" cx="125" cy="80" r="5">
+        <desc id="desc439">optics:glass:1.516800045967102</desc>
+      </circle>
+      <rect style="opacity:0.806096;fill:#b7c2dd;stroke:#000000;stroke-width:0.0649999;stroke-opacity:0.570877" id="rect307" width="15" height="5" x="120" y="65">
+        <desc id="desc442">optics:glass:1.516800045967102</desc>
+      </rect>
+    </g>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 16.158482,6.5200892 7.370536,8.5044638" id="path2896">
+      <desc id="desc4984">optics:beam</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 79.374999,6.6145832 V 15.875" id="path3091">
+      <desc id="desc4645">optics:beam</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 107.15625,25.135416 H 111.125" id="path3366">
+      <desc id="desc4648">optics:beam</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 157.42708,18.520833 h 2.64583" id="path3594">
+      <desc id="desc4651">optics:beam</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 202.93541,22.489583 6.61459,2.38125" id="path3902">
+      <desc id="desc4654">optics:beam</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 27.78125,55.562499 v 9.260417" id="path4097">
+      <desc id="desc4657">optics:beam</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 75.406249,56.885417 v 7.9375" id="path4372">
+      <desc id="desc4660">optics:beam</desc>
+    </path>
+    <path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m 134.9375,55.562499 -2.64584,6.614584" id="path4374">
+      <desc id="desc4663">optics:beam</desc>
+    </path>
+  <g inkscape:groupmode="layer" inkscape:label="generated_beams"><path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 23.529 15.0245 L 27.8411 20 L 32.6282 30 L 49.9615 50"/><path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 79.375 15.875 L 79.375 20 L 79.375 30 L 79.375 50"/><path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 111.125 25.1354 L 115 25.1354 L 145 25.1354 L 150 25.1354"/><path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 160.073 18.5208 L 162.719 18.5208 L 192.719 18.5208 L 200 18.5208"/><path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 209.55 24.8709 L 210 25.033 L 231.681 30 L 240 28.0941 L 250 24.4941"/><path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 27.7812 64.8229 L 27.7812 72.1747 L 23.8744 84.8733 L 13.5921 100"/><path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 75.4062 64.8229 L 75.4062 70.5521 L 75.4062 85.5523 L 75.4078 100"/><path style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 132.292 62.1771 L 131.163 65 L 129.9 70 L 127.607 75.7334 L 123.391 84.7342 L 115.137 100"/></g></g>
+</svg>
