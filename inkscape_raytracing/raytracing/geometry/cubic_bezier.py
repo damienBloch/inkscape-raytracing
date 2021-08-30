@@ -4,6 +4,7 @@ Module for handling objects composed of cubic bezier curves
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from functools import cached_property
 from math import isclose
@@ -151,15 +152,15 @@ def cubic_real_roots(d: float, c: float, b: float, a: float) -> list[float]:
     # For more information see:
     # https://en.wikipedia.org/wiki/Cubic_equation#General_cubic_formula
 
-    if not isclose(a, 0):  # true cubic equation
+    if not is_almost_zero(a):  # true cubic equation
         p = (3 * a * c - b ** 2) / 3 / a ** 2
         q = (2 * b ** 3 - 9 * a * b * c + 27 * a ** 2 * d) / 27 / a ** 3
-        if isclose(p, 0):
+        if is_almost_zero(p):
             t = [numpy.cbrt(-q)]
         else:
             discr = -(4 * p ** 3 + 27 * q ** 2)
-            if isclose(discr, 0):
-                if isclose(q, 0):
+            if is_almost_zero(discr):
+                if is_almost_zero(q):
                     t = [0]
                 else:
                     t = [3 * q / p, -3 * q / 2 / p]
@@ -184,14 +185,14 @@ def cubic_real_roots(d: float, c: float, b: float, a: float) -> list[float]:
 
 
 def quadratic_roots(a: float, b: float, c: float) -> list[float]:
-    if not isclose(a, 0):
+    if not is_almost_zero(a):
         discr = b ** 2 - 4 * a * c
         if discr > 0:
             return [
                 (-b + numpy.sqrt(discr)) / 2 / a,
                 (-b - numpy.sqrt(discr)) / 2 / a,
             ]
-        elif isclose(discr, 0):
+        elif is_almost_zero(discr):
             return [-b / 2 / a]
         else:
             return []
@@ -200,7 +201,11 @@ def quadratic_roots(a: float, b: float, c: float) -> list[float]:
 
 
 def linear_root(a: float, b: float) -> list[float]:
-    if isclose(a, 0):  # No solutions for 0*X+b=0
+    if is_almost_zero(a):  # No solutions for 0*X+b=0
         return []  # Ignore infinite solutions for a=b=0
     else:
         return [-b / a]
+
+
+def is_almost_zero(x: float) -> bool:
+    return math.isclose(x, 0, abs_tol=1e-8)
