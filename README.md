@@ -38,9 +38,11 @@ Requires [Inkscape1.0](https://inkscape.org/release/) or above.
   
 In addition, this extension also requires the following programs, but they are usually already installed with Inkscape:
   
-   * [Python3.6](https://www.python.org/downloads/) or above
+   * [Python3.7](https://www.python.org/downloads/) or above  
    * [NumPy](https://numpy.org/install/)
    * [Inkex](https://pypi.org/project/inkex/) 
+
+If the version of python used by Inkscape doesn't satisfy the requirement, the interpreter can be changed by following these [instructions](https://wiki.inkscape.org/wiki/Extension_Interpreters#Selecting_a_specific_interpreter_version_.28via_preferences_file.29).
   
 
 ## How to use 
