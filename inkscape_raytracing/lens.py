@@ -37,7 +37,10 @@ class Lens(inkex.GenerateExtension):
         pars.add_argument("--lens_type", type=str, default="plano_con")
 
     def to_document_units(self, value: float, unit: str) -> float:
-        return self.svg.unittouu(str(value) + unit)
+        c1x, c1y, c2x, c2y = self.svg.get_viewbox()
+        document_width = self.svg.unittouu(self.document.getroot().get("width"))
+        scale_factor = (c2x - c1x) / document_width
+        return self.svg.unittouu(str(value) + unit) * scale_factor
 
     def generate(self):
         opts = self.options
