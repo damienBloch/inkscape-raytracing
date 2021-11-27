@@ -1,5 +1,5 @@
 """
-Extension for rendering beams in 2D optics with Inkscape
+Extension for rendering beam_paths in 2D optics with Inkscape
 """
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from inkex.paths import Line, Move
 import raytracing.material
 from desc_parser import get_optics_fields
 from raytracing import Vector
-from raytracing import World, OpticalObject, Ray
+from raytracing import World, OpticalObject, Ray, BeamPath
 from raytracing.geometry import CubicBezier, CompoundGeometricObject
 from raytracing.geometry import GeometricObject
 from utils import pairwise
@@ -44,12 +44,14 @@ def get_or_create_beam_layer(parent_layer: inkex.Layer) -> inkex.Layer:
     return new_layer
 
 
-def plot_beam(beam: list[Ray], node: inkex.ShapeElement, layer: inkex.Layer):
+def plot_beam_path(beam_path: BeamPath, node: inkex.ShapeElement, layer: inkex.Layer):
     path = inkex.Path()
-    if beam:
-        path += [Move(beam[0].origin.x, beam[0].origin.y)]
-        for ray in beam:
-            p1 = ray.origin + ray.travel * ray.direction
+    if beam_path:
+        first_ray = beam_path.first_line.ray
+        path += [Move(first_ray.origin.x, first_ray.origin.y)]
+        for line in beam_path:
+            ray = line.ray
+            p1 = ray.origin + line.length * ray.direction
             path += [Line(p1.x, p1.y)]
     element = layer.add(inkex.PathElement())
     # Need to convert to path to get the correct style for inkex.Use
@@ -58,7 +60,7 @@ def plot_beam(beam: list[Ray], node: inkex.ShapeElement, layer: inkex.Layer):
 
 
 class Raytracing(inkex.EffectExtension):
-    """Extension to renders the beams present in the document"""
+    """Extension to renders the beam_paths present in the document"""
 
     # Ray tracing is only implemented for the following inkex primitives
     filter_primitives: Final = (
@@ -78,7 +80,7 @@ class Raytracing(inkex.EffectExtension):
 
     def effect(self) -> None:
         """
-        Loads the objects and outputs a svg with the beams after propagation
+        Loads the objects and outputs a svg with the beam_paths after propagation
         """
 
         # Can't set the border earlier because self.svg is not yet defined
@@ -92,13 +94,13 @@ class Raytracing(inkex.EffectExtension):
         if self.beam_seeds:
             for seed in self.beam_seeds:
                 if self.is_inside_document(seed.ray):
-                    generated = self.world.propagate_beams(seed.ray)
-                    for beam in generated:
+                    generated_paths = self.world.propagate_beams(seed.ray)
+                    for path in generated_paths:
                         try:
                             new_layer = get_or_create_beam_layer(
                                 get_containing_layer(seed.parent)
                             )
-                            plot_beam(beam, seed.parent, new_layer)
+                            plot_beam_path(path, seed.parent, new_layer)
                         except LayerError as e:
                             inkex.utils.errormsg(f"{e} It will be ignored.")
 
@@ -137,7 +139,7 @@ class Raytracing(inkex.EffectExtension):
     def get_document_borders_as_beamdump(self) -> OpticalObject:
         """
         Adds a beam blocking contour on the borders of the document to
-        prevent the beams from going to infinity
+        prevent the beam_paths from going to infinity
         """
 
         c1x, c1y, c2x, c2y = self.svg.get_viewbox()
