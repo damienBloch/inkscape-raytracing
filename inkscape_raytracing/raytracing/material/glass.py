@@ -1,3 +1,4 @@
+import numpy
 import numpy as np
 
 from .optic_material import OpticMaterial
@@ -29,9 +30,28 @@ class Glass(OpticMaterial):
         c1 = -np.dot(d, n)
         u = 1 - r ** 2 * (1 - c1 ** 2)
         if u < 0:  # total internal reflection
-            reflected_ray = Ray(o, d - 2 * np.dot(d, n) * n)
+            mat = (
+                self.abcd_mirror(intersect.curvature, -d * n)
+                @ numpy.array([[1, intersect.ray_travelled_dist], [0, 1]])
+                @ ray.abcd
+            )
+            reflected_ray = Ray(o, d - 2 * (d * n) * n)
             return [reflected_ray]
         else:  # refraction
             c2 = np.sqrt(u)
+            mat = (
+                    self.abcd_refraction(r, intersect.curvature,  -d * n)
+                    @ numpy.array([[1, intersect.ray_travelled_dist], [0, 1]])
+                    @ ray.abcd
+            )
             transmitted_ray = Ray(o, r * d + (r * c1 - c2) * n)
             return [transmitted_ray]
+
+    def abcd_mirror(self, curvature, ct):
+        return numpy.array([[1, 0], [2 * curvature / ct, 1]])
+
+    def abcd_refraction(self, n, curvature, ct):
+        p = np.sqrt(n ** 2 - (1 - ct ** 2))
+        return numpy.array(
+            [[p / n / ct, 0], [(ct - p) * curvature / ct / p, ct / p]]
+        )

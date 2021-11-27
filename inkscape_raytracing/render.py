@@ -63,10 +63,14 @@ def plot_beam_path(beam_path: BeamPath, node: inkex.ShapeElement, layer: inkex.L
 def plot_beam_envelope(
     beam_path: BeamPath, node: inkex.ShapeElement, layer: inkex.Layer
 ):
+    path1 = inkex.Path()
+    path2 = inkex.Path()
+    first_ray = beam_path.first_line.ray
+    path1 += [Move(first_ray.origin.x, first_ray.origin.y)]
+    path2 += [Move(first_ray.origin.x, first_ray.origin.y)]
     for line in beam_path:
-        for l in numpy.arange(0, line.length, 1):
-            path = inkex.Path()
-            d = (line.ray.abcd[0, 0] + line.ray.abcd[1, 0] * l) * 0.1
+        for l in numpy.arange(0, line.length, 10):
+            d = (line.ray.abcd[0, 0] + line.ray.abcd[1, 0] * l) *0.1
             p1 = (
                 line.ray.origin
                 + l * line.ray.direction
@@ -77,12 +81,15 @@ def plot_beam_envelope(
                 + l * line.ray.direction
                 - d * line.ray.direction.orthogonal()
             )
-            path += [Move(p1.x, p1.y)]
-            path += [Line(p2.x, p2.y)]
-            element = layer.add(inkex.PathElement())
-            # Need to convert to path to get the correct style for inkex.Use
-            element.style = node.to_path_element().style
-            element.path = path
+            path1 += [Line(p1.x, p1.y)]
+            path2 += [Line(p2.x, p2.y)]
+    element = layer.add(inkex.PathElement())
+    element.style = node.to_path_element().style
+    element.path = path1
+
+    element = layer.add(inkex.PathElement())
+    element.style = node.to_path_element().style
+    element.path = path2
 
 
 class Raytracing(inkex.EffectExtension):
