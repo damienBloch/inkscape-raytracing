@@ -13,9 +13,6 @@ class BeamSplitter(OpticMaterial):
     the other is transmitted.
     """
 
-    def __init__(self):
-        super().__init__()
-
     def __repr__(self):
         return "Mirror()"
 

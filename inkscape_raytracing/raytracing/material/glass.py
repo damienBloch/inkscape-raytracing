@@ -11,7 +11,6 @@ class Glass(OpticMaterial):
     """Material that transmits and bends beams hitting it"""
 
     def __init__(self, optical_index):
-        super().__init__()
         self._optical_index = optical_index
 
     @property
