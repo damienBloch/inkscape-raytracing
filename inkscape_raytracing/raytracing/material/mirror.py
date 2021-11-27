@@ -2,9 +2,9 @@ from typing import List
 
 import numpy
 
-from ..ray import Ray
-from ..shade import ShadeRec
 from .optic_material import OpticMaterial
+from ..geometry import RayObjectIntersection
+from ..ray import Ray
 
 
 class Mirror(OpticMaterial):
@@ -13,8 +13,8 @@ class Mirror(OpticMaterial):
     def __repr__(self):
         return "Mirror()"
 
-    def generated_beams(self, ray: Ray, shade: ShadeRec) -> List[Ray]:
-        o, d = shade.local_hit_point, ray.direction
-        n = shade.normal
+    def generated_beams(self, ray: Ray, intersect: RayObjectIntersection) -> List[Ray]:
+        o, d = intersect.first_hit_point, ray.direction
+        n = intersect.normal
         reflected_ray = Ray(o, d - 2 * numpy.dot(d, n) * n)
         return [reflected_ray]

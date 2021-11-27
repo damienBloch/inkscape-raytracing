@@ -1,101 +1,63 @@
 from __future__ import annotations
 
 import functools
-from dataclasses import dataclass
-from typing import Protocol, Iterable, TypeVar, Generic
+from dataclasses import dataclass, InitVar
+from typing import Protocol, Iterable, Optional, Callable
 
 import numpy
 
 from ..ray import Ray
-from ..shade import ShadeRec
-from ..vector import Vector
+from ..vector import Vector, UnitVector
+
+
+@dataclass
+class RayObjectIntersection:
+    ray: Ray
+    object: GeometricObject
+    num_intersection: InitVar[Callable[[], int]]
+    first_hit_point: InitVar[Callable[[], Vector]]
+    normal: InitVar[Callable[[], UnitVector]]
+
+    def __post_init__(self, num_intersection, first_hit_point, normal):
+        self._num_intersection = num_intersection
+        self._first_hit_point = first_hit_point
+        self._normal = normal
+
+    @property
+    def first_hit_point(self) -> Vector:
+        return self._first_hit_point()
+
+    @property
+    def num_intersection(self) -> int:
+        return self._num_intersection()
+
+    @property
+    def ray_travelled_dist(self) -> float:
+        return (self.first_hit_point - self.ray.origin).norm()
+
+    @functools.cached_property
+    def normal(self) -> UnitVector:
+        # set normal on the incoming side
+        if (self.first_hit_point - self.ray.origin) * self._normal() > 0:
+            return -self._normal()
+        else:
+            return self._normal()
 
 
 class GeometricObject(Protocol):
     """Protocol for a geometric object (line, rectangle, circle, ...)"""
-
-    def hit(self, ray: Ray) -> ShadeRec:
-        """Tests if a collision between a beam and the object occurred
-
-        Returns a shade that contains the information about the collision in
-        case it happened.
-        """
-        raise NotImplementedError
-
-    def num_hits(self, ray: Ray) -> int:
-        """Returns the number of times a beam intersect the object boundary"""
-        raise NotImplementedError
 
     @property
     def aabbox(self) -> AABBox:
         """Computes an axis aligned bounding box for the object"""
         raise NotImplementedError
 
-    def is_inside(self, ray: Ray) -> bool:
-        """Indicates if a ray is inside or outside the object
-
-        It is not possible to define an inside for every object, for example if it is
-        not closed. In this case it should raise a GeometryError.
-        """
+    def get_intersection(self, ray: Ray) -> Optional[RayObjectIntersection]:
         raise NotImplementedError
 
 
 class GeometryError(RuntimeError):
     pass
-
-
-T = TypeVar("T", bound=GeometricObject)
-
-
-@dataclass(frozen=True)
-class CompoundGeometricObject(GeometricObject, Generic[T]):
-    sub_objects: tuple[T, ...]
-
-    def __init__(self, sub_objects: Iterable[T]):
-        object.__setattr__(self, "sub_objects", tuple(sub_objects))
-
-    def __iter__(self) -> Iterable[T]:
-        return iter(self.sub_objects)
-
-    def __getitem__(self, item) -> T:
-        return self.sub_objects[item]
-
-    @functools.cached_property
-    def aabbox(self):
-        sub_boxes = (sub.aabbox for sub in self.sub_objects)
-        return AABBox.englobing(sub_boxes)
-
-    def hit(self, ray: Ray) -> ShadeRec:
-        """
-        Returns a shade with the information for the first intersection
-        of a beam with one of the object composing the composite object
-        """
-
-        result = ShadeRec()
-        if self.aabbox.hit(ray):
-            result = find_first_hit(ray, self.sub_objects)
-            result.hit_geometry = self
-        return result
-
-    def is_inside(self, ray: Ray) -> bool:
-        # A ray is inside an object if it intersect its boundary an odd
-        # number of times
-        return (self.num_hits(ray) % 2) == 1
-
-    def num_hits(self, ray: Ray) -> int:
-        if self.aabbox.hit(ray):
-            return sum([obj.num_hits(ray) for obj in self.sub_objects])
-        else:
-            return 0
-
-
-def find_first_hit(ray: Ray, objects: Iterable[GeometricObject]) -> ShadeRec:
-    result = ShadeRec()
-    for obj in objects:
-        shade = obj.hit(ray)
-        if Ray.min_travel < shade.travel_dist < result.travel_dist:
-            result = shade
-    return result
 
 
 @dataclass(frozen=True)

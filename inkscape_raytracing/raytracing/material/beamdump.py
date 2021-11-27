@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from .optic_material import OpticMaterial
+from ..geometry import RayObjectIntersection
 from ..ray import Ray
-from ..shade import ShadeRec
 
 
 class BeamDump(OpticMaterial):
@@ -11,5 +11,5 @@ class BeamDump(OpticMaterial):
     def __repr__(self):
         return "BeamDump()"
 
-    def generated_beams(self, ray: Ray, shade: ShadeRec) -> list[Ray]:
+    def generated_beams(self, ray: Ray, intersect: RayObjectIntersection) -> list[Ray]:
         return list()

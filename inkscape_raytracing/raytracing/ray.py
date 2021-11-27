@@ -13,6 +13,7 @@ class Ray:
     origin: Vector
     direction: UnitVector
 
+
     # If a beam hits an object before having traveled a minimum distance
     # from its origin, the collision is ignored. This prevents infinite
     # collision in case the origin of a beam is on the surface of an object

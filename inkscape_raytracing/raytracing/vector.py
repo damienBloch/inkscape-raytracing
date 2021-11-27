@@ -17,7 +17,7 @@ class Vector:
 
     @singledispatchmethod
     def __mul__(self, other):
-        raise NotImplementedError
+        raise NotImplementedError(type(self), type(other))
 
     @__mul__.register
     def _(self, other: Real):
@@ -55,6 +55,9 @@ class UnitVector(Vector):
         norm = sqrt(x ** 2 + y ** 2)
         super().__init__(x / norm, y / norm)
 
+    def __neg__(self) -> UnitVector:
+        return UnitVector(-self.x, -self.y)
+
 
 @Vector.__add__.register
 def _(self, other: Vector):
@@ -69,6 +72,12 @@ def _(self, other: Vector):
 @Vector.__mul__.register
 def _(self, other: Vector) -> float:
     return self.x * other.x + self.y * other.y
+
+
+@Vector.__mul__.register
+def _(self, other: UnitVector) -> float:
+    return self.x * other.x + self.y * other.y
+
 
 @Vector.__rmul__.register
 def _(self, other: Vector) -> float:

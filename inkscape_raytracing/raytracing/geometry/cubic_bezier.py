@@ -6,13 +6,13 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from functools import cached_property
+from functools import cached_property, cache
+from typing import Optional
 
 import numpy
 
-from .geometric_object import AABBox, GeometricObject, GeometryError
+from .geometric_object import AABBox, GeometricObject, RayObjectIntersection
 from ..ray import Ray
-from ..shade import ShadeRec
 from ..vector import Vector, UnitVector
 
 
@@ -48,6 +48,34 @@ class CubicBezier(GeometricObject):
             + s ** 3 * self.p3
         )
 
+    def get_intersection(self, ray: Ray) -> Optional[RayObjectIntersection]:
+        result = None
+        if self.aabbox.hit(ray):
+            intersect_params = self.intersection_beam(ray)
+            travel_dist = tuple([t for (__, t) in intersect_params])
+            if travel_dist:
+
+                @cache
+                def first_hit():
+                    return numpy.argmin(travel_dist)
+
+                @cache
+                def num_intersection():
+                    return len(travel_dist)
+
+                @cache
+                def first_hit_point():
+                    return ray.origin + travel_dist[first_hit()] * ray.direction
+
+                @cache
+                def normal():
+                    return self.normal(intersect_params[first_hit()][0])
+
+                result = RayObjectIntersection(
+                    ray, self, num_intersection, first_hit_point, normal
+                )
+        return result
+
     @cached_property
     def aabbox(self) -> AABBox:
         # The box is slightly larger than the minimal box.
@@ -62,33 +90,6 @@ class CubicBezier(GeometricObject):
             max(self.p0.y, self.p1.y, self.p2.y, self.p3.y) + 1e-6,
         )
         return AABBox(lower_left, upper_right)
-
-    def tangent(self, s: float) -> UnitVector:
-        """Returns the tangent at the curve at curvilinear coordinate s"""
-
-        diff_1 = (
-            -3 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s ** 2
-            + 6 * (self.p0 - 2 * self.p1 + self.p2) * s
-            - 3 * (self.p0 - self.p1)
-        )
-        # If the first derivative is not zero, it is parallel to the tangent
-        if diff_1.norm() > 1e-8:
-            return diff_1.normalize()
-        # but is the first derivative is zero, we need to get the second order
-        else:
-            diff_2 = -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s + 6 * (
-                self.p0 - 2 * self.p1 + self.p2
-            )
-            if diff_2.norm() > 1e-8:
-                return diff_2.normalize()
-            else:  # and even to the 3rd derivative if necessary
-                diff_3 = -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3)
-                return diff_3.normalize()
-
-    def normal(self, s: float) -> UnitVector:
-        """Returns a vector normal at the curve at curvilinear coordinate s"""
-
-        return self.tangent(s).orthogonal()
 
     def intersection_beam(self, ray: Ray) -> list[tuple[float, float]]:
         r"""
@@ -118,33 +119,32 @@ class CubicBezier(GeometricObject):
 
         return [(s, t) for (s, t) in zip(roots, travel) if valid_domain(s, t)]
 
-    def num_hits(self, ray: Ray) -> int:
-        if self.aabbox.hit(ray):
-            return len(self.intersection_beam(ray))
+    def normal(self, s: float) -> UnitVector:
+        """Returns a vector normal at the curve at curvilinear coordinate s"""
+
+        return self.tangent(s).orthogonal()
+
+    def tangent(self, s: float) -> UnitVector:
+        """Returns the tangent at the curve at curvilinear coordinate s"""
+
+        diff_1 = (
+            -3 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s ** 2
+            + 6 * (self.p0 - 2 * self.p1 + self.p2) * s
+            - 3 * (self.p0 - self.p1)
+        )
+        # If the first derivative is not zero, it is parallel to the tangent
+        if diff_1.norm() > 1e-8:
+            return diff_1.normalize()
+        # but is the first derivative is zero, we need to get the second order
         else:
-            return 0
-
-    def hit(self, ray: Ray) -> ShadeRec:
-        """
-        Returns a shade with the information for the first intersection
-        of a beam with the bezier segment
-        """
-
-        shade = ShadeRec()  # default no hit
-        if self.aabbox.hit(ray):
-            intersect_params = self.intersection_beam(ray)
-            travel_dist = [t for (__, t) in intersect_params]
-            if len(travel_dist) > 0:  # otherwise error with np.argmin
-                shade.normal = True
-                first_hit = numpy.argmin(travel_dist)
-                shade.travel_dist = travel_dist[first_hit]
-                shade.local_hit_point = ray.origin + shade.travel_dist * ray.direction
-                shade.normal = self.normal(intersect_params[first_hit][0])
-                shade.set_normal_same_side(ray.origin)
-        return shade
-
-    def is_inside(self, ray: Ray) -> bool:
-        raise GeometryError(f"Can't define an inside for {self}.")
+            diff_2 = -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s + 6 * (
+                self.p0 - 2 * self.p1 + self.p2
+            )
+            if diff_2.norm() > 1e-8:
+                return diff_2.normalize()
+            else:  # and even to the 3rd derivative if necessary
+                diff_3 = -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3)
+                return diff_3.normalize()
 
 
 def cubic_real_roots(d: float, c: float, b: float, a: float) -> list[float]:

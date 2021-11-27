@@ -1,10 +1,8 @@
-from typing import List
-
 import numpy as np
 
-from ..ray import Ray
-from ..shade import ShadeRec
 from .optic_material import OpticMaterial
+from ..geometry import RayObjectIntersection
+from ..ray import Ray
 
 
 class Glass(OpticMaterial):
@@ -20,10 +18,10 @@ class Glass(OpticMaterial):
     def __repr__(self):
         return f"Glass({self._optical_index})"
 
-    def generated_beams(self, ray: Ray, shade: ShadeRec) -> List[Ray]:
-        o, d = shade.local_hit_point, ray.direction
-        n = shade.normal
-        if shade.hit_geometry.is_inside(ray):
+    def generated_beams(self, ray: Ray, intersect: RayObjectIntersection) -> list[Ray]:
+        o, d = intersect.first_hit_point, ray.direction
+        n = intersect.normal
+        if intersect.object.is_inside(ray):
             n_1, n_2 = self.optical_index, 1
         else:
             n_1, n_2 = 1, self.optical_index

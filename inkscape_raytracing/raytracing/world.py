@@ -8,7 +8,7 @@ import warnings
 from dataclasses import dataclass, field
 from typing import Optional, List, NamedTuple, Iterable, Tuple
 
-from .geometry import GeometricObject
+from .geometry import GeometricObject, RayObjectIntersection
 from .material import OpticMaterial, BeamDump
 from .ray import Ray, BeamPath
 from .shade import ShadeRec
@@ -55,6 +55,19 @@ class World:
                 material = obj.material
         return result, material
 
+    def get_first_intersection(
+        self, ray: Ray
+    ) -> Optional[tuple[RayObjectIntersection, OpticMaterial]]:
+        result = None
+        intersections = [
+            (obj.geometry.get_intersection(ray), obj.material) for obj in self
+        ]
+        intersections = list(filter(lambda x: x[0], intersections))
+        if intersections:
+            result = min(intersections, key=lambda x: x[0].ray_travelled_dist)
+
+        return result
+
     def propagate_beams(self, seed):
         return self._propagate_beams([BeamPath(seed)], 0)
 
@@ -78,9 +91,9 @@ class World:
                     new_paths.append(beam_path)
                 else:
                     ray = beam_path.last_line.ray
-                    shade, material = self.first_hit(ray)
-                    beam_path.last_line.length = shade.travel_dist
-                    new_seeds = material.generated_beams(ray, shade)
+                    intersect, material = self.get_first_intersection(ray)
+                    beam_path.last_line.length = intersect.ray_travelled_dist
+                    new_seeds = material.generated_beams(ray, intersect)
                     if not new_seeds:
                         new_paths.append(beam_path)
                     else:
