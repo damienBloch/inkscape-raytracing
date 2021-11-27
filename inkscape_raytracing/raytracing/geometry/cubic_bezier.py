@@ -33,6 +33,13 @@ class CubicBezier(GeometricObject):
     p2: Vector
     p3: Vector
 
+    def __init__(self, p0, p1, p2, p3):
+        # Need to overwrite protocol parent __init__ for some python versions
+        object.__setattr__(self, "p0", p0)
+        object.__setattr__(self, "p1", p1)
+        object.__setattr__(self, "p2", p2)
+        object.__setattr__(self, "p3", p3)
+
     def eval(self, s) -> Vector:
         return (
             (1 - s) ** 3 * self.p0
