@@ -40,13 +40,28 @@ class CubicBezier(GeometricObject):
         object.__setattr__(self, "p2", p2)
         object.__setattr__(self, "p3", p3)
 
-    def eval(self, s) -> Vector:
-        return (
-            (1 - s) ** 3 * self.p0
-            + 3 * s * (1 - s) ** 2 * self.p1
-            + 3 * s ** 2 * (1 - s) * self.p2
-            + s ** 3 * self.p3
-        )
+    def eval(self, s, diff=0) -> Vector:
+        if diff == 0:
+            return (
+                (1 - s) ** 3 * self.p0
+                + 3 * s * (1 - s) ** 2 * self.p1
+                + 3 * s ** 2 * (1 - s) * self.p2
+                + s ** 3 * self.p3
+            )
+        elif diff == 1:
+            return (
+                -3 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s ** 2
+                + 6 * (self.p0 - 2 * self.p1 + self.p2) * s
+                - 3 * (self.p0 - self.p1)
+            )
+        elif diff == 2:
+            return -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s + 6 * (
+                self.p0 - 2 * self.p1 + self.p2
+            )
+        elif diff == 3:
+            return -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3)
+        else:
+            return 0 * self.p0
 
     def get_intersection(self, ray: Ray) -> Optional[RayObjectIntersection]:
         result = None
@@ -71,8 +86,12 @@ class CubicBezier(GeometricObject):
                 def normal():
                     return self.normal(intersect_params[first_hit()][0])
 
+                @cache
+                def curvature():
+                    return self.curvature(intersect_params[first_hit()][0])
+
                 result = RayObjectIntersection(
-                    ray, self, num_intersection, first_hit_point, normal
+                    ray, self, num_intersection, first_hit_point, normal, curvature
                 )
         return result
 
@@ -126,25 +145,15 @@ class CubicBezier(GeometricObject):
 
     def tangent(self, s: float) -> UnitVector:
         """Returns the tangent at the curve at curvilinear coordinate s"""
+        for diff in range(1, 4):
+            t = self.eval(s, diff)
+            if t.norm() > 1e-8:
+                return t.normalize()
 
-        diff_1 = (
-            -3 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s ** 2
-            + 6 * (self.p0 - 2 * self.p1 + self.p2) * s
-            - 3 * (self.p0 - self.p1)
-        )
-        # If the first derivative is not zero, it is parallel to the tangent
-        if diff_1.norm() > 1e-8:
-            return diff_1.normalize()
-        # but is the first derivative is zero, we need to get the second order
-        else:
-            diff_2 = -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3) * s + 6 * (
-                self.p0 - 2 * self.p1 + self.p2
-            )
-            if diff_2.norm() > 1e-8:
-                return diff_2.normalize()
-            else:  # and even to the 3rd derivative if necessary
-                diff_3 = -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3)
-                return diff_3.normalize()
+    def curvature(self, s: float) -> float:
+        d1 = self.eval(s, 1)
+        d2 = self.eval(s, 2)
+        return (d1.x * d2.y - d2.x * d1.y) / d1.norm() ** 3
 
 
 def cubic_real_roots(d: float, c: float, b: float, a: float) -> list[float]:

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import ClassVar, Optional
+
+import numpy
 
 from .vector import UnitVector, Vector
 
@@ -13,6 +15,7 @@ class Ray:
     origin: Vector
     direction: UnitVector
 
+    abcd: numpy.array = field(default_factory=lambda: numpy.eye(2))
 
     # If a beam hits an object before having traveled a minimum distance
     # from its origin, the collision is ignored. This prevents infinite
@@ -44,7 +47,7 @@ class BeamPath:
     @property
     def last_line(self):
         return self.sections[-1]
-    
+
     @property
     def first_line(self):
         return self.sections[0]

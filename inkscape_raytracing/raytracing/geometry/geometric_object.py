@@ -17,11 +17,13 @@ class RayObjectIntersection:
     num_intersection: InitVar[Callable[[], int]]
     first_hit_point: InitVar[Callable[[], Vector]]
     normal: InitVar[Callable[[], UnitVector]]
+    curvature: InitVar[Callable[[], float]]
 
-    def __post_init__(self, num_intersection, first_hit_point, normal):
+    def __post_init__(self, num_intersection, first_hit_point, normal, curvature):
         self._num_intersection = num_intersection
         self._first_hit_point = first_hit_point
         self._normal = normal
+        self._curvature = curvature
 
     @property
     def first_hit_point(self) -> Vector:
@@ -36,9 +38,17 @@ class RayObjectIntersection:
         return (self.first_hit_point - self.ray.origin).norm()
 
     @functools.cached_property
-    def normal(self) -> UnitVector:
+    def curvature(self) -> float:
         # set normal on the incoming side
         if (self.first_hit_point - self.ray.origin) * self._normal() > 0:
+            return -self._curvature()
+        else:
+            return self._curvature()
+
+    @functools.cached_property
+    def normal(self) -> UnitVector:
+        # set normal on the incoming side
+        if (self.first_hit_point - self.ray.origin) * self._normal() < 0:
             return -self._normal()
         else:
             return self._normal()

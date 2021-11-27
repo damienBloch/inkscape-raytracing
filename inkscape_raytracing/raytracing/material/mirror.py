@@ -16,5 +16,13 @@ class Mirror(OpticMaterial):
     def generated_beams(self, ray: Ray, intersect: RayObjectIntersection) -> List[Ray]:
         o, d = intersect.first_hit_point, ray.direction
         n = intersect.normal
-        reflected_ray = Ray(o, d - 2 * numpy.dot(d, n) * n)
+        mat = (
+            self.abcd(intersect.curvature, -d * n)
+            @ numpy.array([[1, intersect.ray_travelled_dist], [0, 1]])
+            @ ray.abcd
+        )
+        reflected_ray = Ray(o, d - 2 * (d * n) * n, mat)
         return [reflected_ray]
+
+    def abcd(self, curvature, ct):
+        return numpy.array([[1, 0], [2 * curvature / ct, 1]])

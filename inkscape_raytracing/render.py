@@ -8,6 +8,7 @@ from functools import singledispatchmethod
 from typing import Iterable, Optional, Final
 
 import inkex
+import numpy
 from inkex.paths import Line, Move
 
 import raytracing.material
@@ -59,6 +60,31 @@ def plot_beam_path(beam_path: BeamPath, node: inkex.ShapeElement, layer: inkex.L
     element.path = path
 
 
+def plot_beam_envelope(
+    beam_path: BeamPath, node: inkex.ShapeElement, layer: inkex.Layer
+):
+    for line in beam_path:
+        for l in numpy.arange(0, line.length, 1):
+            path = inkex.Path()
+            d = (line.ray.abcd[0, 0] + line.ray.abcd[1, 0] * l) * 0.1
+            p1 = (
+                line.ray.origin
+                + l * line.ray.direction
+                + d * line.ray.direction.orthogonal()
+            )
+            p2 = (
+                line.ray.origin
+                + l * line.ray.direction
+                - d * line.ray.direction.orthogonal()
+            )
+            path += [Move(p1.x, p1.y)]
+            path += [Line(p2.x, p2.y)]
+            element = layer.add(inkex.PathElement())
+            # Need to convert to path to get the correct style for inkex.Use
+            element.style = node.to_path_element().style
+            element.path = path
+
+
 class Raytracing(inkex.EffectExtension):
     """Extension to renders the beam_paths present in the document"""
 
@@ -101,6 +127,7 @@ class Raytracing(inkex.EffectExtension):
                                 get_containing_layer(seed.parent)
                             )
                             plot_beam_path(path, seed.parent, new_layer)
+                            plot_beam_envelope(path, seed.parent, new_layer)
                         except LayerError as e:
                             inkex.utils.errormsg(f"{e} It will be ignored.")
 
