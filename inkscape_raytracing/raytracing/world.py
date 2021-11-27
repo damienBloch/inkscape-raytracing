@@ -6,12 +6,11 @@ from __future__ import annotations
 
 import warnings
 from dataclasses import dataclass, field
-from typing import Optional, List, NamedTuple, Iterable, Tuple
+from typing import Optional, List, NamedTuple, Iterable
 
 from .geometry import GeometricObject, RayObjectIntersection
-from .material import OpticMaterial, BeamDump
+from .material import OpticMaterial
 from .ray import Ray, BeamPath
-from .shade import ShadeRec
 
 
 class OpticalObject(NamedTuple):
@@ -37,23 +36,6 @@ class World:
     @property
     def num_objects(self) -> int:
         return len(self.objects)
-
-    def first_hit(self, ray: Ray) -> Tuple[ShadeRec, OpticMaterial]:
-        """
-        Returns the information about the first collision of the beam
-        with an object.
-
-        :return: A shade for the collision geometric information and the
-        material of the object hit.
-        """
-        result = ShadeRec()
-        material = BeamDump()
-        for obj in self:
-            shade = obj.geometry.hit(ray)
-            if Ray.min_travel < shade.travel_dist < result.travel_dist:
-                result = shade
-                material = obj.material
-        return result, material
 
     def get_first_intersection(
         self, ray: Ray

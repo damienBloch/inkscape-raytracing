@@ -2,10 +2,10 @@ from typing import List
 
 import numpy as np
 
-from ..ray import Ray
-from ..shade import ShadeRec
 from .optic_material import OpticMaterial
 from ..geometry import RayObjectIntersection
+from ..ray import Ray
+
 
 class BeamSplitter(OpticMaterial):
     """

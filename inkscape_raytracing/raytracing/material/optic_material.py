@@ -1,15 +1,15 @@
 from abc import abstractmethod
-from typing import Protocol, List
+from typing import Protocol
 
+from ..geometry import RayObjectIntersection
 from ..ray import Ray
-from ..shade import ShadeRec
 
 
 class OpticMaterial(Protocol):
     """Protocol for an optical material"""
 
     @abstractmethod
-    def generated_beams(self, ray: Ray, shade: ShadeRec) -> List[Ray]:
+    def generated_beams(self, ray: Ray, intersect: RayObjectIntersection) -> list[Ray]:
         """Compute the beams generated after intersection of a beam with this
         material
 
