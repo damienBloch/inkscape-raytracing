@@ -40,7 +40,7 @@ class RayObjectIntersection:
     @functools.cached_property
     def curvature(self) -> float:
         # set normal on the incoming side
-        if (self.first_hit_point - self.ray.origin) * self._normal() > 0:
+        if (self.first_hit_point - self.ray.origin) * self._normal() < 0:
             return -self._curvature()
         else:
             return self._curvature()
@@ -48,7 +48,7 @@ class RayObjectIntersection:
     @functools.cached_property
     def normal(self) -> UnitVector:
         # set normal on the incoming side
-        if (self.first_hit_point - self.ray.origin) * self._normal() < 0:
+        if (self.first_hit_point - self.ray.origin) * self._normal() > 0:
             return -self._normal()
         else:
             return self._normal()
@@ -63,6 +63,9 @@ class GeometricObject(Protocol):
         raise NotImplementedError
 
     def get_intersection(self, ray: Ray) -> Optional[RayObjectIntersection]:
+        raise NotImplementedError
+
+    def is_inside(self, ray: Ray) -> bool:
         raise NotImplementedError
 
 

@@ -11,7 +11,12 @@ from typing import Optional
 
 import numpy
 
-from .geometric_object import AABBox, GeometricObject, RayObjectIntersection
+from .geometric_object import (
+    AABBox,
+    GeometricObject,
+    RayObjectIntersection,
+    GeometryError,
+)
 from ..ray import Ray
 from ..vector import Vector, UnitVector
 
@@ -62,6 +67,9 @@ class CubicBezier(GeometricObject):
             return -6 * (self.p0 - 3 * self.p1 + 3 * self.p2 - self.p3)
         else:
             return 0 * self.p0
+
+    def is_inside(self, ray: Ray) -> bool:
+        raise GeometryError(f"Can't define inside for {self}.")
 
     def get_intersection(self, ray: Ray) -> Optional[RayObjectIntersection]:
         result = None

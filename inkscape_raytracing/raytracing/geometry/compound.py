@@ -1,4 +1,5 @@
 import functools
+from copy import copy
 from dataclasses import dataclass
 from typing import TypeVar, Generic, Iterable, Optional
 
@@ -32,9 +33,11 @@ class CompoundGeometricObject(GeometricObject, Generic[T]):
             intersections = [obj.get_intersection(ray) for obj in self]
             intersections = list(filter(None, intersections))
             if intersections:
-                result = min(intersections, key=lambda x: x.ray_travelled_dist)
-                result._num_intersection = lambda: len(intersections)
+                result = copy(min(intersections, key=lambda x: x.ray_travelled_dist))
                 result.object = self
+                result._num_intersection = lambda: sum(
+                    intersect.num_intersection for intersect in intersections
+                )
 
         return result
 

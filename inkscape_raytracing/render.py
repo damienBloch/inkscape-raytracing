@@ -69,8 +69,8 @@ def plot_beam_envelope(
     path1 += [Move(first_ray.origin.x, first_ray.origin.y)]
     path2 += [Move(first_ray.origin.x, first_ray.origin.y)]
     for line in beam_path:
-        for l in numpy.arange(0, line.length, 10):
-            d = (line.ray.abcd[0, 0] + line.ray.abcd[1, 0] * l) *0.1
+        for l in numpy.arange(0, line.length, 1):
+            d = (line.ray.abcd[0, 0] + line.ray.abcd[1, 0] * l) * 1.3
             p1 = (
                 line.ray.origin
                 + l * line.ray.direction
@@ -124,19 +124,18 @@ class Raytracing(inkex.EffectExtension):
         for obj in self.svg.selection.filter(filter_):
             self.add(obj)
 
-        if self.beam_seeds:
-            for seed in self.beam_seeds:
-                if self.is_inside_document(seed.ray):
-                    generated_paths = self.world.propagate_beams(seed.ray)
-                    for path in generated_paths:
-                        try:
-                            new_layer = get_or_create_beam_layer(
-                                get_containing_layer(seed.parent)
-                            )
-                            plot_beam_path(path, seed.parent, new_layer)
-                            plot_beam_envelope(path, seed.parent, new_layer)
-                        except LayerError as e:
-                            inkex.utils.errormsg(f"{e} It will be ignored.")
+        for seed in self.beam_seeds:
+            if self.is_inside_document(seed.ray):
+                generated_paths = self.world.propagate_beams(seed.ray)
+                for path in generated_paths:
+                    try:
+                        new_layer = get_or_create_beam_layer(
+                            get_containing_layer(seed.parent)
+                        )
+                        plot_beam_path(path, seed.parent, new_layer)
+                        plot_beam_envelope(path, seed.parent, new_layer)
+                    except LayerError as e:
+                        inkex.utils.errormsg(e)
 
     @singledispatchmethod
     def add(self, obj):

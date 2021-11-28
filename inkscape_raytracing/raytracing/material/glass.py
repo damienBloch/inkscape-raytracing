@@ -35,16 +35,16 @@ class Glass(OpticMaterial):
                 @ numpy.array([[1, intersect.ray_travelled_dist], [0, 1]])
                 @ ray.abcd
             )
-            reflected_ray = Ray(o, d - 2 * (d * n) * n)
+            reflected_ray = Ray(o, d - 2 * (d * n) * n, mat)
             return [reflected_ray]
         else:  # refraction
             c2 = np.sqrt(u)
             mat = (
-                    self.abcd_refraction(r, intersect.curvature,  -d * n)
-                    @ numpy.array([[1, intersect.ray_travelled_dist], [0, 1]])
-                    @ ray.abcd
+                self.abcd_refraction(1 / r, intersect.curvature, -d * n)
+                @ numpy.array([[1, intersect.ray_travelled_dist], [0, 1]])
+                @ ray.abcd
             )
-            transmitted_ray = Ray(o, r * d + (r * c1 - c2) * n)
+            transmitted_ray = Ray(o, r * d + (r * c1 - c2) * n, mat)
             return [transmitted_ray]
 
     def abcd_mirror(self, curvature, ct):
@@ -52,6 +52,4 @@ class Glass(OpticMaterial):
 
     def abcd_refraction(self, n, curvature, ct):
         p = np.sqrt(n ** 2 - (1 - ct ** 2))
-        return numpy.array(
-            [[p / n / ct, 0], [(ct - p) * curvature / ct / p, ct / p]]
-        )
+        return numpy.array([[p / n / ct, 0], [(ct - p) * curvature / ct / p, ct / p]])

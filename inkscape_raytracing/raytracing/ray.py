@@ -10,7 +10,7 @@ from .vector import UnitVector, Vector
 
 @dataclass(frozen=True)
 class Ray:
-    """This class implements a semi-infinite 2D line with an origin point and a direction."""
+    """A semi-infinite 2D line with an origin point and a direction"""
 
     origin: Vector
     direction: UnitVector
@@ -25,15 +25,14 @@ class Ray:
 
 @dataclass
 class Line:
+    """Segment with a finite length"""
+
     ray: Ray
     length: Optional[float] = None
 
 
 class BeamPath:
-    """Implement a piecewise linear beam path
-
-    Each linear section is made of a Ray and a length
-    """
+    """Piecewise linear beam path"""
 
     def __init__(self, seed: Ray):
         self.sections = [Line(seed)]
