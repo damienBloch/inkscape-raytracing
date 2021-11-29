@@ -67,10 +67,10 @@ def plot_beam_envelope(
     path2 = inkex.Path()
     first_ray = beam_path.first_line.ray
     path1 += [Move(first_ray.origin.x, first_ray.origin.y)]
-    path2 += [Move(first_ray.origin.x, first_ray.origin.y)]
+    # path2 += [Move(first_ray.origin.x, first_ray.origin.y)]
     for line in beam_path:
         for l in numpy.arange(0, line.length, 1):
-            d = (line.ray.abcd[0, 0] + line.ray.abcd[1, 0] * l) * 1.3
+            d = abs((line.ray.abcd[0, 0] + line.ray.abcd[1, 0] * l) * 0.750)
             p1 = (
                 line.ray.origin
                 + l * line.ray.direction
@@ -83,13 +83,12 @@ def plot_beam_envelope(
             )
             path1 += [Line(p1.x, p1.y)]
             path2 += [Line(p2.x, p2.y)]
+    # path2.reverse()
+    path1 += path2[::-1]
+    path1.close()
     element = layer.add(inkex.PathElement())
     element.style = node.to_path_element().style
     element.path = path1
-
-    element = layer.add(inkex.PathElement())
-    element.style = node.to_path_element().style
-    element.path = path2
 
 
 class Raytracing(inkex.EffectExtension):
@@ -132,7 +131,7 @@ class Raytracing(inkex.EffectExtension):
                         new_layer = get_or_create_beam_layer(
                             get_containing_layer(seed.parent)
                         )
-                        plot_beam_path(path, seed.parent, new_layer)
+                        # plot_beam_path(path, seed.parent, new_layer)
                         plot_beam_envelope(path, seed.parent, new_layer)
                     except LayerError as e:
                         inkex.utils.errormsg(e)

@@ -48,7 +48,7 @@ class Glass(OpticMaterial):
             return [transmitted_ray]
 
     def abcd_mirror(self, curvature, ct):
-        return numpy.array([[1, 0], [2 * curvature / ct, 1]])
+        return numpy.array([[1, 0], [2 * curvature * ct, 1]])
 
     def abcd_refraction(self, n, curvature, ct):
         p = np.sqrt(n ** 2 - (1 - ct ** 2))

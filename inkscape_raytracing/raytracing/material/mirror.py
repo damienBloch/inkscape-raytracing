@@ -25,4 +25,4 @@ class Mirror(OpticMaterial):
         return [reflected_ray]
 
     def abcd(self, curvature, ct):
-        return numpy.array([[1, 0], [2 * curvature / ct, 1]])
+        return numpy.array([[1, 0], [2 * curvature * ct, 1]])

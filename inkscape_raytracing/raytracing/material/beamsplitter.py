@@ -34,4 +34,4 @@ class BeamSplitter(OpticMaterial):
         return [reflected_ray, transmitted_ray]
 
     def abcd(self, curvature, ct):
-        return numpy.array([[1, 0], [2 * curvature / ct, 1]])
+        return numpy.array([[1, 0], [2 * curvature * ct, 1]])
