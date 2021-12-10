@@ -9,6 +9,7 @@ from typing import Iterable, Optional, Final
 
 import inkex
 import numpy
+import numpy as np
 from inkex.paths import Line, Move
 
 import raytracing.material
@@ -63,6 +64,7 @@ def plot_beam_path(beam_path: BeamPath, node: inkex.ShapeElement, layer: inkex.L
 def plot_beam_envelope(
     beam_path: BeamPath, node: inkex.ShapeElement, layer: inkex.Layer
 ):
+    q0 = 1j * 4197.5
     path1 = inkex.Path()
     path2 = inkex.Path()
     first_ray = beam_path.first_line.ray
@@ -70,16 +72,18 @@ def plot_beam_envelope(
     # path2 += [Move(first_ray.origin.x, first_ray.origin.y)]
     for line in beam_path:
         for l in numpy.arange(0, line.length, 1):
-            d = abs((line.ray.abcd[0, 0] + line.ray.abcd[1, 0] * l) * 0.750)
+            M = np.array([[1, l], [0, 1]]) @ line.ray.abcd
+            q1 = (M[0, 0] * q0 + M[0, 1]) / (M[1, 0] * q0 + M[1, 1])
+            w = np.sqrt(-421e-6 / 3.14 / np.imag(1 / q1))
             p1 = (
                 line.ray.origin
                 + l * line.ray.direction
-                + d * line.ray.direction.orthogonal()
+                + w * line.ray.direction.orthogonal()
             )
             p2 = (
                 line.ray.origin
                 + l * line.ray.direction
-                - d * line.ray.direction.orthogonal()
+                - w * line.ray.direction.orthogonal()
             )
             path1 += [Line(p1.x, p1.y)]
             path2 += [Line(p2.x, p2.y)]
