@@ -18,7 +18,7 @@ Allows to annotate Inkscape primitives with optical properties and draws beam pa
 
 | <img src="./pictures/blue_table.png"  width="600"> |
 |:--:|
-| *Optical table design* |
+| *Optical table planning* |
 
 ## How to install 
 
