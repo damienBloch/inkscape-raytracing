@@ -11,14 +11,14 @@ Allows to annotate Inkscape primitives with optical properties and draws beam pa
 ## Examples
 
 
-| <img src="./pictures/sphere.svg"  width="500"> |
+| <img src="./pictures/sphere.svg"  width="600"> |
 |:--:|
 | *Beams through a sphere* |
 
 
-| <img src="./pictures/schematic.svg"  width="500"> |
+| <img src="./pictures/blue_table.png"  width="600"> |
 |:--:|
-| *Microscope alignment* |
+| *Optical table design* |
 
 ## How to install 
 
