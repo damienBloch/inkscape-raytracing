@@ -1,7 +1,6 @@
 """
 Module to add a lens object in the document
 """
-
 from math import cos, pi, sin, sqrt, acos, tan
 
 import inkex
@@ -22,7 +21,8 @@ class Lens(inkex.GenerateExtension):
             "stroke-width": str(self.svg.unittouu("1px")),
         }
 
-    def add_arguments(self, pars):
+    @staticmethod
+    def add_arguments(pars):
         pars.add_argument("--focal_length", type=float, default=100.0)
         pars.add_argument("--focal_length_unit", type=str, default="mm")
 
@@ -36,17 +36,12 @@ class Lens(inkex.GenerateExtension):
 
         pars.add_argument("--lens_type", type=str, default="plano_con")
 
-    def to_document_units(self, value: float, unit: str) -> float:
-        c1x, c1y, c2x, c2y = self.svg.get_viewbox()
-        document_width = self.svg.unittouu(self.document.getroot().get("width"))
-        scale_factor = (c2x - c1x) / document_width
-        return self.svg.unittouu(str(value) + unit) * scale_factor
-
     def generate(self):
         opts = self.options
-        d = self.to_document_units(opts.diameter, opts.diameter_unit)
-        f = self.to_document_units(opts.focal_length, opts.focal_length_unit)
-        e = self.to_document_units(opts.edge_thickness, opts.edge_thickness_unit)
+        d = self.svg.viewport_to_unit(f"{opts.diameter}{opts.diameter_unit}")
+        f = self.svg.viewport_to_unit(f"{opts.focal_length}{opts.focal_length_unit}")
+        e = self.svg.viewport_to_unit(
+            f"{opts.edge_thickness}{opts.edge_thickness_unit}")
         optical_index = opts.optical_index
 
         lens_path = []
