@@ -34,7 +34,7 @@ For Linux users this can typically be done with:
   
 ## Requirements
  
- * [Inkscape 1.2](https://inkscape.org/release/) or above.<br />The extension might work with older versions of Inkscape but it is not garanteed.
+ * [Inkscape 1.2](https://inkscape.org/release/) or above.<br />The extension was not tested with older versions of Inkscape.
   
 In addition, this extension also requires the following programs, but they are usually already installed with Inkscape:
   
