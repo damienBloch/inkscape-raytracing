@@ -29,7 +29,7 @@ def get_unlinked_copy(clone: inkex.Use) -> Optional[inkex.ShapeElement]:
     """Creates a copy of the original with all transformations applied"""
     copy = clone.href.copy()
     copy.transform = clone.composed_transform() * copy.transform
-    copy.style = clone.style + copy.style
+    copy.style = clone.specified_style()
     copy.getparent = clone.getparent
     return copy
 
@@ -52,8 +52,7 @@ def plot_beam(beam: list[Ray], node: inkex.ShapeElement, layer: inkex.Layer):
             p1 = ray.origin + ray.travel * ray.direction
             path += [Line(p1.x, p1.y)]
     element = layer.add(inkex.PathElement())
-    # Need to convert to path to get the correct style for inkex.Use
-    element.style = node.to_path_element().style
+    element.style = node.specified_style()
     element.path = path
 
 
