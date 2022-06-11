@@ -22,9 +22,9 @@ Allows to annotate Inkscape primitives with optical properties and draws beam pa
 
 ## How to install 
 
-Copy the extension directory in Inkscape extensions directory. 
-
-Inkscape extensions directory can be found with Edit > Preferences > System > User extensions.
+- Download the zip folder containing the extension source code (Code > Download ZIP).  
+- Extract the content of the ZIP folder in Inkscape user extensions directory.<br />The location of the extensions directory can be found in Inkscape with Edit > Preferences > System > User extensions.
+- Restart Inkscape if open.
 
 For Linux users this can typically be done with:
   ```shell
@@ -34,11 +34,11 @@ For Linux users this can typically be done with:
   
 ## Requirements
  
-Requires [Inkscape1.0](https://inkscape.org/release/) or above.
+ * [Inkscape 1.2](https://inkscape.org/release/) or above.<br />The extension might work with older versions of Inkscape but it is not garanteed.
   
 In addition, this extension also requires the following programs, but they are usually already installed with Inkscape:
   
-   * [Python3.7](https://www.python.org/downloads/) or above  
+   * [Python 3.7](https://www.python.org/downloads/) or above  
    * [NumPy](https://numpy.org/install/)
    * [Inkex](https://pypi.org/project/inkex/) 
 
