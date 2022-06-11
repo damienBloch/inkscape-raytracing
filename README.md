@@ -38,7 +38,7 @@ For Linux users this can typically be done with:
   
 In addition, this extension also requires the following programs, but they are usually already installed with Inkscape:
   
-   * [Python 3.7](https://www.python.org/downloads/) or above  
+   * [Python 3.9](https://www.python.org/downloads/) or above  
    * [NumPy](https://numpy.org/install/)
    * [Inkex](https://pypi.org/project/inkex/) 
 
