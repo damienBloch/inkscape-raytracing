@@ -43,7 +43,7 @@
     </effect>
 
     <script>
-        <command reldir="inx" interpreter="python">lens.py</command>
+        <command location="inx" interpreter="python">lens.py</command>
     </script>
 
 </inkscape-extension>
