@@ -18,7 +18,7 @@ class Lens(inkex.GenerateExtension):
             "stroke": "#000000",
             "fill": "#b7c2dd",
             "stroke-linejoin": "round",
-            "stroke-width": str(self.svg.unittouu("1px")),
+            "stroke-width": "0.5pt",
         }
 
     @staticmethod
