@@ -10,6 +10,7 @@ from typing import Iterable, Optional, Final
 import inkex
 from inkex.paths import Line, Move
 
+import warnings
 import raytracing.material
 from desc_parser import get_optics_fields
 from raytracing import Vector
@@ -75,7 +76,23 @@ class Raytracing(inkex.EffectExtension):
         self.world = World()
         self.beam_seeds: list[BeamSeed] = list()
 
+    def add_arguments(self, pars):
+        pars.add_argument(
+            "--render_limit_type",
+            type=str,
+            default="none",
+            help="Name of the optical material to convert the selection to.",
+        )
+        pars.add_argument("--length_limit", type=int)
+        pars.add_argument("--number_limit", type=int)
+
     def effect(self) -> None:
+        err_msg = (
+                f"{self.options}"
+            )
+        #warnings.warn(err_msg)
+        self.world.max_recursion_depth = self.options.number_limit
+
         """
         Loads the objects and outputs a svg with the beams after propagation
         """

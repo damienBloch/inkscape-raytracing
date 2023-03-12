@@ -11,5 +11,12 @@
     <script>
         <command location="inx" interpreter="python">render.py</command>
     </script>
+
+    <param name="render_limit_type" type="optiongroup" gui-text="Iteration limit:">
+        <option name="number" value="number">Number</option>
+        <option name="length" value="length">Length</option>
+    </param>
+    <param name="length_limit" type="int" min="0." max="3000." precision="4" gui-text="Length limit (px):" indent="1">1.5168</param>
+    <param name="number_limit" type="int" gui-text="Number limit:" max="10000" indent="1">500</param>
 </inkscape-extension>
 
