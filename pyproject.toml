@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "inkscape-raytracing"
-version = "1.1"
+version = "1.2.0"
 description = "An extension for Inkscape that makes it easier to draw optical diagrams."
 authors = ["Your Name <you@example.com>"]
 license = "GPL3"
