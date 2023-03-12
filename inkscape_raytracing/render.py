@@ -75,10 +75,16 @@ class Raytracing(inkex.EffectExtension):
         self.world = World()
         self.beam_seeds: list[BeamSeed] = list()
 
+    def add_arguments(self, pars):
+        pars.add_argument("--max_segment_count", type=int)
+        pars.add_argument("--show_iteration_warning", type=str)
+
     def effect(self) -> None:
         """
         Loads the objects and outputs a svg with the beams after propagation
         """
+        self.world.max_segment_count = self.options.max_segment_count
+        self.world.show_warning = self.options.show_iteration_warning == 'true'
 
         # Can't set the border earlier because self.svg is not yet defined
         self.document_border = self.get_document_borders_as_beamdump()
