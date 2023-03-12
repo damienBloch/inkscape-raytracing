@@ -10,7 +10,6 @@ from typing import Iterable, Optional, Final
 import inkex
 from inkex.paths import Line, Move
 
-import warnings
 import raytracing.material
 from desc_parser import get_optics_fields
 from raytracing import Vector
@@ -87,10 +86,6 @@ class Raytracing(inkex.EffectExtension):
         pars.add_argument("--number_limit", type=int)
 
     def effect(self) -> None:
-        err_msg = (
-                f"{self.options}"
-            )
-        #warnings.warn(err_msg)
         self.world.max_recursion_depth = self.options.number_limit
 
         """
