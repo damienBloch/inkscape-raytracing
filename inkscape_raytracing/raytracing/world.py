@@ -29,9 +29,8 @@ class World:
     """Stores a scene and computes the interaction with a ray"""
 
     objects: Optional[list[OpticalObject]] = field(default_factory=list)
-    # default recursion depth can be changed, but should not exceed
-    # system recursion limit.
-    max_recursion_depth: Optional[int] = 500
+    max_segment_count: Optional[int] = 500
+    show_warning: Optional[bool] = True
 
     def add(self, obj: OpticalObject):
         self.objects.append(obj)
@@ -66,13 +65,14 @@ class World:
         tips = [Tip(seed, initial_beam)]
         while len(tips):
             tip = tips.pop(0)
-            if len(tip.rays) >= self.max_recursion_depth:
+            if len(tip.rays) >= self.max_segment_count:
                 err_msg = (
-                    f"Maximal recursion depth exceeded ({self.max_recursion_depth})."
-                    "It is  likely that not all beams have been rendered."
+                    f"Maximal segment count exceeded ({self.max_segment_count})."
+                    "It is likely that not all beams have been rendered."
                 )
                 tips = []
-                warnings.warn(err_msg)
+                if self.show_warning:
+                    warnings.warn(err_msg)
             else:
                 shade, material = self.first_hit(tip.beam)
                 new_seeds = material.generated_beams(tip.beam, shade)

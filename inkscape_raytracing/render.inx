@@ -11,11 +11,7 @@
     <script>
         <command location="inx" interpreter="python">render.py</command>
     </script>
-    <param name="render_limit_type" type="optiongroup" gui-text="Iteration limit:">
-        <option name="number" value="number">Number</option>
-        <option name="length" value="length">Length</option>
-    </param>
-    <param name="number_limit" type="int" gui-text="Number limit:" max="10000" indent="1">500</param>
-    <param name="length_limit" type="int" gui-text="Length limit (px):" min="0." max="3000." indent="1">1.5168</param>
+    <param name="max_segment_count" type="int" gui-text="Maximum segment count:" max="10000" indent="1">500</param>
+    <param name="show_iteration_warning" type="bool" gui-text="Display iteration limit reached warning">true</param>
 </inkscape-extension>
 
